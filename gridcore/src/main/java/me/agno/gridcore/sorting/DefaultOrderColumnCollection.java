@@ -16,7 +16,7 @@ public class DefaultOrderColumnCollection extends ArrayList<ColumnOrderValue> im
         add(new ColumnOrderValue(name, direction, id));
     }
 
-    public void Add(String name, GridSortDirection direction, int id) {
+    public void add(String name, GridSortDirection direction, int id) {
         add(new ColumnOrderValue(name, direction, id));
     }
 

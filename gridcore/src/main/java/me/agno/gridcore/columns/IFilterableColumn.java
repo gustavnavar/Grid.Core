@@ -18,11 +18,9 @@ public interface IFilterableColumn<T> extends IColumn<T> {
 
     Object getFilterWidgetData();
 
-    IGridColumn<T> Filterable(boolean enabled);
+    IGridColumn<T> filterable(boolean enabled);
 
     IGridColumn<T> SetInitialFilter(GridFilterType type, String value);
 
-    IGridColumn<T> SetFilterWidgetType(String typeName);
-
-    IGridColumn<T> SetFilterWidgetType(String typeName, Object widgetData);
+    IGridColumn<T> SetFilterWidgetType(Object widgetData);
 }

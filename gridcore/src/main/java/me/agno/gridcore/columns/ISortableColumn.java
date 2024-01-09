@@ -5,13 +5,12 @@ import me.agno.gridcore.sorting.GridSortMode;
 import me.agno.gridcore.sorting.IColumnOrderer;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface ISortableColumn<T> extends IColumn<T> {
 
     Collection<IColumnOrderer<T>> getOrderers();
-
-    void setOrderers(Collection<IColumnOrderer<T>> orderers);
 
     boolean isColumnSortDefined();
 
@@ -23,21 +22,21 @@ public interface ISortableColumn<T> extends IColumn<T> {
 
     void setSorted(boolean sorted);
 
-    GridSortDirection getDirection();
+    Optional<GridSortDirection> getDirection();
 
     void setDirection(GridSortDirection direction);
 
-    GridSortDirection getInitialDirection();
+    Optional<GridSortDirection> getInitialDirection();
 
     void setInitialDirection(GridSortDirection initialDirection);
 
-    IGridColumn<T> Sortable(boolean sort);
+    IGridColumn<T> sortable(boolean sort);
 
-    IGridColumn<T> Sortable(boolean sort, GridSortMode gridSortMode);
+    IGridColumn<T> sortable(boolean sort, GridSortMode gridSortMode);
 
     IGridColumn<T> SortInitialDirection(GridSortDirection direction);
 
-    <TKey> IGridColumn<T> ThenSortBy(Function<T, TKey> expression);
+    <TData> IGridColumn<T> thenSortBy(Function<T, TData> expression);
 
-    <TKey> IGridColumn<T> ThenSortByDescending(Function<T, TKey> expression);
+    <TData> IGridColumn<T> thenSortByDescending(Function<T, TData> expression);
 }

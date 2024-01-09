@@ -15,7 +15,7 @@ public class DefaultFilterColumnCollection extends ArrayList<ColumnFilterValue> 
         add(new ColumnFilterValue(name, type, value));
     }
 
-    public void Add(String name, GridFilterType type, String value)
+    public void add(String name, GridFilterType type, String value)
     {
         add(new ColumnFilterValue(name, type, value));
     }

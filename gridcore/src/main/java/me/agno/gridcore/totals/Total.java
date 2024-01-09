@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -11,11 +12,11 @@ public class Total {
 
     private boolean IsNumber = false;
 
-    private double Number;
+    private Optional<Double> Number;
 
     private boolean IsDateTime = false;
 
-    private Date DateTime;
+    private Optional<Date> DateTime;
 
     private boolean IsString = false;
 
@@ -28,13 +29,13 @@ public class Total {
     public Total(double number)
     {
         IsNumber = true;
-        Number = number;
+        Number = Optional.of(number);
     }
 
     public Total(Date dateTime)
     {
         IsDateTime = true;
-        DateTime = dateTime;
+        DateTime = Optional.ofNullable(dateTime);
     }
 
     public Total(String str)

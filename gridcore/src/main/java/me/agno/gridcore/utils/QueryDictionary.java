@@ -3,9 +3,9 @@ package me.agno.gridcore.utils;
 import me.agno.gridcore.sorting.ColumnOrderValue;
 import me.agno.gridcore.sorting.GridSortDirection;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class QueryDictionary<T> extends HashMap<String, T> implements IQueryDictionary<T> {
+public class QueryDictionary<T> extends LinkedHashMap<String, T> implements IQueryDictionary<T> {
 
     public void AddParameter(String parameterName, T parameterValue) {
         if (parameterName == null || parameterName.trim() == "")

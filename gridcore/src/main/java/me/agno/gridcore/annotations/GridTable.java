@@ -2,17 +2,18 @@ package me.agno.gridcore.annotations;
 
 import me.agno.gridcore.pagination.PagingType;
 
-public interface GridTable {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
-    PagingType getPagingType();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface GridTable {
 
-    void setPagingType(PagingType pagingType);
+    public PagingType PagingType() default PagingType.None;
 
-    int getPageSize();
+    public int PageSize() default 0;
 
-    void setPageSize(int pageSize);
-
-    int getPagingMaxDisplayedPages();
-
-    void setPagingMaxDisplayedPages(int pagingMaxDisplayedPages);
+    public int PagingMaxDisplayedPages() default 0;
 }

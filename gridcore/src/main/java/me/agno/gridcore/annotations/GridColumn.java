@@ -2,17 +2,18 @@ package me.agno.gridcore.annotations;
 
 import me.agno.gridcore.sorting.GridSortDirection;
 
-public interface GridColumn {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    GridSortDirection getInitialSortDirection();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface GridColumn {
 
-    void setInitialSortDirection(GridSortDirection gridSortDirection);
+    public boolean SortEnabled() default false;
 
-    boolean isSortEnabled();
+    public boolean FilterEnabled() default false;
 
-    void setSortEnabled(boolean sortEnabled);
-
-    boolean isFilterEnabled();
-
-    void setFilterEnabled(boolean filterEnabled);
+    public GridSortDirection SortInitialDirection() default GridSortDirection.Ascending;
 }

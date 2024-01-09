@@ -51,5 +51,5 @@ public interface ITotalsColumn<T> {
 
     QueryDictionary<Total> getCalculationValues();
 
-    void getCalculationValues(QueryDictionary<Total> calculationValues);
+    void setCalculationValues(QueryDictionary<Total> calculationValues);
 }

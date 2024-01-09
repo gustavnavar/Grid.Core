@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Data
 public class ColumnFilterValue {
@@ -19,8 +21,8 @@ public class ColumnFilterValue {
 
     private String FilterValue;
 
-    public String getFilterValueEncoded() {
-        return URLEncoder.encode(FilterValue);
+    public String getFilterValueEncoded() throws UnsupportedEncodingException {
+        return URLEncoder.encode(FilterValue, StandardCharsets.UTF_8.toString());
     }
 
     public void setFilterValueEncoded(String value) {

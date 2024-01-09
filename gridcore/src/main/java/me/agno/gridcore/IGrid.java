@@ -1,8 +1,7 @@
-package me.agno.gridcore.utils;
+package me.agno.gridcore;
 
-import me.agno.gridcore.SearchOptions;
-import me.agno.gridcore.IGridColumnCollection;
 import me.agno.gridcore.pagination.PagingType;
+import me.agno.gridcore.utils.QueryDictionary;
 
 import java.util.Collection;
 
@@ -14,7 +13,7 @@ public interface IGrid<T> {
 
     IGridColumnCollection getColumns();
 
-    Collection<Object> getItemsToDisplay();
+    Collection<T> getItemsToDisplay();
 
     int getDisplayingItemsCount();
 

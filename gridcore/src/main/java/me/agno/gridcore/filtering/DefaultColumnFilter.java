@@ -1,8 +1,5 @@
 package me.agno.gridcore.filtering;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import me.agno.gridcore.filtering.types.FilterTypeResolver;
 import me.agno.gridcore.filtering.types.IFilterType;
 import org.jinq.orm.stream.JinqStream;
@@ -17,14 +14,9 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
     private final Class _targetType;
     private final FilterTypeResolver _typeResolver = new FilterTypeResolver();
 
-    @Getter
-    @Setter(AccessLevel.PRIVATE)
-    public boolean Nullable;
-
-    public DefaultColumnFilter(Function<T, TData> expression, Class targetType, boolean nullable) {
+    public DefaultColumnFilter(Function<T, TData> expression, Class targetType) {
         _expression = expression;
         _targetType = targetType;
-        Nullable = nullable;
     }
 
     public JinqStream<T> ApplyFilter(JinqStream<T> items, Collection<ColumnFilterValue> values, JinqStream<T> source) {
