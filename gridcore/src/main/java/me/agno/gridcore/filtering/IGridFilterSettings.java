@@ -11,5 +11,5 @@ public interface IGridFilterSettings {
 
     IFilterColumnCollection getFilteredColumns();
 
-    boolean IsInitState(IGridColumn column);
+    boolean isInitState(IGridColumn column);
 }

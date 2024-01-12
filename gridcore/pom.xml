@@ -6,12 +6,12 @@
     <parent>
         <groupId>me.agno</groupId>
         <artifactId>Grid.Core</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
     </parent>
 
     <groupId>me.agno.gridcore</groupId>
     <artifactId>gridcore</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.4</version>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>

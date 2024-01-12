@@ -9,34 +9,34 @@ import me.agno.gridcore.filtering.GridFilterType;
 @Getter
 public final class FloatFilterType<T> extends FilterTypeBase<T, Float> {
 
-    public Class<Float> TargetType = Float.class;
+    private final Class<Float> targetType = Float.class;
 
-    public GridFilterType GetValidType(GridFilterType type) {
+    public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
-            case Equals, NotEquals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals -> type;
-            default -> GridFilterType.Equals;
+            case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> type;
+            default -> GridFilterType.EQUALS;
         };
     }
 
-    public Float GetTypedValue(String value) { return Float.valueOf(value); }
+    public Float getTypedValue(String value) { return Float.valueOf(value); }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
-        filterType = GetValidType(filterType);
+        filterType = getValidType(filterType);
 
-        Float typedValue = GetTypedValue(value);
+        Float typedValue = getTypedValue(value);
 
         var path = getPath(root, expression);
 
         return switch (filterType) {
-            case Equals -> cb.equal(path, typedValue);
-            case NotEquals -> cb.notEqual(path, typedValue);
-            case LessThan -> cb.lt(path, typedValue);
-            case LessThanOrEquals -> cb.le(path, typedValue);
-            case GreaterThan -> cb.gt(path, typedValue);
-            case GreaterThanOrEquals -> cb.ge(path, typedValue);
+            case EQUALS -> cb.equal(path, typedValue);
+            case NOT_EQUALS -> cb.notEqual(path, typedValue);
+            case LESS_THAN -> cb.lt(path, typedValue);
+            case LESS_THAN_OR_EQUALS -> cb.le(path, typedValue);
+            case GREATER_THAN -> cb.gt(path, typedValue);
+            case GREATER_THAN_OR_EQUALS -> cb.ge(path, typedValue);
             default -> throw new IllegalArgumentException();
         };
     }

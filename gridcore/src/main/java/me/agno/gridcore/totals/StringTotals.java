@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class StringTotals {
 
-    private String Max;
-    private String Min;
+    private String max;
+    private String min;
 
     public StringTotals()
     {

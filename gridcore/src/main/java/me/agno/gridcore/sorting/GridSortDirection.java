@@ -1,13 +1,13 @@
 package me.agno.gridcore.sorting;
 
 public enum GridSortDirection {
-    Ascending,
-    Descending;
+    ASCENDING,
+    DESCENDING;
 
     @Override public String toString() {
         return switch (this) {
-            case Ascending -> "0";
-            case Descending -> "1";
+            case ASCENDING -> "0";
+            case DESCENDING -> "1";
             default -> null;
         };
     }

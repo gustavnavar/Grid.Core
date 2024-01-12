@@ -5,12 +5,12 @@ import me.agno.gridcore.filtering.GridFilterType;
 
 public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> {
 
-    public abstract GridFilterType GetValidType(GridFilterType type);
+    public abstract GridFilterType getValidType(GridFilterType type);
 
-    public abstract TData GetTypedValue(String value);
+    public abstract TData getTypedValue(String value);
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType) {
-        return GetFilterExpression(cb, root, expression, value, filterType, null);
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType) {
+        return getFilterExpression(cb, root, expression, value, filterType, null);
     }
 
     public Path<TData> getPath(Root<T> root, String expression) {

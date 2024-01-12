@@ -9,23 +9,23 @@ import me.agno.gridcore.filtering.GridFilterType;
 @Getter
 public class EnumFilterType<T> extends FilterTypeBase<T, Enum> implements IFilterType<T, Enum> {
 
-    public Class TargetType;
+    private final Class targetType;
 
     public EnumFilterType(Class type) {
-        TargetType = type;
+        targetType = type;
     }
 
-    public GridFilterType GetValidType(GridFilterType type) {
-        return GridFilterType.Equals;
+    public GridFilterType getValidType(GridFilterType type) {
+        return GridFilterType.EQUALS;
     }
 
-    public Enum GetTypedValue(String value) {
-        return Enum.valueOf(TargetType, value);
+    public Enum getTypedValue(String value) {
+        return Enum.valueOf(targetType, value);
     }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
-                                            GridFilterType filterType, String removeDiacritics) {
-        Enum typedValue = GetTypedValue(value);
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+                                         GridFilterType filterType, String removeDiacritics) {
+        Enum typedValue = this.getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 

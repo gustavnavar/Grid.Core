@@ -8,26 +8,28 @@ import java.util.Objects;
 @Setter
 @Getter
 public class ColumnOrderValue {
-    public static final String DefaultSortingQueryParameter = "grid-sorting";
-    public static final String SortingDataDelimeter = "__";
 
-    private String ColumnName;
+    public static final String DEFAULT_SORTING_QUERY_PARAMETER = "grid-sorting";
+    public static final String SORTING_DATA_DELIMETER = "__";
 
-    private GridSortDirection Direction;
+    private String columnName;
 
-    private int Id;
+    private GridSortDirection direction;
+
+    private int id;
 
     public ColumnOrderValue(String name, GridSortDirection direction, int id)
     {
-        ColumnName = name;
-        Direction = direction;
-        Id = id;
+        this.columnName = name;
+        this.direction = direction;
+        this.id = id;
     }
 
     @Override
     public String toString()
     {
-        return ColumnName + SortingDataDelimeter + Direction.toString() + SortingDataDelimeter + Integer.valueOf(Id).toString();
+        return this.columnName + SORTING_DATA_DELIMETER + this.direction.toString() + SORTING_DATA_DELIMETER
+                + Integer.valueOf(this.id).toString();
     }
 
     @Override
@@ -36,16 +38,17 @@ public class ColumnOrderValue {
         if (o == this) return true;
         if (!(o instanceof ColumnOrderValue other)) return false;
         if (!other.canEqual((Object)this)) return false;
-        return Objects.equals(ColumnName, other.ColumnName) && Direction == other.Direction && Id == other.Id;
+        return Objects.equals(this.columnName, other.getColumnName()) && this.direction == other.getDirection()
+                && this.id == other.getId();
     }
 
     @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        result = (result*PRIME) + (ColumnName == null ? 43 : ColumnName.hashCode());
-        result = (result*PRIME) + Direction.hashCode();
-        result = (result*PRIME) + Integer.valueOf(Id).hashCode();
+        result = (result*PRIME) + (this.columnName == null ? 43 : this.columnName.hashCode());
+        result = (result*PRIME) + this.direction.hashCode();
+        result = (result*PRIME) + Integer.valueOf(this.id).hashCode();
         return result;
     }
 
@@ -62,7 +65,7 @@ public class ColumnOrderValue {
         if (queryParameterValue == null || queryParameterValue.trim().isEmpty())
             return ColumnOrderValue.Null();
 
-        String[] data = queryParameterValue.split(ColumnOrderValue.SortingDataDelimeter);
+        String[] data = queryParameterValue.split(ColumnOrderValue.SORTING_DATA_DELIMETER);
         if (data.length != 3)
             return ColumnOrderValue.Null();
 

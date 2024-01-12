@@ -10,24 +10,24 @@ import me.agno.gridcore.filtering.GridFilterType;
 @Getter
 public class TextFilterType<T> extends FilterTypeBase<T, String> {
 
-    public Class<String> TargetType = String.class;
+    private final Class<String> targetType = String.class;
 
-    public GridFilterType GetValidType(GridFilterType type) {
+    public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
-            case Equals, NotEquals, Contains, StartsWith, EndsWidth, IsNull, IsNotNull -> type;
-            default -> GridFilterType.Equals;
+            case EQUALS, NOT_EQUALS, CONTAINS, STARTS_WITH, ENDS_WIDTH, IS_NULL, IS_NOT_NULL -> type;
+            default -> GridFilterType.EQUALS;
         };
     }
 
-    public String GetTypedValue(String value) { return value == null ? "" : value; }
+    public String getTypedValue(String value) { return value == null ? "" : value; }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {
         
         //Custom implementation of string filter type. Case insensitive compartion.
-        filterType = GetValidType(filterType);
+        filterType = getValidType(filterType);
         
-        String typedValue = GetTypedValue(value);
+        String typedValue = this.getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
         
@@ -35,30 +35,30 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
 
         if(removeDiacritics == null) {
             return switch (filterType) {
-                case Equals -> cb.equal(cb.upper(path), typedValue.toUpperCase());
-                case IsNull -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
-                case NotEquals -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
-                case IsNotNull -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
-                case Contains -> cb.like(cb.upper(path),
+                case EQUALS -> cb.equal(cb.upper(path), typedValue.toUpperCase());
+                case IS_NULL -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
+                case NOT_EQUALS -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
+                case IS_NOT_NULL -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
+                case CONTAINS -> cb.like(cb.upper(path),
                         '%' + typedValue.toUpperCase() + '%');
-                case StartsWith -> cb.like(cb.upper(path),
+                case STARTS_WITH -> cb.like(cb.upper(path),
                         typedValue.toUpperCase() + '%');
-                case EndsWidth -> cb.like(cb.upper(path),
+                case ENDS_WIDTH -> cb.like(cb.upper(path),
                         '%' + typedValue.toUpperCase());
                 default -> throw new IllegalArgumentException();
             };
         }
         else {
             return switch (filterType) {
-                case Equals -> cb.equal(cb.upper(path), typedValue.toUpperCase());
-                case IsNull -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
-                case NotEquals -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
-                case IsNotNull -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
-                case Contains -> cb.like(cb.upper(path),
+                case EQUALS -> cb.equal(cb.upper(path), typedValue.toUpperCase());
+                case IS_NULL -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
+                case NOT_EQUALS -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
+                case IS_NOT_NULL -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
+                case CONTAINS -> cb.like(cb.upper(path),
                         '%' + typedValue.toUpperCase() + '%');
-                case StartsWith -> cb.like(cb.upper(path),
+                case STARTS_WITH -> cb.like(cb.upper(path),
                         typedValue.toUpperCase() + '%');
-                case EndsWidth -> cb.like(cb.upper(path),
+                case ENDS_WIDTH -> cb.like(cb.upper(path),
                         '%' + typedValue.toUpperCase());
                 default -> throw new IllegalArgumentException();
             };

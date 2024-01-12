@@ -16,5 +16,5 @@ public interface IColumnBuilder<T>
 
     void setDefaultFilteringEnabled(boolean defaultFilteringEnabled);
 
-    <TData> IGridColumn<T> CreateColumn(String expression, Class<TData> targetType, boolean hidden);
+    <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden);
 }

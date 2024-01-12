@@ -11,38 +11,38 @@ import java.math.BigInteger;
 @Getter
 public class BigIntegerFilterType<T> extends FilterTypeBase<T, BigInteger> {
 
-    public Class<BigInteger> TargetType = BigInteger.class;
+    private final Class<BigInteger> targetType = BigInteger.class;
 
-    public GridFilterType GetValidType(GridFilterType type) {
+    public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
-            case Equals, NotEquals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals -> type;
-            default -> GridFilterType.Equals;
+            case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> type;
+            default -> GridFilterType.EQUALS;
         };
     }
 
-    public BigInteger GetTypedValue(String value) {
+    public BigInteger getTypedValue(String value) {
         return new BigInteger(value);
     }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType,
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType,
                                          String removeDiacritics) {
 
         //base implementation of building filter expressions
-        filterType = GetValidType(filterType);
+        filterType = getValidType(filterType);
 
-        BigInteger typedValue = GetTypedValue(value);
+        BigInteger typedValue = this.getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 
         var path = getPath(root, expression);
 
         return switch (filterType) {
-            case Equals -> cb.equal(path, typedValue);
-            case NotEquals -> cb.notEqual(path, typedValue);
-            case LessThan -> cb.lt(path, typedValue);
-            case LessThanOrEquals -> cb.le(path, typedValue);
-            case GreaterThan -> cb.gt(path, typedValue);
-            case GreaterThanOrEquals -> cb.ge(path, typedValue);
+            case EQUALS -> cb.equal(path, typedValue);
+            case NOT_EQUALS -> cb.notEqual(path, typedValue);
+            case LESS_THAN -> cb.lt(path, typedValue);
+            case LESS_THAN_OR_EQUALS -> cb.le(path, typedValue);
+            case GREATER_THAN -> cb.gt(path, typedValue);
+            case GREATER_THAN_OR_EQUALS -> cb.ge(path, typedValue);
             default -> throw new IllegalArgumentException();
         };
     }

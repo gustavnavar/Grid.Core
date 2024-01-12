@@ -6,7 +6,8 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import java.util.function.Function;
 
 public interface IPagerProcessor<T> {
-    TypedQuery<T> Process(CriteriaQuery<T> items);
 
-    void SetProcess(Function<CriteriaQuery<T>, TypedQuery<T>> process);
+    TypedQuery<T> process(CriteriaQuery<T> items);
+
+    void setProcess(Function<CriteriaQuery<T>, TypedQuery<T>> process);
 }

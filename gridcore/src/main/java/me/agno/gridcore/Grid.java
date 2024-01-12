@@ -27,148 +27,147 @@ import java.util.List;
 
 public class Grid<T> implements IGrid<T> {
 
-    private final IGridAnnotationsProvider<T> _annotations;
-    private final IColumnBuilder<T> _columnBuilder;
+    private final IGridAnnotationsProvider<T> annotations;
+    private final IColumnBuilder<T> columnBuilder;
+    private final CriteriaQuery<T> criteriaQuery;
 
-    private long _itemsCount = -1; // total items count on collection
-    private long _displayingItemsCount = -1; // count of displaying items (if using pagination)
-    private List<T> _itemsToList; //items after processors
-    private boolean _itemsPreProcessed; //is preprocessors launched?
-    private boolean _itemsProcessed; //is processors launched?
+    private long itemsCount = -1; // total items count on collection
+    private long displayingItemsCount = -1; // count of displaying items (if using pagination)
+    private List<T> itemsToList; //items after processors
+    private boolean itemsPreProcessed; //is preprocessors launched?
+    private boolean itemsProcessed; //is processors launched?
 
-
-    @Getter
-    public EntityManager EntityManager;
 
     @Getter
-    public CriteriaBuilder CriteriaBuilder;
+    private EntityManager entityManager;
 
     @Getter
-    public CriteriaQuery<T> CriteriaQuery;
+    private CriteriaBuilder criteriaBuilder;
 
     @Getter
-    public Root<T> Root;
+    private Root<T> root;
 
     @Getter
-    public Class<T> TargetType;
+    private Class<T> targetType;
 
-    private Predicate Predicate;
+    private Predicate predicate;
 
     public Predicate getPredicate() {
         //call preprocessors before:
         preProcess();
-        return Predicate;
+        return this.predicate;
     }
 
     @Getter
-    private List<Order> OrderList;
+    private List<Order> orderList;
 
     @Getter
-    private FilterProcessor<T> FilterProcessor;
+    private FilterProcessor<T> filterProcessor;
 
     @Getter
-    private SearchProcessor<T> SearchProcessor;
+    private SearchProcessor<T> searchProcessor;
 
     @Getter
-    private TotalsProcessor<T> TotalsProcessor;
+    private TotalsProcessor<T> totalsProcessor;
 
     @Getter
-    private CountProcessor<T> CountProcessor;
+    private CountProcessor<T> countProcessor;
 
     @Getter
-    private SortProcessor<T> SortProcessor;
+    private SortProcessor<T> sortProcessor;
 
     @Getter
-    private IPagerProcessor<T> PagerProcessor;
+    private IPagerProcessor<T> pagerProcessor;
 
     @Getter
     @Setter
-    private LinkedHashMap<String, List<String>> Query;
+    private LinkedHashMap<String, List<String>> query;
 
     @Getter
-    private IGridSettingsProvider Settings;
+    private IGridSettingsProvider settings;
 
     public void setSettings(IGridSettingsProvider value) {
-        Settings = value;
-        SortProcessor.UpdateSettings(Settings.getSortSettings());
-        FilterProcessor.UpdateSettings(Settings.getFilterSettings());
-        SearchProcessor.UpdateSettings(Settings.getSearchSettings());
+        this.settings = value;
+        this.sortProcessor.updateSettings(this.settings.getSortSettings());
+        this.filterProcessor.updateSettings(this.settings.getFilterSettings());
+        this.searchProcessor.updateSettings(this.settings.getSearchSettings());
     }
 
     @Getter
-    private GridColumnCollection<T> Columns;
+    private GridColumnCollection<T> columns;
 
     @Getter
-    private PagingType PagingType = me.agno.gridcore.pagination.PagingType.None;
+    private PagingType pagingType = PagingType.NONE;
 
     public void setPagingType(PagingType value) {
-        if (PagingType == value)
+        if (this.pagingType == value)
             return;
         else
-            PagingType = value;
+            this.pagingType = value;
 
-        if (PagingType != me.agno.gridcore.pagination.PagingType.None) {
-            if (PagerProcessor == null)
-                PagerProcessor = new PagerProcessor<T>(this);
+        if (this.pagingType != PagingType.NONE) {
+            if (this.pagerProcessor == null)
+                this.pagerProcessor = new PagerProcessor<T>(this);
         }
         else {
-            PagerProcessor = null;
+            this.pagerProcessor = null;
         }
     }
     @Getter
     @Setter
-    private IGridPager<T> Pager = new GridPager<T>(this);
+    private IGridPager<T> pager = new GridPager<T>(this);
 
     @Getter
     @Setter
-    private SearchOptions SearchOptions = new SearchOptions(false);
+    private SearchOptions searchOptions = new SearchOptions(false);
 
     @Getter
     @Setter
-    private boolean ExtSortingEnabled;
+    private boolean extSortingEnabled;
 
     @Getter
     @Setter
-    private boolean HiddenExtSortingHeader = false;
+    private boolean hiddenExtSortingHeader = false;
 
     @Getter
     @Setter
-    private boolean GroupingEnabled;
+    private boolean groupingEnabled;
 
     @Getter
     @Setter
-    private String RemoveDiacritics = null;
+    private String removeDiacritics = null;
 
     public Grid(EntityManager entityManager, Class<T> targetType, Predicate predicate, List<Order> orderList,
                 LinkedHashMap<String, List<String>> query, IColumnBuilder<T> columnBuilder) {
 
-        EntityManager = entityManager;
-        TargetType = targetType;
-        CriteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery = CriteriaBuilder.createQuery(TargetType);
-        Root = CriteriaQuery.from(TargetType);
+        this.entityManager = entityManager;
+        this.targetType = targetType;
+        this.criteriaBuilder = entityManager.getCriteriaBuilder();
+        this.criteriaQuery = this.criteriaBuilder.createQuery(this.targetType);
+        this.root = this.criteriaQuery.from(this.targetType);
 
-        Predicate = predicate;
-        OrderList = orderList;
+        this.predicate = predicate;
+        this.orderList = orderList;
 
-        Query = query;
+        this.query = query;
 
         //set up sort settings:
-        Settings = new QueryStringGridSettingsProvider(query);
+        this.settings = new QueryStringGridSettingsProvider(query);
 
-        SortProcessor = new SortProcessor<T>(this, Settings.getSortSettings());
-        FilterProcessor = new FilterProcessor<T>(this, Settings.getFilterSettings());
-        SearchProcessor = new SearchProcessor<T>(this, Settings.getSearchSettings());
-        TotalsProcessor = new TotalsProcessor<T>(this);
+        this.sortProcessor = new SortProcessor<T>(this, this.settings.getSortSettings());
+        this.filterProcessor = new FilterProcessor<T>(this, this.settings.getFilterSettings());
+        this.searchProcessor = new SearchProcessor<T>(this, this.settings.getSearchSettings());
+        this.totalsProcessor = new TotalsProcessor<T>(this);
+        this.countProcessor = new CountProcessor<T>(this);
 
-        _annotations = new GridCoreAnnotationsProvider<T>();
+        this.annotations = new GridCoreAnnotationsProvider<T>();
 
         //Set up column collection:
         if (columnBuilder == null)
-            _columnBuilder = new DefaultColumnBuilder<T>(this, _annotations);
+            this.columnBuilder = new DefaultColumnBuilder<T>(this, this.annotations);
         else
-            _columnBuilder = columnBuilder;
-        Columns = new GridColumnCollection<T>(this, _columnBuilder, Settings.getSortSettings());
+            this.columnBuilder = columnBuilder;
+        this.columns = new GridColumnCollection<T>(this, this.columnBuilder, this.settings.getSortSettings());
 
         applyGridSettings();
 
@@ -177,9 +176,9 @@ public class Grid<T> implements IGrid<T> {
         int virtualizedCount = 0;
         boolean noTotals = false;
 
-        var startIndexParameter = query.get(GridPager.DefaultStartIndexQueryParameter);
-        var virtualizedCountParameter = query.get(GridPager.DefaultVirtualizedCountQueryParameter);
-        var noTotalsParameter = query.get(GridPager.DefaultNoTotalsParameter);
+        var startIndexParameter = query.get(GridPager.DEFAULT_START_INDEX_QUERY_PARAMETER);
+        var virtualizedCountParameter = query.get(GridPager.DEFAULT_VIRTUALIZED_COUNT_QUERY_PARAMETER);
+        var noTotalsParameter = query.get(GridPager.DEFAULT_NO_TOTALS_PARAMETER);
         if (startIndexParameter != null && ! startIndexParameter.isEmpty() &&
                 startIndexParameter.get(0) != null && ! startIndexParameter.get(0).trim().isEmpty() &&
                 virtualizedCountParameter != null && ! virtualizedCountParameter.isEmpty() &&
@@ -187,25 +186,25 @@ public class Grid<T> implements IGrid<T> {
                 noTotalsParameter != null && ! noTotalsParameter.isEmpty() &&
                 noTotalsParameter.get(0) != null && ! noTotalsParameter.get(0).trim().isEmpty()) {
 
-            PagingType = me.agno.gridcore.pagination.PagingType.Virtualization;
+            this.pagingType = PagingType.VIRTUALIZATION;
             try {
                 startIndex = Integer.parseInt(startIndexParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)Pager).setStartIndex(startIndex);
+            ((GridPager<T>)this.pager).setStartIndex(startIndex);
             try {
                 virtualizedCount = Integer.parseInt(virtualizedCountParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)Pager).setVirtualizedCount(virtualizedCount);
+            ((GridPager<T>)this.pager).setVirtualizedCount(virtualizedCount);
             try {
                 noTotals = Boolean.parseBoolean(noTotalsParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)Pager).setNoTotals(noTotals);
+            ((GridPager<T>)this.pager).setNoTotals(noTotals);
         }
         else {
-            var pageParameter = query.get(((GridPager<T>)Pager).getParameterName());
+            var pageParameter = query.get(((GridPager<T>)this.pager).getParameterName());
             if (pageParameter != null && ! pageParameter.isEmpty() &&
                     pageParameter.get(0) != null && ! pageParameter.get(0).trim().isEmpty()) {
                 try {
@@ -214,75 +213,75 @@ public class Grid<T> implements IGrid<T> {
             }
             if (page == 0)
                 page++;
-            ((GridPager<T>)Pager).setCurrentPage(page);
+            ((GridPager<T>)this.pager).setCurrentPage(page);
         }
     }
 
     private void preProcess() {
-        if (!_itemsPreProcessed) {
-            _itemsPreProcessed = true;
-            Predicate = FilterProcessor.Process(Predicate);
-            Predicate = SearchProcessor.Process(Predicate);
+        if (!this.itemsPreProcessed) {
+            this.itemsPreProcessed = true;
+            this.predicate = this.filterProcessor.process(this.predicate);
+            this.predicate = this.searchProcessor.process(this.predicate);
 
             // added to avoid 2nd EF opened task if counting later
-            _itemsCount = CountProcessor.Process(Predicate);
+            this.itemsCount = this.countProcessor.process(this.predicate);
 
             // calculate totals
-            TotalsProcessor.Process(Predicate);
+            this.totalsProcessor.process(this.predicate);
         }
     }
 
     public long getItemsCount() {
         //call preprocessors before:
         preProcess();
-        return _itemsCount;
+        return this.itemsCount;
     }
 
     public void setItemsCount(int value) {
-        _itemsCount = value; //value can be set by pager (for minimizing db calls)
+        this.itemsCount = value; //value can be set by pager (for minimizing db calls)
     }
 
     public long getDisplayingItemsCount() {
-        if (_displayingItemsCount >= 0)
-            return _displayingItemsCount;
-        _displayingItemsCount = getItemsToDisplay().size();
-        return _displayingItemsCount;
+        if (this.displayingItemsCount >= 0)
+            return this.displayingItemsCount;
+        this.displayingItemsCount = getItemsToDisplay().size();
+        return this.displayingItemsCount;
     }
 
     public List<T> getItemsToDisplay() {
         prepareItemsToDisplay();
-        return _itemsToList;
+        return this.itemsToList;
     }
 
     protected void prepareItemsToDisplay() {
-        if (!_itemsProcessed) {
-            _itemsProcessed = true;
-            CriteriaQuery.select(Root);
-            CriteriaQuery.where(getPredicate());
-            OrderList = SortProcessor.Process(OrderList);
-            CriteriaQuery.orderBy(OrderList);
-            _itemsToList = PagerProcessor.Process(CriteriaQuery).getResultList();
+        if (!this.itemsProcessed) {
+            this.itemsProcessed = true;
+            this.criteriaQuery.select(this.root);
+            this.criteriaQuery.where(getPredicate());
+            this.orderList = this.sortProcessor.process(this.orderList);
+            this.criteriaQuery.orderBy(this.orderList);
+            this.itemsToList = this.pagerProcessor.process(this.criteriaQuery).getResultList();
         }
     }
 
     void applyGridSettings() {
-        GridTable opt = _annotations.getAnnotationForTable(getTargetType());
+        GridTable opt = this.annotations.getAnnotationForTable(getTargetType());
         if (opt == null) return;
-        PagingType = opt.getPagingType();
+        this.pagingType = opt.getPagingType();
 
-        if (PagingType == me.agno.gridcore.pagination.PagingType.Pagination)
+        if (this.pagingType == PagingType.PAGINATION)
         {
             if (opt.getPageSize() > 0)
-                Pager.setPageSize(opt.getPageSize());
+                this.pager.setPageSize(opt.getPageSize());
 
-            if (opt.getPagingMaxDisplayedPages() > 0 && Pager instanceof GridPager)
-                ((GridPager<T>)Pager).setMaxDisplayedPages(opt.getPagingMaxDisplayedPages());
+            if (opt.getPagingMaxDisplayedPages() > 0 && this.pager instanceof GridPager)
+                ((GridPager<T>)this.pager).setMaxDisplayedPages(opt.getPagingMaxDisplayedPages());
         }
     }
 
     public void autoGenerateColumns() {
 
-        var tuples = _annotations.getAnnotationsForTableColumns(TargetType);
+        var tuples = this.annotations.getAnnotationsForTableColumns(this.targetType);
 
         for (var tuple : tuples) {
             String name = tuple.getFirst();
@@ -290,9 +289,9 @@ public class Grid<T> implements IGrid<T> {
             GridColumn annotations = tuple.getThird();
 
             if(isKey)
-                Columns.add(name, annotations.getType()).setPrimaryKey(true);
+                this.columns.add(name, annotations.getType()).setPrimaryKey(true);
             else
-                Columns.add(name, annotations.getType());
+                this.columns.add(name, annotations.getType());
         }
     }
 
@@ -300,31 +299,31 @@ public class Grid<T> implements IGrid<T> {
     {
         var totals = new TotalsDTO();
         if (isSumEnabled())
-            for (IGridColumn<T> column : Columns.values()) {
+            for (IGridColumn<T> column : this.columns.values()) {
                 if (column.isSumEnabled())
                     totals.getSum().put(column.getName(), column.getSumValue());
             }
 
         if (isAverageEnabled())
-            for (IGridColumn<T> column : Columns.values()) {
+            for (IGridColumn<T> column : this.columns.values()) {
                 if (column.isAverageEnabled())
                     totals.getAverage().put(column.getName(), column.getAverageValue());
             }
 
         if (isMaxEnabled())
-            for (IGridColumn<T> column : Columns.values()) {
+            for (IGridColumn<T> column : this.columns.values()) {
                 if (column.isMaxEnabled())
                     totals.getMax().put(column.getName(), column.getMaxValue());
         }
 
         if (isMinEnabled())
-            for (IGridColumn<T> column : Columns.values()) {
+            for (IGridColumn<T> column : this.columns.values()) {
                 if (column.isMinEnabled())
                     totals.getMin().put(column.getName(), column.getMinValue());
         }
 
         if (isCalculationEnabled())
-            for (IGridColumn<T> column : Columns.values()) {
+            for (IGridColumn<T> column : this.columns.values()) {
                 if (column.isCalculationEnabled())
                     totals.getCalculations().put(column.getName(), column.getCalculationValues());
         }
@@ -333,46 +332,46 @@ public class Grid<T> implements IGrid<T> {
     }
 
     public boolean isDefaultSortEnabled() {
-        return _columnBuilder.isDefaultSortEnabled();
+        return this.columnBuilder.isDefaultSortEnabled();
     }
 
     public void setDefaultSortEnabled(boolean value) {
-        _columnBuilder.setDefaultSortEnabled(value);
+        this.columnBuilder.setDefaultSortEnabled(value);
     }
 
     public GridSortMode getGridSortMode() {
-        return _columnBuilder.getDefaultGridSortMode();
+        return this.columnBuilder.getDefaultGridSortMode();
     }
 
     public void setGridSortMode(GridSortMode value) {
-        _columnBuilder.setDefaultGridSortMode(value);
+        this.columnBuilder.setDefaultGridSortMode(value);
     }
 
     public boolean isDefaultFilteringEnabled() {
-        return _columnBuilder.isDefaultFilteringEnabled();
+        return this.columnBuilder.isDefaultFilteringEnabled();
     }
 
     public void setDefaultFilteringEnabled(boolean value) {
-        _columnBuilder.setDefaultFilteringEnabled(value);
+        this.columnBuilder.setDefaultFilteringEnabled(value);
     }
 
     public boolean isSumEnabled() {
-        return Columns.values().stream().anyMatch(ITotalsColumn::isSumEnabled);
+        return this.columns.values().stream().anyMatch(ITotalsColumn::isSumEnabled);
     }
 
     public boolean isAverageEnabled() {
-        return Columns.values().stream().anyMatch(ITotalsColumn::isAverageEnabled);
+        return this.columns.values().stream().anyMatch(ITotalsColumn::isAverageEnabled);
     }
 
     public boolean isMaxEnabled() {
-        return Columns.values().stream().anyMatch(ITotalsColumn::isMaxEnabled);
+        return this.columns.values().stream().anyMatch(ITotalsColumn::isMaxEnabled);
     }
 
     public boolean isMinEnabled() {
-        return Columns.values().stream().anyMatch(ITotalsColumn::isMinEnabled);
+        return this.columns.values().stream().anyMatch(ITotalsColumn::isMinEnabled);
     }
 
     public boolean isCalculationEnabled() {
-        return Columns.values().stream().anyMatch(ITotalsColumn::isCalculationEnabled);
+        return this.columns.values().stream().anyMatch(ITotalsColumn::isCalculationEnabled);
     }
 }

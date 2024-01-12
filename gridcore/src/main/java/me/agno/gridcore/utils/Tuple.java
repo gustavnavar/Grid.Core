@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tuple<T, S, U> {
-    private T First;
-    private S Second;
-    private U Third;
+    private T first;
+    private S second;
+    private U third;
 }

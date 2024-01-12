@@ -3,19 +3,19 @@ package me.agno.gridcore.sorting;
 import jakarta.persistence.criteria.*;
 
 public class OrderByGridOrderer<T, TData> implements IColumnOrderer<T> {
-    private final String _expression;
+    private final String expression;
 
     public OrderByGridOrderer(String expression) {
-        _expression = expression;
+        this.expression = expression;
     }
 
-    public Order ApplyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction)
+    public Order applyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction)
     {
-        var path = getPath(root, _expression);
+        var path = getPath(root, this.expression);
 
         return switch (direction) {
-            case Ascending -> cb.asc(path);
-            case Descending -> cb.desc(path);
+            case ASCENDING -> cb.asc(path);
+            case DESCENDING -> cb.desc(path);
             default -> throw new IllegalArgumentException("direction");
         };
     }

@@ -4,22 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class SelectItem {
-    public final String ListFilter = "ListFilter";
+    public final String listFilter = "ListFilter";
 
     @Getter
     @Setter
-    public String Value;
+    public String value;
 
     @Getter
     @Setter
-    public String Title;
+    public String title;
 
     public SelectItem()
     { }
 
     public SelectItem(String value, String title)
     {
-        Value = value;
-        Title = title;
+        this.value = value;
+        this.title = title;
     }
 }

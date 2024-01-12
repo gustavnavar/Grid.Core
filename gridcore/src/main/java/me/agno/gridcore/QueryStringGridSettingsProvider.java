@@ -12,15 +12,15 @@ import java.util.List;
 public class QueryStringGridSettingsProvider implements IGridSettingsProvider
 {
 
-    private QueryStringFilterSettings FilterSettings;
-    private QueryStringSortSettings SortSettings;
-    private QueryStringSearchSettings SearchSettings;
+    private QueryStringFilterSettings filterSettings;
+    private QueryStringSortSettings sortSettings;
+    private QueryStringSearchSettings searchSettings;
 
     public QueryStringGridSettingsProvider(LinkedHashMap<String, List<String>> query)
     {
-        SortSettings = new QueryStringSortSettings(query);
+        this.sortSettings = new QueryStringSortSettings(query);
         //add additional header renderer for filterable columns:
-        FilterSettings = new QueryStringFilterSettings(query);
-        SearchSettings = new QueryStringSearchSettings(query);
+        this.filterSettings = new QueryStringFilterSettings(query);
+        this.searchSettings = new QueryStringSearchSettings(query);
     }
 }

@@ -10,13 +10,13 @@ import java.util.Objects;
 
 public class GridColumnCollection<T> extends LinkedHashMap<String, IGridColumn<T>> implements IGridColumnCollection<T> {
 
-    private final IColumnBuilder<T> _columnBuilder;
-    private final IGridSortSettings _sortSettings;
+    private final IColumnBuilder<T> columnBuilder;
+    private final IGridSortSettings sortSettings;
 
     public GridColumnCollection(IGrid<T> grid, IColumnBuilder<T> columnBuilder, IGridSortSettings sortSettings) {
         Grid = grid;
-        _columnBuilder = columnBuilder;
-        _sortSettings = sortSettings;
+        this.columnBuilder = columnBuilder;
+        this.sortSettings = sortSettings;
     }
 
     @Getter
@@ -76,7 +76,7 @@ public class GridColumnCollection<T> extends LinkedHashMap<String, IGridColumn<T
     }
 
     private <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden, String columnName) {
-        IGridColumn<T> newColumn = _columnBuilder.CreateColumn(expression, targetType, hidden);
+        IGridColumn<T> newColumn = this.columnBuilder.createColumn(expression, targetType, hidden);
         if (columnName != null && !columnName.trim().isEmpty())
             ((GridCoreColumn<T, TData>)newColumn).setName(columnName);
         return newColumn;
@@ -84,9 +84,9 @@ public class GridColumnCollection<T> extends LinkedHashMap<String, IGridColumn<T
 
     void UpdateColumnsSorting() {
         for (IGridColumn<T> gridColumn : this.values()) {
-            gridColumn.setSorted(Objects.equals(gridColumn.getName(), _sortSettings.getColumnName()));
-            if (Objects.equals(gridColumn.getName(), _sortSettings.getColumnName()))
-                gridColumn.setDirection(_sortSettings.getDirection());
+            gridColumn.setSorted(Objects.equals(gridColumn.getName(), this.sortSettings.getColumnName()));
+            if (Objects.equals(gridColumn.getName(), this.sortSettings.getColumnName()))
+                gridColumn.setDirection(this.sortSettings.getDirection());
             else
                 gridColumn.setDirection(null);
         }

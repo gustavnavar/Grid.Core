@@ -4,29 +4,27 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.Setter;
 import me.agno.gridcore.IGrid;
 
 import java.util.function.Function;
 
 public class CountProcessor<T> {
-    private final IGrid<T> _grid;
-    private Function<Predicate, Long> _process;
+    private final IGrid<T> grid;
+    @Setter
+    private Function<Predicate, Long> process;
 
     public CountProcessor(IGrid<T> grid) {
-        _grid = grid;
+        this.grid = grid;
     }
 
-    public long Process(Predicate predicate) {
+    public long process(Predicate predicate) {
 
-        if (_process != null) {
-            return _process.apply(predicate);
+        if (this.process != null) {
+            return this.process.apply(predicate);
         }
 
-        return getCount(_grid);
-    }
-
-    public void SetProcess(Function<Predicate, Long> process) {
-        _process = process;
+        return getCount(this.grid);
     }
 
     private Long getCount(IGrid<T> grid) {

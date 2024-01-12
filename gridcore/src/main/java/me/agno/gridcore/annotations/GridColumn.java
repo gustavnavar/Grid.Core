@@ -17,7 +17,7 @@ public @interface GridColumn {
 
     boolean isFilterEnabled() default false;
 
-    GridSortDirection getSortInitialDirection() default GridSortDirection.Ascending;
+    GridSortDirection getSortInitialDirection() default GridSortDirection.ASCENDING;
 
     Class<?> getType();
 }

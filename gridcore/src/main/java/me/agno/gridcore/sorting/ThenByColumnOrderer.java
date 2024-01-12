@@ -3,21 +3,21 @@ package me.agno.gridcore.sorting;
 import jakarta.persistence.criteria.*;
 
 public class ThenByColumnOrderer <T, TData> implements IColumnOrderer<T> {
-    private final String _expression;
-    private final GridSortDirection _initialDirection;
+    private final String expression;
+    private final GridSortDirection initialDirection;
 
     public ThenByColumnOrderer(String expression, GridSortDirection initialDirection) {
-        _expression = expression;
-        _initialDirection = initialDirection;
+        this.expression = expression;
+        this.initialDirection = initialDirection;
     }
 
-    private Order Apply(CriteriaBuilder cb, Root<T> root) {
+    private Order apply(CriteriaBuilder cb, Root<T> root) {
 
-        var path = getPath(root, _expression);
+        var path = getPath(root, this.expression);
 
-        return switch (_initialDirection) {
-            case Ascending -> cb.asc(path);
-            case Descending -> cb.desc(path);
+        return switch (this.initialDirection) {
+            case ASCENDING -> cb.asc(path);
+            case DESCENDING -> cb.desc(path);
             default -> throw new IllegalArgumentException();
         };
     }
@@ -39,7 +39,7 @@ public class ThenByColumnOrderer <T, TData> implements IColumnOrderer<T> {
         return (Path<TData>) path;
     }
 
-    public Order ApplyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction) {
-        return Apply(cb, root);
+    public Order applyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction) {
+        return apply(cb, root);
     }
 }

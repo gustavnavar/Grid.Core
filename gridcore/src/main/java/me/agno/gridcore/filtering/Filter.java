@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class Filter {
 
-    private String Type;
+    private String type;
 
-    private String Value;
+    private String value;
 
     public Filter(String type, String value) {
-        Type = type;
-        Value = value;
+        this.type = type;
+        this.value = value;
     }
 }

@@ -10,37 +10,37 @@ import me.agno.gridcore.sorting.GridSortMode;
 
 public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
 {
-    protected IGridAnnotationsProvider<T> _annotations;
-    protected IGrid<T> _grid;
+    protected IGridAnnotationsProvider<T> annotations;
+    protected IGrid<T> grid;
 
     @Getter
     @Setter
-    private boolean DefaultSortEnabled;
+    private boolean defaultSortEnabled;
 
     @Getter
     @Setter
-    private GridSortMode DefaultGridSortMode = GridSortMode.ThreeState;
+    private GridSortMode defaultGridSortMode = GridSortMode.THREE_STATE;
 
     @Getter
     @Setter
-    private boolean DefaultFilteringEnabled;
+    private boolean defaultFilteringEnabled;
 
     public DefaultColumnBuilder(IGrid<T> grid, IGridAnnotationsProvider<T> annotations) {
-        _grid = grid;
-        _annotations = annotations;
+        this.grid = grid;
+        this.annotations = annotations;
     }
 
 
-    public <TData> IGridColumn<T> CreateColumn(String expression, Class<TData> targetType, boolean hidden) {
+    public <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden) {
 
-        if (!_annotations.isColumnMapped(expression, _grid.getTargetType()))
+        if (!this.annotations.isColumnMapped(expression, this.grid.getTargetType()))
             return null; //grid column not mapped
 
         boolean isExpressionOk = expression == null;
         if (isExpressionOk) {
-            var column = new GridCoreColumn<T, TData>(expression, targetType, _grid);
+            var column = new GridCoreColumn<T, TData>(expression, targetType, this.grid);
             column.setHidden(hidden);
-            GridColumn columnOpt = _annotations.getAnnotationForColumn(expression, _grid.getTargetType());
+            GridColumn columnOpt = this.annotations.getAnnotationForColumn(expression, this.grid.getTargetType());
             if (columnOpt != null)
                 applyColumnAnnotationSettings(column, columnOpt);
             return column;

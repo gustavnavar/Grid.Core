@@ -9,78 +9,78 @@ import java.util.List;
 @Getter
 public class QueryStringSortSettings implements IGridSortSettings {
     
-    public static final String DefaultDirectionQueryParameter = "grid-dir";
-    public static final String DefaultColumnQueryParameter = "grid-column";
+    public static final String DEFAULT_DIRECTION_QUERY_PARAMETER = "grid-dir";
+    public static final String DEFAULT_COLUMN_QUERY_PARAMETER = "grid-column";
 
-    private String ColumnQueryParameterName;
+    private String columnQueryParameterName;
 
-    private String DirectionQueryParameterName;
+    private String directionQueryParameterName;
 
-    private final DefaultOrderColumnCollection SortValues = new DefaultOrderColumnCollection();
+    private final DefaultOrderColumnCollection sortValues = new DefaultOrderColumnCollection();
 
-    private LinkedHashMap<String, List<String>> Query;
-
-    @Setter
-    private String ColumnName;
+    private LinkedHashMap<String, List<String>> query;
 
     @Setter
-    private GridSortDirection Direction;
+    private String columnName;
+
+    @Setter
+    private GridSortDirection direction;
 
     public QueryStringSortSettings(LinkedHashMap<String, List<String>> query) {
 
         if (query == null)
             throw new IllegalArgumentException("No http context here!");
 
-        Query = query;
-        ColumnQueryParameterName = DefaultColumnQueryParameter;
-        DirectionQueryParameterName = DefaultDirectionQueryParameter;
+        this.query = query;
+        this.columnQueryParameterName = DEFAULT_COLUMN_QUERY_PARAMETER;
+        this.directionQueryParameterName = DEFAULT_DIRECTION_QUERY_PARAMETER;
 
-        var sortings = query.get(ColumnOrderValue.DefaultSortingQueryParameter);
+        var sortings = query.get(ColumnOrderValue.DEFAULT_SORTING_QUERY_PARAMETER);
         if (!sortings.isEmpty()) {
             for (String sorting : sortings) {
                 ColumnOrderValue column = ColumnOrderValue.CreateColumnData(sorting);
                 if (!column.equals(ColumnOrderValue.Null()))
-                    SortValues.add(column);
+                    this.sortValues.add(column);
             }
         }
     }
 
     public void setColumnQueryParameterName(String value) {
-        ColumnQueryParameterName = value;
-        RefreshColumn();
+        this.columnQueryParameterName = value;
+        refreshColumn();
     }
 
     public void setDirectionQueryParameterName(String value) {
-        DirectionQueryParameterName = value;
-        RefreshDirection();
+        this.directionQueryParameterName = value;
+        refreshDirection();
     }
 
 
-    private void RefreshColumn()
+    private void refreshColumn()
     {
         //Columns
-        String currentSortColumn = Query.get(ColumnQueryParameterName).toString();
+        String currentSortColumn = this.query.get(this.columnQueryParameterName).toString();
         if(currentSortColumn == null  || currentSortColumn.trim().isEmpty())
             currentSortColumn = "";
 
-        ColumnName = currentSortColumn;
+        this.columnName = currentSortColumn;
         if (currentSortColumn.trim().isEmpty()) {
-            Direction = GridSortDirection.Ascending;
+            this.direction = GridSortDirection.ASCENDING;
         }
     }
 
-    private void RefreshDirection()
+    private void refreshDirection()
     {
         //Direction
-        String currentDirection = Query.get(DirectionQueryParameterName).toString();
+        String currentDirection = this.query.get(this.directionQueryParameterName).toString();
         if(currentDirection == null  || currentDirection.trim().isEmpty())
             currentDirection = "";
 
         if (currentDirection.trim().isEmpty()) {
-            Direction = GridSortDirection.Ascending;
+            this.direction = GridSortDirection.ASCENDING;
             return;
         }
 
-        Direction = Enum.valueOf(GridSortDirection.class, currentDirection);
+        this.direction = Enum.valueOf(GridSortDirection.class, currentDirection);
     }
 }

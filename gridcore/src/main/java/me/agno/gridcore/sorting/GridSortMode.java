@@ -1,6 +1,6 @@
 package me.agno.gridcore.sorting;
 
 public enum GridSortMode {
-    ThreeState,
-    TwoState
+    THREE_STATE,
+    TWO_STATE
 }

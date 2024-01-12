@@ -12,41 +12,41 @@ import java.util.Calendar;
 @Getter
 public class CalendarFilterType<T> extends FilterTypeBase<T, Calendar> {
 
-    public Class<Calendar> TargetType = Calendar.class;
+    private final Class<Calendar> targetType = Calendar.class;
 
-    public GridFilterType GetValidType(GridFilterType type) {
+    public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
-            case Equals, NotEquals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals -> type;
-            default -> GridFilterType.Equals;
+            case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> type;
+            default -> GridFilterType.EQUALS;
         };
     }
 
-    public Calendar GetTypedValue(String value) {
+    public Calendar getTypedValue(String value) {
         var date = LocalDateTime.parse(value);
         Calendar cal = Calendar.getInstance();
         cal.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), date.getHour(), date.getMinute(), date.getSecond());
         return cal;
     }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType,
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType,
                                          String removeDiacritics) {
 
         //base implementation of building filter expressions
-        filterType = GetValidType(filterType);
+        filterType = getValidType(filterType);
 
-        Calendar typedValue = GetTypedValue(value);
+        Calendar typedValue = getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 
         var path = getPath(root, expression);
 
         return switch (filterType) {
-            case Equals -> cb.equal(path, typedValue);
-            case NotEquals -> cb.notEqual(path, typedValue);
-            case LessThan -> cb.lessThan(path, typedValue);
-            case LessThanOrEquals -> cb.lessThanOrEqualTo(path, typedValue);
-            case GreaterThan -> cb.greaterThan(path, typedValue);
-            case GreaterThanOrEquals -> cb.greaterThanOrEqualTo(path, typedValue);
+            case EQUALS -> cb.equal(path, typedValue);
+            case NOT_EQUALS -> cb.notEqual(path, typedValue);
+            case LESS_THAN -> cb.lessThan(path, typedValue);
+            case LESS_THAN_OR_EQUALS -> cb.lessThanOrEqualTo(path, typedValue);
+            case GREATER_THAN -> cb.greaterThan(path, typedValue);
+            case GREATER_THAN_OR_EQUALS -> cb.greaterThanOrEqualTo(path, typedValue);
             default -> throw new IllegalArgumentException();
         };
     }

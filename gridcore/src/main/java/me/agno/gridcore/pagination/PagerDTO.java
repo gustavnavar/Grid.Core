@@ -7,23 +7,23 @@ import lombok.Setter;
 @Setter
 public class PagerDTO {
 
-    private PagingType PagingType;
-    private int PageSize;
-    private int CurrentPage;
-    private int ItemsCount;
-    private int StartIndex;
-    private int VirtualizedCount;
+    private PagingType pagingType;
+    private int pageSize;
+    private int currentPage;
+    private long itemsCount;
+    private int startIndex;
+    private int virtualizedCount;
 
     public PagerDTO()
     { }
 
-    public PagerDTO(PagingType pagingType, int pageSize, int currentPage, int itemsCount, int startIndex, int virtualizedCount)
+    public PagerDTO(PagingType pagingType, int pageSize, int currentPage, long itemsCount, int startIndex, int virtualizedCount)
     {
-        PagingType = pagingType;
-        PageSize = pageSize;
-        CurrentPage = currentPage;
-        ItemsCount = itemsCount;
-        StartIndex = startIndex;
-        VirtualizedCount = virtualizedCount;
+        this.pagingType = pagingType;
+        this.pageSize = pageSize;
+        this.currentPage = currentPage;
+        this.itemsCount = itemsCount;
+        this.startIndex = startIndex;
+        this.virtualizedCount = virtualizedCount;
     }
 }

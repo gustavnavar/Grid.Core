@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IColumnFilter<T> {
 
-    Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values);
+    Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values);
 
-    Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values, String removeDiacritics);
+    Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values, String removeDiacritics);
 }

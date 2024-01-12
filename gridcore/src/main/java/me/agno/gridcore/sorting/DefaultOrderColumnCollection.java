@@ -20,7 +20,7 @@ public class DefaultOrderColumnCollection extends ArrayList<ColumnOrderValue> im
         add(new ColumnOrderValue(name, direction, id));
     }
 
-    public List<ColumnOrderValue> GetByColumn(IGridColumn column) {
-        return this.stream().filter(c -> c.getColumnName().toUpperCase() == column.getName().toUpperCase()).toList();
+    public List<ColumnOrderValue> getByColumn(IGridColumn column) {
+        return this.stream().filter(c -> c.getColumnName().equalsIgnoreCase(column.getName())).toList();
     }
 }

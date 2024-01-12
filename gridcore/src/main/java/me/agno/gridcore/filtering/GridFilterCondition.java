@@ -1,9 +1,9 @@
 package me.agno.gridcore.filtering;
 
 public enum GridFilterCondition {
-    None,
-    And,
-    Or;
+    NONE,
+    AND,
+    OR;
 
     public static GridFilterCondition fromString(String x) {
         try {

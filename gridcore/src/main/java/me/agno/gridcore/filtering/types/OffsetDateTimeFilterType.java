@@ -11,38 +11,38 @@ import java.time.OffsetDateTime;
 @Getter
 public class OffsetDateTimeFilterType<T> extends FilterTypeBase<T, OffsetDateTime> {
 
-    public Class<OffsetDateTime> TargetType = OffsetDateTime.class;
+    private final Class<OffsetDateTime> targetType = OffsetDateTime.class;
 
-    public GridFilterType GetValidType(GridFilterType type) {
+    public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
-            case Equals, NotEquals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals -> type;
-            default -> GridFilterType.Equals;
+            case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> type;
+            default -> GridFilterType.EQUALS;
         };
     }
 
-    public OffsetDateTime GetTypedValue(String value) {
+    public OffsetDateTime getTypedValue(String value) {
         return OffsetDateTime.parse(value);
     }
 
-    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
-        filterType = GetValidType(filterType);
+        filterType = getValidType(filterType);
 
-        OffsetDateTime typedValue = GetTypedValue(value);
+        OffsetDateTime typedValue = getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 
         var path = getPath(root, expression);
 
         return switch (filterType) {
-            case Equals -> cb.equal(path, typedValue);
-            case NotEquals -> cb.notEqual(path, typedValue);
-            case LessThan -> cb.lessThan(path, typedValue);
-            case LessThanOrEquals -> cb.lessThanOrEqualTo(path, typedValue);
-            case GreaterThan -> cb.greaterThan(path, typedValue);
-            case GreaterThanOrEquals -> cb.greaterThanOrEqualTo(path, typedValue);
+            case EQUALS -> cb.equal(path, typedValue);
+            case NOT_EQUALS -> cb.notEqual(path, typedValue);
+            case LESS_THAN -> cb.lessThan(path, typedValue);
+            case LESS_THAN_OR_EQUALS -> cb.lessThanOrEqualTo(path, typedValue);
+            case GREATER_THAN -> cb.greaterThan(path, typedValue);
+            case GREATER_THAN_OR_EQUALS -> cb.greaterThanOrEqualTo(path, typedValue);
             default -> throw new IllegalArgumentException();
         };
     }

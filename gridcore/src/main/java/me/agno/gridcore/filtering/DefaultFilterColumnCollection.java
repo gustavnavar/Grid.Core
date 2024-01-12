@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultFilterColumnCollection extends ArrayList<ColumnFilterValue> implements IFilterColumnCollection {
+
     public DefaultFilterColumnCollection() {
         super();
     }
@@ -20,7 +21,7 @@ public class DefaultFilterColumnCollection extends ArrayList<ColumnFilterValue> 
         add(new ColumnFilterValue(name, type, value));
     }
 
-    public List<ColumnFilterValue> GetByColumn(IGridColumn column) {
-        return this.stream().filter(c -> c.getColumnName().toUpperCase().equals(column.getName().toUpperCase())).toList();
+    public List<ColumnFilterValue> getByColumn(IGridColumn column) {
+        return this.stream().filter(c -> c.getColumnName().equalsIgnoreCase(column.getName())).toList();
     }
 }

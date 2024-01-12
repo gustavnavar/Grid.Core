@@ -10,36 +10,36 @@ import java.util.List;
 
 public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
-    private final String _expression;
-    private final Class<TData> _targetType;
-    private final FilterTypeResolver _typeResolver = new FilterTypeResolver();
+    private final String expression;
+    private final Class<TData> targetType;
+    private final FilterTypeResolver typeResolver = new FilterTypeResolver();
 
     public DefaultColumnFilter(String expression, Class<TData> targetType) {
-        _expression = expression;
-        _targetType = targetType;
+        this.expression = expression;
+        this.targetType = targetType;
     }
 
-    public Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values) {
-        return ApplyFilter(cb, root, values, null);
+    public Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values) {
+        return applyFilter(cb, root, values, null);
     }
 
-    public Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values,
-                                     String removeDiacritics) {
+    public Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values,
+                                 String removeDiacritics) {
         if (values == null || values.stream().noneMatch(ColumnFilterValue::isNotNull))
             throw new IllegalArgumentException ("values");
 
         GridFilterCondition condition;
-        var cond = values.stream().filter(r -> r.isNotNull() && r.getFilterType() == GridFilterType.Condition).findAny();
+        var cond = values.stream().filter(r -> r.isNotNull() && r.getFilterType() == GridFilterType.CONDITION).findAny();
         if (cond.isPresent()) {
             condition = GridFilterCondition.fromString(cond.get().getFilterValue());
-            if(condition == null || condition.equals(GridFilterCondition.None))
-                condition = GridFilterCondition.And;
+            if(condition == null || condition.equals(GridFilterCondition.NONE))
+                condition = GridFilterCondition.AND;
         }
         else {
-            condition = GridFilterCondition.And;
+            condition = GridFilterCondition.AND;
         }
 
-        var filterValues = values.stream().filter(r -> r.isNotNull() && r.getFilterType() != GridFilterType.Condition).toList();
+        var filterValues = values.stream().filter(r -> r.isNotNull() && r.getFilterType() != GridFilterType.CONDITION).toList();
 
         return GetFilterExpression(cb, root, filterValues, condition, removeDiacritics);
     }
@@ -58,7 +58,7 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
             if (predicate != null) {
                 if (mainPredicate == null)
                     mainPredicate = predicate;
-                else if (condition.equals(GridFilterCondition.Or)) {
+                else if (condition.equals(GridFilterCondition.OR)) {
                     mainPredicate = cb.or(mainPredicate, predicate);
                 }
                 else {
@@ -73,7 +73,8 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
     private Predicate GetExpression(CriteriaBuilder cb, Root<T> root, ColumnFilterValue value, String removeDiacritics)
     {
-        IFilterType<T, TData> filterType = _typeResolver.GetFilterType(_targetType);
-        return filterType.GetFilterExpression(cb, root, _expression, value.getFilterValue(), value.getFilterType(), removeDiacritics);
+        IFilterType<T, TData> filterType = this.typeResolver.GetFilterType(this.targetType);
+        return filterType.getFilterExpression(cb, root, this.expression, value.getFilterValue(),
+                value.getFilterType(), removeDiacritics);
     }
 }

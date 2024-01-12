@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.Setter;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.columns.IGridColumn;
 import me.agno.gridcore.pagination.PagingType;
@@ -15,24 +16,26 @@ import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 public class TotalsProcessor<T> {
-    private final IGrid<T> _grid;
-    private Consumer<Predicate> _process;
+    private final IGrid<T> grid;
+
+    @Setter
+    private Consumer<Predicate> process;
 
     public TotalsProcessor(IGrid<T> grid) {
-        _grid = grid;
+        this.grid = grid;
     }
 
-    public void Process(Predicate predicate) {
+    public void process(Predicate predicate) {
 
-        if (_process != null) {
-            _process.accept(predicate);
+        if (this.process != null) {
+            this.process.accept(predicate);
             return;
         }
 
-        if (_grid.getPagingType() == PagingType.Virtualization && _grid.getPager().isNoTotals())
+        if (this.grid.getPagingType() == PagingType.VIRTUALIZATION && this.grid.getPager().isNoTotals())
             return;
 
-        for (IGridColumn<T> gridColumn : _grid.getColumns().values()) {
+        for (IGridColumn<T> gridColumn : this.grid.getColumns().values()) {
             if(gridColumn == null)
                 continue;
 
@@ -44,7 +47,7 @@ public class TotalsProcessor<T> {
                 continue;
             }
 
-            var expression = gridColumn.getTotals().GetExpression();
+            var expression = gridColumn.getTotals().getExpression();
             if (expression == null) {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);
@@ -59,16 +62,16 @@ public class TotalsProcessor<T> {
                     type == Float.class) {
 
                 if (gridColumn.isSumEnabled())
-                    gridColumn.setSumValue(new Total((double)getSum(expression, _grid)));
+                    gridColumn.setSumValue(new Total((double)getSum(expression, this.grid)));
 
                 if (gridColumn.isAverageEnabled())
-                    gridColumn.setAverageValue(new Total((double)getAverage(expression, _grid)));
+                    gridColumn.setAverageValue(new Total((double)getAverage(expression, this.grid)));
 
                 if (gridColumn.isMaxEnabled())
-                    gridColumn.setMaxValue(new Total((double)getMax(expression, _grid)));
+                    gridColumn.setMaxValue(new Total((double)getMax(expression, this.grid)));
 
                 if (gridColumn.isMinEnabled())
-                    gridColumn.setMinValue(new Total((double)getMin(expression, _grid)));
+                    gridColumn.setMinValue(new Total((double)getMin(expression, this.grid)));
             }
             /**
             // java.sql.Date is not Comparable
@@ -77,20 +80,20 @@ public class TotalsProcessor<T> {
                 gridColumn.setAverageEnabled(false);
 
                 if (gridColumn.isMaxEnabled())
-                    gridColumn.setMaxValue(new Total(getGreatest(expression, _grid, java.sql.Date.class)));
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, java.sql.Date.class)));
 
                 if (gridColumn.isMinEnabled())
-                    gridColumn.setMinValue(new Total(getLeast(expression, _grid, java.sql.Date.class)));
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, java.sql.Date.class)));
             }*/
             else if (type == String.class) {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);
 
                 if (gridColumn.isMaxEnabled())
-                    gridColumn.setMaxValue(new Total(getGreatest(expression, _grid, String.class)));
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, String.class)));
 
                 if (gridColumn.isMinEnabled())
-                    gridColumn.setMinValue(new Total(getLeast(expression, _grid, String.class)));
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, String.class)));
             }
             else {
                 gridColumn.setSumEnabled(false);
@@ -100,13 +103,13 @@ public class TotalsProcessor<T> {
             }
         }
 
-        var calculationColumns =  _grid.getColumns().values().stream()
+        var calculationColumns =  this.grid.getColumns().values().stream()
                 .filter(r -> r.getCalculations() != null && ! r.getCalculations().isEmpty()).toList();
 
         for (IGridColumn<T> gridColumn : calculationColumns) {
 
             gridColumn.getCalculations().forEach( (key, calculation) -> {
-                var value = calculation.apply(_grid.getColumns());
+                var value = calculation.apply(this.grid.getColumns());
                 Class<?> type = value.getClass();
 
                 if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
@@ -122,10 +125,6 @@ public class TotalsProcessor<T> {
                 }
             });
         }
-    }
-
-    public void SetProcess(Consumer<Predicate> process) {
-        _process = process;
     }
 
     private <TData> Path<TData> getPath(String expression, Root<T> root, Class<TData> type) {

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IOrderColumnCollection extends List<ColumnOrderValue> {
 
-    List<ColumnOrderValue> GetByColumn(IGridColumn column);
+    List<ColumnOrderValue> getByColumn(IGridColumn column);
 }

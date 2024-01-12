@@ -1,53 +1,55 @@
 package me.agno.gridcore.searching;
 
 import jakarta.persistence.criteria.Predicate;
+import lombok.Setter;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.columns.IGridColumn;
 
 import java.util.function.Function;
 
 public class SearchProcessor<T> {
-    private final IGrid<T> _grid;
-    private IGridSearchSettings _settings;
-    private Function<Predicate, Predicate> _process;
+    private final IGrid<T> grid;
+    private IGridSearchSettings settings;
+    @Setter
+    private Function<Predicate, Predicate> process;
 
     public SearchProcessor(IGrid<T> grid, IGridSearchSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");
-        _grid = grid;
-        _settings = settings;
+        this.grid = grid;
+        this.settings = settings;
     }
 
-    public void UpdateSettings(IGridSearchSettings settings) {
+    public void updateSettings(IGridSearchSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");
-        _settings = settings;
+        this.settings = settings;
     }
 
-    public Predicate Process(Predicate predicate) {
+    public Predicate process(Predicate predicate) {
 
-        if(_process != null)
-            return _process.apply(predicate);
+        if(this.process != null)
+            return this.process.apply(predicate);
 
-        if (_grid.getSearchOptions().isEnabled() && _settings.getSearchValue() != null
-                && !_settings.getSearchValue().isEmpty()) {
+        if (this.grid.getSearchOptions().isEnabled() && this.settings.getSearchValue() != null
+                && !this.settings.getSearchValue().isEmpty()) {
 
-            if (_grid.getSearchOptions().isSplittedWords()) {
-                var searchWords = _settings.getSearchValue().split(" ");
+            if (this.grid.getSearchOptions().isSplittedWords()) {
+                var searchWords = this.settings.getSearchValue().split(" ");
                 for (var searchWord : searchWords) {
                     var newPredicate = GetExpression(searchWord);
                     if(predicate == null)
                         predicate = newPredicate;
                     else if(newPredicate != null)
-                        predicate = _grid.getCriteriaBuilder().and(predicate, newPredicate);
+                        predicate = this.grid.getCriteriaBuilder().and(predicate, newPredicate);
                 }
             }
             else {
-                var newPredicate = GetExpression(_settings.getSearchValue());
+                var newPredicate = GetExpression(this.settings.getSearchValue());
                 if(predicate == null)
                     predicate = newPredicate;
                 else if(newPredicate != null)
-                    predicate = _grid.getCriteriaBuilder().and(predicate, newPredicate);
+                    predicate = this.grid.getCriteriaBuilder().and(predicate, newPredicate);
             }
         }
         return predicate;
@@ -57,27 +59,24 @@ public class SearchProcessor<T> {
     {
         Predicate predicate = null;
 
-        for (IGridColumn<T> gridColumn : _grid.getColumns().values()) {
+        for (IGridColumn<T> gridColumn : this.grid.getColumns().values()) {
             if (gridColumn == null) continue;
             if (gridColumn.getSearch() == null) continue;
-            if (!_grid.getSearchOptions().isHiddenColumns() && gridColumn.isHidden()) continue;
+            if (!this.grid.getSearchOptions().isHiddenColumns() && gridColumn.isHidden()) continue;
 
             if (predicate == null) {
-                predicate = gridColumn.getSearch().GetExpression(_grid.getCriteriaBuilder(), _grid.getRoot(),
-                        searchValue, _grid.getSearchOptions().isOnlyTextColumns(), _grid.getRemoveDiacritics());
+                predicate = gridColumn.getSearch().getExpression(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
+                        searchValue, this.grid.getSearchOptions().isOnlyTextColumns(), this.grid.getRemoveDiacritics());
             }
             else {
-                Predicate newPredicate = gridColumn.getSearch().GetExpression(_grid.getCriteriaBuilder(), _grid.getRoot(),
-                        searchValue, _grid.getSearchOptions().isOnlyTextColumns(), _grid.getRemoveDiacritics());
+                Predicate newPredicate = gridColumn.getSearch().getExpression(this.grid.getCriteriaBuilder(),
+                        this.grid.getRoot(), searchValue, this.grid.getSearchOptions().isOnlyTextColumns(),
+                        this.grid.getRemoveDiacritics());
                 if (newPredicate != null) {
-                    predicate = _grid.getCriteriaBuilder().or(predicate, newPredicate);
+                    predicate = this.grid.getCriteriaBuilder().or(predicate, newPredicate);
                 }
             }
         }
         return predicate;
-    }
-
-    public void SetProcess(Function<Predicate, Predicate> process) {
-        _process = process;
     }
 }

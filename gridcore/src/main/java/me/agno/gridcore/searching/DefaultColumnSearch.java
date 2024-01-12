@@ -7,29 +7,29 @@ import jakarta.persistence.criteria.Root;
 
 public class DefaultColumnSearch<T, TData> implements IColumnSearch<T> {
 
-    private final String _expression;
+    private final String expression;
 
-    private final Class<TData> _targetType;
+    private final Class<TData> targetType;
 
     public DefaultColumnSearch(String expression, Class<TData> targetType)
     {
-        _expression = expression;
-        _targetType = targetType;
+        this.expression = expression;
+        this.targetType = targetType;
     }
 
-    public Predicate GetExpression(CriteriaBuilder cb, Root<T> root, String value, boolean onlyTextColumns) {
-        return GetExpression(cb, root, value, onlyTextColumns,null);
+    public Predicate getExpression(CriteriaBuilder cb, Root<T> root, String value, boolean onlyTextColumns) {
+        return getExpression(cb, root, value, onlyTextColumns,null);
     }
 
-    public Predicate GetExpression(CriteriaBuilder cb, Root<T> root, String value,  boolean onlyTextColumns,
+    public Predicate getExpression(CriteriaBuilder cb, Root<T> root, String value, boolean onlyTextColumns,
                                    String removeDiacritics)
     {
         if (value == null || value.trim().isEmpty())
             return null;
 
-        var path = getPath(root, _expression);
+        var path = getPath(root, this.expression);
 
-        if (onlyTextColumns && ! _targetType.equals(String.class))
+        if (onlyTextColumns && ! this.targetType.equals(String.class))
             return null;
 
         if(removeDiacritics == null) {

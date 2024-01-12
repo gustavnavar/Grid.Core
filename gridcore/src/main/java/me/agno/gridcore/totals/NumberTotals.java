@@ -9,10 +9,10 @@ import java.util.Optional;
 @Setter
 public class NumberTotals {
 
-    private Optional<Double> Sum;
-    private Optional<Double> Average;
-    private Optional<Double> Max;
-    private Optional<Double> Min;
+    private Optional<Double> sum;
+    private Optional<Double> average;
+    private Optional<Double> max;
+    private Optional<Double> min;
 
     public NumberTotals()
     {

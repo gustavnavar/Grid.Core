@@ -10,100 +10,100 @@ import java.util.Optional;
 @Setter
 public class Total {
 
-    private boolean IsNumber = false;
+    private boolean isNumber = false;
 
-    private Optional<Double> Number;
+    private Optional<Double> number;
 
-    private boolean IsDateTime = false;
+    private boolean isDateTime = false;
 
-    private Optional<LocalDateTime> DateTime;
+    private Optional<LocalDateTime> dateTime;
 
-    private boolean IsString = false;
+    private boolean isString = false;
 
-    private String String;
+    private String string;
 
 
     public Total()
     { }
 
     public Total(double number) {
-        IsNumber = true;
-        Number = Optional.of(number);
+        this.isNumber = true;
+        this.number = Optional.of(number);
     }
 
     public Total(java.sql.Date dateTime) {
-        IsDateTime = true;
-        DateTime = Optional.of(dateTime.toLocalDate().atStartOfDay());
+        this.isDateTime = true;
+        this.dateTime = Optional.of(dateTime.toLocalDate().atStartOfDay());
     }
 
     public Total(java.sql.Time time) {
-        IsDateTime = true;
-        DateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
     }
 
     public Total(java.sql.Timestamp timeStamp) {
-        IsDateTime = true;
-        DateTime = Optional.ofNullable(timeStamp.toLocalDateTime());
+        this.isDateTime = true;
+        this.dateTime = Optional.ofNullable(timeStamp.toLocalDateTime());
     }
 
     public Total(java.util.Date date) {
-        IsDateTime = true;
-        DateTime = Optional.of(LocalDateTime.from(date.toInstant()));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(LocalDateTime.from(date.toInstant()));
     }
 
     public Total(java.util.Calendar calendar) {
-        IsDateTime = true;
-        DateTime = Optional.of(LocalDateTime.from(calendar.toInstant()));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(LocalDateTime.from(calendar.toInstant()));
     }
 
     public Total(java.time.Instant instant) {
-        IsDateTime = true;
-        DateTime = Optional.of(LocalDateTime.from(instant));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(LocalDateTime.from(instant));
     }
 
     public Total(LocalDate date) {
-        IsDateTime = true;
-        DateTime = Optional.of(date.atStartOfDay());
+        this.isDateTime = true;
+        this.dateTime = Optional.of(date.atStartOfDay());
     }
 
     public Total(LocalTime time) {
-        IsDateTime = true;
-        DateTime = Optional.of(time.atDate(LocalDate.now()));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(time.atDate(LocalDate.now()));
     }
 
     public Total(LocalDateTime dateTime) {
-        IsDateTime = true;
-        DateTime = Optional.ofNullable(dateTime);
+        this.isDateTime = true;
+        this.dateTime = Optional.ofNullable(dateTime);
     }
 
     public Total(OffsetTime time) {
-        IsDateTime = true;
-        DateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
+        this.isDateTime = true;
+        this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
     }
 
     public Total(OffsetDateTime dateTime) {
-        IsDateTime = true;
-        DateTime = Optional.ofNullable(dateTime.toLocalDateTime());
+        this.isDateTime = true;
+        this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
     }
 
     public Total(ZonedDateTime dateTime) {
-        IsDateTime = true;
-        DateTime = Optional.ofNullable(dateTime.toLocalDateTime());
+        this.isDateTime = true;
+        this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
     }
 
     public Total(String str) {
-        IsString = true;
-        String = str;
+        this.isString = true;
+        this.string = str;
     }
 
     public String GetString(String valuePattern) {
         Object value;
-        if (IsNumber)
-            value = Number;
-        else if (IsDateTime)
-            value = DateTime;
-        else if (IsString)
-            value = String;
+        if (this.isNumber)
+            value = this.number;
+        else if (this.isDateTime)
+            value = this.dateTime;
+        else if (this.isString)
+            value = this.string;
         else
             return null;
 

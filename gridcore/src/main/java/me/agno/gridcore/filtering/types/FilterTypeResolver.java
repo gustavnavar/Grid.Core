@@ -5,33 +5,33 @@ import java.util.List;
 
 public class FilterTypeResolver {
 
-    private final List<IFilterType> _filterCollection = new ArrayList();
+    private final List<IFilterType> filterCollection = new ArrayList<>();
 
     public FilterTypeResolver()
     {
         //add default filter types to collection:
-        _filterCollection.add(new TextFilterType());
-        _filterCollection.add(new BooleanFilterType());
-        _filterCollection.add(new SqlDateFilterType());
-        _filterCollection.add(new SqlTimeFilterType());
-        _filterCollection.add(new SqlTimestampFilterType());
-        _filterCollection.add(new DateFilterType());
-        _filterCollection.add(new CalendarFilterType());
-        _filterCollection.add(new InstantFilterType());
-        _filterCollection.add(new LocalDateFilterType());
-        _filterCollection.add(new LocalTimeFilterType());
-        _filterCollection.add(new LocalDateTimeFilterType());
-        _filterCollection.add(new OffsetTimeFilterType());
-        _filterCollection.add(new OffsetDateTimeFilterType());
-        _filterCollection.add(new ZonedDateTimeFilterType());
-        _filterCollection.add(new ByteFilterType());
-        _filterCollection.add(new BigDecimalFilterType());
-        _filterCollection.add(new BigIntegerFilterType());
-        _filterCollection.add(new IntegerFilterType());
-        _filterCollection.add(new DoubleFilterType());
-        _filterCollection.add(new LongFilterType());
-        _filterCollection.add(new FloatFilterType());
-        _filterCollection.add(new UuidFilterType());
+        filterCollection.add(new TextFilterType());
+        filterCollection.add(new BooleanFilterType());
+        filterCollection.add(new SqlDateFilterType());
+        filterCollection.add(new SqlTimeFilterType());
+        filterCollection.add(new SqlTimestampFilterType());
+        filterCollection.add(new DateFilterType());
+        filterCollection.add(new CalendarFilterType());
+        filterCollection.add(new InstantFilterType());
+        filterCollection.add(new LocalDateFilterType());
+        filterCollection.add(new LocalTimeFilterType());
+        filterCollection.add(new LocalDateTimeFilterType());
+        filterCollection.add(new OffsetTimeFilterType());
+        filterCollection.add(new OffsetDateTimeFilterType());
+        filterCollection.add(new ZonedDateTimeFilterType());
+        filterCollection.add(new ByteFilterType());
+        filterCollection.add(new BigDecimalFilterType());
+        filterCollection.add(new BigIntegerFilterType());
+        filterCollection.add(new IntegerFilterType());
+        filterCollection.add(new DoubleFilterType());
+        filterCollection.add(new LongFilterType());
+        filterCollection.add(new FloatFilterType());
+        filterCollection.add(new UuidFilterType());
     }
 
     public IFilterType GetFilterType(Class type)
@@ -39,7 +39,7 @@ public class FilterTypeResolver {
         if (type.isEnum())
             return new EnumFilterType(type);
 
-        for (IFilterType filterType : _filterCollection)
+        for (IFilterType filterType : filterCollection)
         {
             if (filterType.getTargetType().equals(type))
                 return filterType;

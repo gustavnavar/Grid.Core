@@ -1,15 +1,13 @@
 package me.agno.gridcore.totals;
 
+import lombok.Getter;
+
+@Getter
 public class DefaultColumnTotals implements IColumnTotals {
 
-    private final String _expression;
+    private final String expression;
 
     public DefaultColumnTotals(String expression) {
-        _expression = expression;
-    }
-
-    @Override
-    public String GetExpression() {
-        return _expression;
+        this.expression = expression;
     }
 }

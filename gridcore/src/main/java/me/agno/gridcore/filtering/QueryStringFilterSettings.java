@@ -8,30 +8,30 @@ import java.util.List;
 
 public class QueryStringFilterSettings implements IGridFilterSettings {
 
-    public static final String DefaultTypeQueryParameter = "grid-filter";
-    private static final String FilterDataDelimeter = "__";
-    public static final String DefaultClearInitFilterQueryParameter = "grid-clearinitfilter";
+    public static final String DEFAULT_TYPE_QUERY_PARAMETER = "grid-filter";
+    private static final String FILTER_DATA_DELIMETER = "__";
+    public static final String DEFAULT_CLEAR_INIT_FILTER_QUERY_PARAMETER = "grid-clearinitfilter";
 
     @Getter
-    private final LinkedHashMap<String, List<String>> Query;
+    private final LinkedHashMap<String, List<String>> query;
 
-    private final DefaultFilterColumnCollection _filterValues = new DefaultFilterColumnCollection();
+    private final DefaultFilterColumnCollection filterValues = new DefaultFilterColumnCollection();
 
 
     public QueryStringFilterSettings(LinkedHashMap<String, List<String>> query) {
         
         if (query == null)
             throw new IllegalArgumentException("No http context here!");
-        Query = query;
+        this.query = query;
 
-        var filters = Query.get(DefaultTypeQueryParameter);
+        var filters = this.query.get(DEFAULT_TYPE_QUERY_PARAMETER);
         if (filters.size() > 0)
         {
             for (String filter : filters)
             {
                 ColumnFilterValue column = CreateColumnData(filter);
                 if (column.isNotNull())
-                    _filterValues.add(column);
+                    this.filterValues.add(column);
             }
         }
     }
@@ -41,7 +41,7 @@ public class QueryStringFilterSettings implements IGridFilterSettings {
         if (queryParameterValue == null || queryParameterValue.trim().isEmpty())
             return ColumnFilterValue.Null();
 
-        String[] data = queryParameterValue.split(FilterDataDelimeter);
+        String[] data = queryParameterValue.split(FILTER_DATA_DELIMETER);
         if (data.length != 2 && data.length != 3)
             return ColumnFilterValue.Null();
 
@@ -54,16 +54,17 @@ public class QueryStringFilterSettings implements IGridFilterSettings {
     }
 
     public IFilterColumnCollection getFilteredColumns() {
-        return _filterValues;
+        return this.filterValues;
     }
 
-    public boolean IsInitState(IGridColumn column)
+    public boolean isInitState(IGridColumn column)
     {
         if(column.getInitialFilterSettings() == null || column.getInitialFilterSettings().isNull()) {
             return false;
         }
         else {
-            return Query.get(DefaultClearInitFilterQueryParameter).stream().noneMatch(r -> r.equals(column.getName()));
+            return this.query.get(DEFAULT_CLEAR_INIT_FILTER_QUERY_PARAMETER).stream()
+                    .noneMatch(r -> r.equals(column.getName()));
         }
     }
 }

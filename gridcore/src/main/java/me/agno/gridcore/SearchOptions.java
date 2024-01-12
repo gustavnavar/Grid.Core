@@ -9,12 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SearchOptions {
 
-    private boolean Enabled = true;
-    private boolean OnlyTextColumns = true;
-    private boolean HiddenColumns = false;
-    private boolean SplittedWords = false;
+    private boolean enabled = true;
+    private boolean onlyTextColumns = true;
+    private boolean hiddenColumns = false;
+    private boolean splittedWords = false;
 
     public SearchOptions(boolean enabled) {
-        Enabled = enabled;
+        this.enabled = enabled;
     }
 }

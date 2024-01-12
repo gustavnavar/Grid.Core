@@ -7,23 +7,23 @@ import java.util.List;
 
 public class QueryStringSearchSettings implements IGridSearchSettings {
     
-    public static final String DefaultSearchQueryParameter = "grid-search";
+    public static final String DEFAULT_SEARCH_QUERY_PARAMETER = "grid-search";
 
     @Getter
-    private LinkedHashMap<String, List<String>> Query;
+    private LinkedHashMap<String, List<String>> query;
 
     @Getter
-    private String SearchValue;
+    private String searchValue;
 
     public QueryStringSearchSettings(LinkedHashMap<String, List<String>> query) {
 
         if (query == null)
             throw new IllegalArgumentException("No http context here!");
-        Query = query;
+        this.query = query;
 
-        var search = Query.get(DefaultSearchQueryParameter);
+        var search = this.query.get(DEFAULT_SEARCH_QUERY_PARAMETER);
         if (!search.isEmpty()) {
-            SearchValue = search.get(0);
+            this.searchValue = search.get(0);
         }
     }
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IFilterColumnCollection extends List<ColumnFilterValue> {
 
-    List<ColumnFilterValue> GetByColumn(IGridColumn column);
+    List<ColumnFilterValue> getByColumn(IGridColumn column);
 }

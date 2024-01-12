@@ -9,12 +9,12 @@ public interface IFilterType<T, TData> {
 
     Class getTargetType();
 
-    GridFilterType GetValidType(GridFilterType type);
+    GridFilterType getValidType(GridFilterType type);
 
-    TData GetTypedValue(String value);
+    TData getTypedValue(String value);
 
-    Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType);
+    Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType);
 
-    Predicate GetFilterExpression(CriteriaBuilder cb,Root<T> root, String expression, String value, GridFilterType filterType,
+    Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType,
                                   String removeDiacritics);
 }
