@@ -3,7 +3,7 @@ package me.agno.gridcore.filtering;
 import me.agno.gridcore.columns.IGridColumn;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class DefaultFilterColumnCollection extends ArrayList<ColumnFilterValue> implements IFilterColumnCollection {
     public DefaultFilterColumnCollection() {
@@ -20,7 +20,7 @@ public class DefaultFilterColumnCollection extends ArrayList<ColumnFilterValue> 
         add(new ColumnFilterValue(name, type, value));
     }
 
-    public Collection<ColumnFilterValue> GetByColumn(IGridColumn column) {
-        return this.stream().filter(c -> c.getColumnName().toUpperCase() == column.getName().toUpperCase()).toList();
+    public List<ColumnFilterValue> GetByColumn(IGridColumn column) {
+        return this.stream().filter(c -> c.getColumnName().toUpperCase().equals(column.getName().toUpperCase())).toList();
     }
 }

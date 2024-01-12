@@ -13,7 +13,5 @@ public enum GridFilterType {
     Condition,
     NotEquals,
     IsNull,
-    IsNotNull,
-    IsDuplicated,
-    IsNotDuplicated
+    IsNotNull
 }

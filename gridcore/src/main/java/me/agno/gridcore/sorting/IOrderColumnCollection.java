@@ -2,9 +2,9 @@ package me.agno.gridcore.sorting;
 
 import me.agno.gridcore.columns.IGridColumn;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface IOrderColumnCollection extends Collection<ColumnOrderValue> {
+public interface IOrderColumnCollection extends List<ColumnOrderValue> {
 
-    Collection<ColumnOrderValue> GetByColumn(IGridColumn column);
+    List<ColumnOrderValue> GetByColumn(IGridColumn column);
 }

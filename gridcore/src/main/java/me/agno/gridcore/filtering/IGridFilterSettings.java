@@ -1,11 +1,13 @@
 package me.agno.gridcore.filtering;
 
 import me.agno.gridcore.columns.IGridColumn;
-import me.agno.gridcore.utils.IQueryDictionary;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public interface IGridFilterSettings {
 
-    IQueryDictionary<String[]> getQuery();
+    LinkedHashMap<String, List<String>> getQuery();
 
     IFilterColumnCollection getFilteredColumns();
 

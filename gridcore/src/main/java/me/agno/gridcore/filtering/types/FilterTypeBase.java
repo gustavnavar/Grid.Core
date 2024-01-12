@@ -1,10 +1,7 @@
 package me.agno.gridcore.filtering.types;
 
+import jakarta.persistence.criteria.*;
 import me.agno.gridcore.filtering.GridFilterType;
-import org.jinq.orm.stream.JinqStream;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> {
 
@@ -12,18 +9,24 @@ public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> 
 
     public abstract TData GetTypedValue(String value);
 
-    public Predicate<T> GetFilterExpression(Function<T, TData> leftExpr, String value, GridFilterType filterType,
-                                                JinqStream<T> source) {
-        return GetFilterExpression(leftExpr, value, filterType, source, null);
+    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType) {
+        return GetFilterExpression(cb, root, expression, value, filterType, null);
     }
 
-    protected JinqStream<TData> GetGroupBy(JinqStream<T> source, Function<T, TData> expression) {
+    public Path<TData> getPath(Root<T> root, String expression) {
 
-        if (expression == null)
+        if(expression  == null || expression.trim().isEmpty())
             return null;
 
-        return source.group(expression::apply, (tdata, stream) -> stream.count())
-                .where(c -> c.getTwo() >  1)
-                .select(c -> c.getOne());
+        String[] names = expression .split("\\.");
+        var path = root.get(names[0]);
+
+        if(names.length > 1) {
+            for(int i = 1; i < names.length; i ++) {
+                path = path.get(names[i]);
+            }
+        }
+
+        return (Path<TData>) path;
     }
 }

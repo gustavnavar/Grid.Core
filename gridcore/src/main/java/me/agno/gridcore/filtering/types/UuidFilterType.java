@@ -1,40 +1,31 @@
 package me.agno.gridcore.filtering.types;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridcore.filtering.GridFilterType;
-import org.jinq.jpa.JPQL;
-import org.jinq.orm.stream.JinqStream;
 
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
+@Getter
 public class UuidFilterType<T> extends FilterTypeBase<T, UUID>{
 
-    @Getter
-    public Class TargetType = UUID.class;
+    public Class<UUID> TargetType = UUID.class;
 
     public GridFilterType GetValidType(GridFilterType type) {
-        switch (type) {
-            case Equals:
-            case NotEquals:
-            case Contains:
-            case StartsWith:
-            case EndsWidth:
-            case IsDuplicated:
-            case IsNotDuplicated:
-                return type;
-            default:
-                return GridFilterType.Equals;
-        }
+        return switch (type) {
+            case Equals, NotEquals, Contains, StartsWith, EndsWidth -> type;
+            default -> GridFilterType.Equals;
+        };
     }
 
     public UUID GetTypedValue(String value) {
         return UUID.fromString(value);
     }
 
-    public Predicate<T> GetFilterExpression(Function<T, UUID> leftExpr, String value, GridFilterType filterType, JinqStream<T> source,
-                                            String removeDiacritics) {
+    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+                                         GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
         filterType = GetValidType(filterType);
@@ -43,23 +34,18 @@ public class UuidFilterType<T> extends FilterTypeBase<T, UUID>{
         if (typedValue == null)
             return null; //incorrent filter value;
 
-        switch (filterType) {
-            case Equals:
-                return c -> typedValue.compareTo(leftExpr.apply(c)) == 0;
-            case NotEquals:
-                return c -> typedValue.compareTo(leftExpr.apply(c)) != 0;
-            case Contains:
-                return c -> leftExpr.apply(c).toString().toUpperCase().contains(typedValue.toString().toUpperCase());
-            case StartsWith:
-                return c -> leftExpr.apply(c).toString().toUpperCase().startsWith(typedValue.toString().toUpperCase());
-            case EndsWidth:
-                return c -> leftExpr.apply(c).toString().toUpperCase().endsWith(typedValue.toString().toUpperCase());
-            case IsDuplicated:
-                return c -> JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-            case IsNotDuplicated:
-                return c -> !JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-            default:
-                throw new IllegalArgumentException();
-        }
+        var path = getPath(root, expression);
+
+        return switch (filterType) {
+            case Equals -> cb.equal(path, typedValue);
+            case NotEquals -> cb.notEqual(path, typedValue);
+            case Contains -> cb.like(cb.upper(path.as(String.class)),
+                    '%' + typedValue.toString().toUpperCase() + '%');
+            case StartsWith -> cb.like(cb.upper(path.as(String.class)),
+                    typedValue.toString().toUpperCase() + '%');
+            case EndsWidth -> cb.like(cb.upper(path.as(String.class)),
+                    '%' + typedValue.toString().toUpperCase());
+            default -> throw new IllegalArgumentException();
+        };
     }
 }

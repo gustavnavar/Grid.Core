@@ -1,15 +1,14 @@
 package me.agno.gridcore.filtering.types;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridcore.filtering.GridFilterType;
-import org.jinq.orm.stream.JinqStream;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
+@Getter
+public class EnumFilterType<T> extends FilterTypeBase<T, Enum> implements IFilterType<T, Enum> {
 
-public class EnumFilterType<T> implements IFilterType<T, Enum> {
-
-    @Getter
     public Class TargetType;
 
     public EnumFilterType(Class type) {
@@ -24,19 +23,14 @@ public class EnumFilterType<T> implements IFilterType<T, Enum> {
         return Enum.valueOf(TargetType, value);
     }
 
-    public Predicate<T> GetFilterExpression(Function<T, Enum> leftExpr, String value, GridFilterType filterType,
-                                            JinqStream<T> source) {
-
+    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+                                            GridFilterType filterType, String removeDiacritics) {
         Enum typedValue = GetTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 
-        return c -> typedValue == leftExpr.apply(c);
+        var path = getPath(root, expression);
 
-    }
-
-    public Predicate<T> GetFilterExpression(Function<T, Enum> leftExpr, String value, GridFilterType filterType,
-                                            JinqStream<T> source, String removeDiacritics) {
-        return GetFilterExpression(leftExpr, value, filterType, source);
+        return cb.equal(path, typedValue);
     }
 }

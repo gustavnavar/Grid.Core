@@ -1,8 +1,9 @@
 package me.agno.gridcore.searching;
 
-import me.agno.gridcore.utils.IQueryDictionary;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public interface IGridSearchSettings {
-    IQueryDictionary<String[]> getQuery();
+    LinkedHashMap<String, List<String>> getQuery();
     String getSearchValue();
 }

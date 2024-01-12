@@ -4,11 +4,11 @@ import lombok.Getter;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.IGridColumnCollection;
 import me.agno.gridcore.sorting.IGridSortSettings;
-import me.agno.gridcore.utils.QueryDictionary;
 
-import java.util.function.Function;
+import java.util.LinkedHashMap;
+import java.util.Objects;
 
-public class GridColumnCollection<T> extends QueryDictionary<IGridColumn<T>> implements IGridColumnCollection<T> {
+public class GridColumnCollection<T> extends LinkedHashMap<String, IGridColumn<T>> implements IGridColumnCollection<T> {
 
     private final IColumnBuilder<T> _columnBuilder;
     private final IGridSortSettings _sortSettings;
@@ -27,7 +27,7 @@ public class GridColumnCollection<T> extends QueryDictionary<IGridColumn<T>> imp
     }
 
     public IGridColumn<T> add(boolean hidden) {
-        return add((Function<T, String>)null, null, hidden);
+        return add(null, null, hidden);
     }
 
     public IGridColumn<T> add(String columnName) {
@@ -35,20 +35,20 @@ public class GridColumnCollection<T> extends QueryDictionary<IGridColumn<T>> imp
     }
 
     public IGridColumn<T> add(boolean hidden, String columnName) {
-        IGridColumn<T> newColumn = createColumn((Function<T, String>)null, null, hidden, columnName);
+        IGridColumn<T> newColumn = createColumn(null, null, hidden, columnName);
         return add(newColumn);
     }
 
-    public <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType) {
+    public <TData> IGridColumn<T> add(String expression, Class<TData> targetType) {
         return add(expression, targetType, false);
     }
 
-    public <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType, String columnName){
+    public <TData> IGridColumn<T> add(String expression, Class<TData> targetType, String columnName){
         IGridColumn<T> newColumn = createColumn(expression, targetType,false, columnName);
         return add(newColumn);
     }
     
-    public <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType, boolean hidden){
+    public <TData> IGridColumn<T> add(String expression, Class<TData> targetType, boolean hidden){
         IGridColumn<T> newColumn = createColumn(expression, targetType, hidden, "");
         return add(newColumn);
     }
@@ -59,33 +59,33 @@ public class GridColumnCollection<T> extends QueryDictionary<IGridColumn<T>> imp
             throw new NullPointerException("column");
 
         try {
-            AddOrSet(column.getName(), column);
+            put(column.getName(), column);
         }
         catch (Exception e) {
-                throw new IllegalArgumentException(String.format("Column '{0}' already exist in the grid", column.getName()));
+                throw new IllegalArgumentException("Column '" + column.getName() + "' already exist in the grid");
         }
         UpdateColumnsSorting();
         return column;
     }
 
     @Override
-    public IGridColumn<T> get(String name) {
-        if (name == null || name.trim() == "")
+    public IGridColumn<T> get(String name) throws IllegalArgumentException {
+        if (name == null || name.trim().isEmpty())
             throw new IllegalArgumentException("name");
-        return this.get(name);
+        return super.get(name);
     }
 
-    private <TKey> IGridColumn<T> createColumn(Function<T, TKey> expression, Class targetType, boolean hidden, String columnName) {
+    private <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden, String columnName) {
         IGridColumn<T> newColumn = _columnBuilder.CreateColumn(expression, targetType, hidden);
-        if (columnName != null && columnName.trim() != "")
-            ((GridCoreColumn<T, TKey>)newColumn).setName(columnName);
+        if (columnName != null && !columnName.trim().isEmpty())
+            ((GridCoreColumn<T, TData>)newColumn).setName(columnName);
         return newColumn;
     }
 
     void UpdateColumnsSorting() {
         for (IGridColumn<T> gridColumn : this.values()) {
-            gridColumn.setSorted(gridColumn.getName() == _sortSettings.getColumnName());
-            if (gridColumn.getName() == _sortSettings.getColumnName())
+            gridColumn.setSorted(Objects.equals(gridColumn.getName(), _sortSettings.getColumnName()));
+            if (Objects.equals(gridColumn.getName(), _sortSettings.getColumnName()))
                 gridColumn.setDirection(_sortSettings.getDirection());
             else
                 gridColumn.setDirection(null);

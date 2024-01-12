@@ -2,10 +2,6 @@ package me.agno.gridcore;
 
 import me.agno.gridcore.columns.IGridColumn;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.function.Function;
-
 public interface IGridColumnCollection<T>
 {
     IGrid<T> getGrid();
@@ -20,11 +16,11 @@ public interface IGridColumnCollection<T>
 
     IGridColumn<T> add(boolean hidden, String columnName);
 
-    <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType);
+    <TData> IGridColumn<T> add(String expression, Class<TData> targetType);
 
-    <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType, String columnName);
+    <TData> IGridColumn<T> add(String expression, Class<TData> targetType, String columnName);
 
-    <TKey> IGridColumn<T> add(Function<T, TKey> expression, Class targetType, boolean hidden);
+    <TData> IGridColumn<T> add(String expression, Class<TData> targetType, boolean hidden);
 
     IGridColumn<T> get(String name);
 }

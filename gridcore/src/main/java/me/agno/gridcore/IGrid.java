@@ -1,21 +1,35 @@
 package me.agno.gridcore;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import me.agno.gridcore.columns.GridColumnCollection;
+import me.agno.gridcore.filtering.FilterProcessor;
+import me.agno.gridcore.pagination.IGridPager;
+import me.agno.gridcore.pagination.IPagerProcessor;
 import me.agno.gridcore.pagination.PagingType;
-import me.agno.gridcore.utils.QueryDictionary;
+import me.agno.gridcore.searching.SearchProcessor;
+import me.agno.gridcore.sorting.GridSortMode;
+import me.agno.gridcore.sorting.SortProcessor;
+import me.agno.gridcore.totals.CountProcessor;
+import me.agno.gridcore.totals.TotalsDTO;
+import me.agno.gridcore.totals.TotalsProcessor;
 
-import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 
-public interface IGrid<T> {
+public interface IGrid<T> extends IGridOptions{
 
-    QueryDictionary<String[]> getQuery();
+    LinkedHashMap<String, List<String>> getQuery();
 
-    void setQuery(QueryDictionary<String[]> query);
+    void setQuery(LinkedHashMap<String, List<String>> query);
 
-    IGridColumnCollection getColumns();
+    GridColumnCollection<T> getColumns();
 
-    Collection<T> getItemsToDisplay();
+    List<T> getItemsToDisplay();
 
-    int getDisplayingItemsCount();
+    long getDisplayingItemsCount();
 
     PagingType getPagingType();
 
@@ -41,5 +55,49 @@ public interface IGrid<T> {
 
     void setRemoveDiacritics(String removeDiacritics);
 
-    int getItemsCount();
+    long getItemsCount();
+
+    IPagerProcessor<T> getPagerProcessor();
+
+    SearchProcessor<T> getSearchProcessor();
+
+    FilterProcessor<T> getFilterProcessor();
+
+    SortProcessor<T> getSortProcessor();
+
+    TotalsProcessor<T> getTotalsProcessor();
+
+    CountProcessor<T> getCountProcessor();
+
+    IGridPager<T> getPager();
+
+    void setPager(IGridPager<T> pager);
+
+    IGridSettingsProvider getSettings();
+
+    TotalsDTO getTotals();
+
+    boolean isDefaultSortEnabled();
+
+    void setDefaultSortEnabled(boolean defaultFilteringEnabled);
+
+    GridSortMode getGridSortMode();
+
+    void setGridSortMode(GridSortMode gridSortMode);
+
+    boolean isDefaultFilteringEnabled();
+
+    void setDefaultFilteringEnabled(boolean defaultFilteringEnabled);
+
+    void autoGenerateColumns();
+
+    EntityManager getEntityManager();
+
+    CriteriaBuilder getCriteriaBuilder();
+
+    Root<T> getRoot();
+
+    Class<T> getTargetType();
+
+    Predicate getPredicate();
 }

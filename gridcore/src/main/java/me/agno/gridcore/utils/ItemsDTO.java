@@ -5,13 +5,13 @@ import lombok.Setter;
 import me.agno.gridcore.pagination.PagerDTO;
 import me.agno.gridcore.totals.TotalsDTO;
 
-import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 public class ItemsDTO<T> {
 
-    public Collection<T> Items;
+    public List<T> Items;
 
     public TotalsDTO Totals;
 

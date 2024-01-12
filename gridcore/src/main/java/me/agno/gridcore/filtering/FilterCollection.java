@@ -1,7 +1,7 @@
 package me.agno.gridcore.filtering;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class FilterCollection extends ArrayList<Filter> {
 
@@ -20,17 +20,17 @@ public class FilterCollection extends ArrayList<Filter> {
         super();
         for (var filter : filters)
         {
-            if(filter.getType() != null && filter.getType().trim() != "")
+            if(filter.getType() != null && !filter.getType().trim().isEmpty())
                 add(filter.getType(), filter.getValue());
         }
     }
 
-    public FilterCollection(Collection<Filter> filters)
+    public FilterCollection(List<Filter> filters)
     {
         super();
         for (Filter filter : filters)
         {
-            if (filter.getType() != null && filter.getType().trim() != "")
+            if (filter.getType() != null && !filter.getType().trim().isEmpty())
                 add(filter.getType(), filter.getValue());
         }
     }

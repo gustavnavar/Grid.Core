@@ -6,7 +6,7 @@ import me.agno.gridcore.filtering.IColumnFilter;
 
 public interface IFilterableColumn<T> extends IColumn<T> {
 
-    IColumnFilter getFilter();
+    IColumnFilter<T> getFilter();
 
     boolean isFilterEnabled();
 
@@ -14,13 +14,7 @@ public interface IFilterableColumn<T> extends IColumn<T> {
 
     void setInitialFilterSettings(ColumnFilterValue initialFilterSettings);
 
-    String getFilterWidgetTypeName();
-
-    Object getFilterWidgetData();
-
     IGridColumn<T> filterable(boolean enabled);
 
-    IGridColumn<T> SetInitialFilter(GridFilterType type, String value);
-
-    IGridColumn<T> SetFilterWidgetType(Object widgetData);
+    IGridColumn<T> setInitialFilter(GridFilterType type, String value);
 }

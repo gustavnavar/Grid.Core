@@ -3,7 +3,7 @@ package me.agno.gridcore.sorting;
 import me.agno.gridcore.columns.IGridColumn;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class DefaultOrderColumnCollection extends ArrayList<ColumnOrderValue> implements IOrderColumnCollection {
 
@@ -20,7 +20,7 @@ public class DefaultOrderColumnCollection extends ArrayList<ColumnOrderValue> im
         add(new ColumnOrderValue(name, direction, id));
     }
 
-    public Collection<ColumnOrderValue> GetByColumn(IGridColumn column) {
+    public List<ColumnOrderValue> GetByColumn(IGridColumn column) {
         return this.stream().filter(c -> c.getColumnName().toUpperCase() == column.getName().toUpperCase()).toList();
     }
 }

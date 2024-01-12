@@ -11,9 +11,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface GridColumn {
 
-    public boolean SortEnabled() default false;
+    int getPosition() default 2147483647;
 
-    public boolean FilterEnabled() default false;
+    boolean isSortEnabled() default false;
 
-    public GridSortDirection SortInitialDirection() default GridSortDirection.Ascending;
+    boolean isFilterEnabled() default false;
+
+    GridSortDirection getSortInitialDirection() default GridSortDirection.Ascending;
+
+    Class<?> getType();
 }

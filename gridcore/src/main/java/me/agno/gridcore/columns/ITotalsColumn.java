@@ -3,15 +3,15 @@ package me.agno.gridcore.columns;
 import me.agno.gridcore.IGridColumnCollection;
 import me.agno.gridcore.totals.IColumnTotals;
 import me.agno.gridcore.totals.Total;
-import me.agno.gridcore.utils.QueryDictionary;
 
+import java.util.LinkedHashMap;
 import java.util.function.Function;
 
 public interface ITotalsColumn<T> {
 
     IColumnTotals getTotals();
 
-    QueryDictionary<Function<IGridColumnCollection<T>, Object>> getCalculations();
+    LinkedHashMap<String, Function<IGridColumnCollection<T>, Object>> getCalculations();
 
     boolean isSumEnabled();
 
@@ -49,7 +49,7 @@ public interface ITotalsColumn<T> {
 
     void setCalculationEnabled(boolean calculationEnabled);
 
-    QueryDictionary<Total> getCalculationValues();
+    LinkedHashMap<String, Total> getCalculationValues();
 
-    void setCalculationValues(QueryDictionary<Total> calculationValues);
+    void setCalculationValues(LinkedHashMap<String, Total> calculationValues);
 }

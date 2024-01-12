@@ -5,13 +5,10 @@ public enum GridSortDirection {
     Descending;
 
     @Override public String toString() {
-        switch (this) {
-            case Ascending:
-                return "0";
-            case Descending:
-                return "1";
-            default:
-                return null;
-        }
+        return switch (this) {
+            case Ascending -> "0";
+            case Descending -> "1";
+            default -> null;
+        };
     }
 }

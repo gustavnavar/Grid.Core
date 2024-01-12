@@ -2,9 +2,6 @@ package me.agno.gridcore.columns;
 
 import me.agno.gridcore.sorting.GridSortMode;
 
-import java.util.Comparator;
-import java.util.function.Function;
-
 public interface IColumnBuilder<T>
 {
     boolean isDefaultSortEnabled();
@@ -19,5 +16,5 @@ public interface IColumnBuilder<T>
 
     void setDefaultFilteringEnabled(boolean defaultFilteringEnabled);
 
-    <TDataType> IGridColumn<T> CreateColumn(Function<T, TDataType> expression, Class targetType, boolean hidden);
+    <TData> IGridColumn<T> CreateColumn(String expression, Class<TData> targetType, boolean hidden);
 }

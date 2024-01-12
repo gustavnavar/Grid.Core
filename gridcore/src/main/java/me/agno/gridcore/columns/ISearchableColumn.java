@@ -4,5 +4,5 @@ import me.agno.gridcore.searching.IColumnSearch;
 
 public interface ISearchableColumn<T> {
 
-    IColumnSearch getSearch();
+    IColumnSearch<T> getSearch();
 }

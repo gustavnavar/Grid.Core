@@ -1,12 +1,14 @@
 package me.agno.gridcore.filtering;
 
-import org.jinq.orm.stream.JinqStream;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface IColumnFilter<T> {
 
-    JinqStream<T> ApplyFilter(JinqStream<T> items, Collection<ColumnFilterValue> values, JinqStream<T> source);
+    Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values);
 
-    JinqStream<T> ApplyFilter(JinqStream<T> items, Collection<ColumnFilterValue> values, JinqStream<T> source, String removeDiacritics);
+    Predicate ApplyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values, String removeDiacritics);
 }

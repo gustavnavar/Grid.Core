@@ -1,40 +1,28 @@
 package me.agno.gridcore.filtering.types;
 
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridcore.filtering.GridFilterType;
-import org.jinq.jpa.JPQL;
-import org.jinq.orm.stream.JinqStream;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+@Getter
 public class TextFilterType<T> extends FilterTypeBase<T, String> {
 
-    @Getter
-    public Class TargetType = String.class;
+    public Class<String> TargetType = String.class;
 
     public GridFilterType GetValidType(GridFilterType type) {
-        switch (type) {
-            case Equals:
-            case NotEquals:
-            case Contains:
-            case StartsWith:
-            case EndsWidth:
-            case IsNull:
-            case IsNotNull:
-            case IsDuplicated:
-            case IsNotDuplicated:
-                return type;
-            default:
-            return GridFilterType.Equals;
-        }
+        return switch (type) {
+            case Equals, NotEquals, Contains, StartsWith, EndsWidth, IsNull, IsNotNull -> type;
+            default -> GridFilterType.Equals;
+        };
     }
 
     public String GetTypedValue(String value) { return value == null ? "" : value; }
 
-    public Predicate<T> GetFilterExpression(Function<T, String> leftExpr, String value, GridFilterType filterType,
-                                            JinqStream<T> source, String removeDiacritics) {
+    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+                                         GridFilterType filterType, String removeDiacritics) {
         
         //Custom implementation of string filter type. Case insensitive compartion.
         filterType = GetValidType(filterType);
@@ -42,66 +30,38 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
         String typedValue = GetTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
+        
+        var path = getPath(root, expression);
 
         if(removeDiacritics == null) {
-            switch (filterType) {
-                case Equals:
-                    return c -> value.toUpperCase().equals(leftExpr.apply(c).toUpperCase());
-                case IsNull:
-                    return c -> {
-                        var exp = leftExpr.apply(c);
-                        return exp == null || exp.trim() == "";
-                    };
-                case NotEquals:
-                    return c -> !value.toUpperCase().equals(leftExpr.apply(c).toUpperCase());
-                case IsNotNull:
-                    return c -> {
-                        var exp = leftExpr.apply(c);
-                        return exp != null && exp.trim() != "";
-                    };
-                case Contains:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case StartsWith:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case EndsWidth:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case IsDuplicated:
-                    return c -> JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-                case IsNotDuplicated:
-                    return c -> !JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (filterType) {
+                case Equals -> cb.equal(cb.upper(path), typedValue.toUpperCase());
+                case IsNull -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
+                case NotEquals -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
+                case IsNotNull -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
+                case Contains -> cb.like(cb.upper(path),
+                        '%' + typedValue.toUpperCase() + '%');
+                case StartsWith -> cb.like(cb.upper(path),
+                        typedValue.toUpperCase() + '%');
+                case EndsWidth -> cb.like(cb.upper(path),
+                        '%' + typedValue.toUpperCase());
+                default -> throw new IllegalArgumentException();
+            };
         }
         else {
-            switch (filterType) {
-                case Equals:
-                    return c -> value.toUpperCase().equals(leftExpr.apply(c).toUpperCase());
-                case IsNull:
-                    return c -> {
-                        var exp = leftExpr.apply(c);
-                        return exp == null || exp.trim() == "";
-                    };
-                case NotEquals:
-                    return c -> !value.toUpperCase().equals(leftExpr.apply(c).toUpperCase());
-                case IsNotNull:
-                    return c -> {
-                        var exp = leftExpr.apply(c);
-                        return exp != null && exp.trim() != "";
-                    };
-                case Contains:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case StartsWith:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case EndsWidth:
-                    return c -> leftExpr.apply(c).toUpperCase().contains(value.toUpperCase());
-                case IsDuplicated:
-                    return c -> JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-                case IsNotDuplicated:
-                    return c -> !JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (filterType) {
+                case Equals -> cb.equal(cb.upper(path), typedValue.toUpperCase());
+                case IsNull -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
+                case NotEquals -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
+                case IsNotNull -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
+                case Contains -> cb.like(cb.upper(path),
+                        '%' + typedValue.toUpperCase() + '%');
+                case StartsWith -> cb.like(cb.upper(path),
+                        typedValue.toUpperCase() + '%');
+                case EndsWidth -> cb.like(cb.upper(path),
+                        '%' + typedValue.toUpperCase());
+                default -> throw new IllegalArgumentException();
+            };
         }
     }
 }

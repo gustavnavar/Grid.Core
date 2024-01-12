@@ -3,21 +3,19 @@ package me.agno.gridcore.sorting;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
+@Setter
+@Getter
 public class ColumnOrderValue {
     public static final String DefaultSortingQueryParameter = "grid-sorting";
     public static final String SortingDataDelimeter = "__";
 
-    @Getter
-    @Setter
-    public String ColumnName;
+    private String ColumnName;
 
-    @Getter
-    @Setter
-    public GridSortDirection Direction;
+    private GridSortDirection Direction;
 
-    @Getter
-    @Setter
-    public int Id;
+    private int Id;
 
     public ColumnOrderValue(String name, GridSortDirection direction, int id)
     {
@@ -36,10 +34,9 @@ public class ColumnOrderValue {
     public boolean equals(Object o)
     {
         if (o == this) return true;
-        if (!(o instanceof ColumnOrderValue)) return false;
-        ColumnOrderValue other = (ColumnOrderValue) o;
+        if (!(o instanceof ColumnOrderValue other)) return false;
         if (!other.canEqual((Object)this)) return false;
-        return  ColumnName == other.ColumnName && Direction == other.Direction && Id == other.Id;
+        return Objects.equals(ColumnName, other.ColumnName) && Direction == other.Direction && Id == other.Id;
     }
 
     @Override
@@ -54,5 +51,21 @@ public class ColumnOrderValue {
 
     protected boolean canEqual(Object other) {
         return other instanceof ColumnOrderValue;
+    }
+
+    public static ColumnOrderValue Null() {
+        return new ColumnOrderValue(null, null, 0);
+    }
+
+    public static ColumnOrderValue CreateColumnData(String queryParameterValue)
+    {
+        if (queryParameterValue == null || queryParameterValue.trim().isEmpty())
+            return ColumnOrderValue.Null();
+
+        String[] data = queryParameterValue.split(ColumnOrderValue.SortingDataDelimeter);
+        if (data.length != 3)
+            return ColumnOrderValue.Null();
+
+        return new ColumnOrderValue(data[0], GridSortDirection.valueOf(data[1]), Integer.parseInt(data[2]));
     }
 }

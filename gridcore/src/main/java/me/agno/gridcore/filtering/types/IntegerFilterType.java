@@ -1,65 +1,42 @@
 package me.agno.gridcore.filtering.types;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridcore.filtering.GridFilterType;
-import org.jinq.jpa.JPQL;
-import org.jinq.orm.stream.JinqStream;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+@Getter
 public final class IntegerFilterType<T> extends FilterTypeBase<T, Integer> {
 
-    @Getter
-    public Class TargetType = Integer.class;
+    public Class<Integer> TargetType = Integer.class;
 
     public GridFilterType GetValidType(GridFilterType type) {
-        switch (type) {
-            case Equals:
-            case NotEquals:
-            case GreaterThan:
-            case GreaterThanOrEquals:
-            case LessThan:
-            case LessThanOrEquals:
-            case IsDuplicated:
-            case IsNotDuplicated:
-                return type;
-            default:
-                return GridFilterType.Equals;
-        }
+        return switch (type) {
+            case Equals, NotEquals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals -> type;
+            default -> GridFilterType.Equals;
+        };
     }
 
     public Integer GetTypedValue(String value) { return Integer.valueOf(value); }
 
-    public Predicate<T> GetFilterExpression(Function<T, Integer> leftExpr, String value, GridFilterType filterType, JinqStream<T> source,
-                                            String removeDiacritics) {
-
+    public Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+                                         GridFilterType filterType, String removeDiacritics) {
         //base implementation of building filter expressions
         filterType = GetValidType(filterType);
 
         Integer typedValue = GetTypedValue(value);
-        if (typedValue == null)
-            return null; //incorrent filter value;
 
-        switch (filterType) {
-            case Equals:
-                return c -> typedValue == leftExpr.apply(c);
-            case NotEquals:
-                return c -> typedValue != leftExpr.apply(c);
-            case LessThan:
-                return c -> leftExpr.apply(c) < typedValue;
-            case LessThanOrEquals:
-                return c -> leftExpr.apply(c) <= typedValue;
-            case GreaterThan:
-                return c -> leftExpr.apply(c) > typedValue;
-            case GreaterThanOrEquals:
-                return c -> leftExpr.apply(c) >= typedValue;
-            case IsDuplicated:
-                return c -> JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-            case IsNotDuplicated:
-                return c -> !JPQL.isIn(leftExpr.apply(c), GetGroupBy(source, leftExpr));
-            default:
-                throw new IllegalArgumentException();
-        }
+        var path = getPath(root, expression);
+
+        return switch (filterType) {
+            case Equals -> cb.equal(path, typedValue);
+            case NotEquals -> cb.notEqual(path, typedValue);
+            case LessThan -> cb.lt(path, typedValue);
+            case LessThanOrEquals -> cb.le(path, typedValue);
+            case GreaterThan -> cb.gt(path, typedValue);
+            case GreaterThanOrEquals -> cb.ge(path, typedValue);
+            default -> throw new IllegalArgumentException();
+        };
     }
 }

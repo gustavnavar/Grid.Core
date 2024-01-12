@@ -10,7 +10,7 @@ public interface IColumn<T> {
 
     String getFieldName();
 
-    Class getTargetType();
+    Class<?> getTargetType();
 
     void setFieldName(String fieldName);
 

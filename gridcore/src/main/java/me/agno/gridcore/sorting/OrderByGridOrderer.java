@@ -1,26 +1,39 @@
 package me.agno.gridcore.sorting;
 
-import org.jinq.orm.stream.JinqStream;
+import jakarta.persistence.criteria.*;
 
-import java.util.function.Function;
+public class OrderByGridOrderer<T, TData> implements IColumnOrderer<T> {
+    private final String _expression;
 
-public class OrderByGridOrderer<T, TKey extends Comparable<TKey>> implements IColumnOrderer<T> {
-    private final Function<T, TKey> _expression;
-
-    public OrderByGridOrderer(Function<T, TKey> expression) {
+    public OrderByGridOrderer(String expression) {
         _expression = expression;
     }
 
-    public JinqStream<T> ApplyOrder(JinqStream<T> items, GridSortDirection direction)
+    public Order ApplyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction)
     {
-        switch (direction)
-        {
-            case Ascending:
-                return items.sortedBy(_expression::apply);
-            case Descending:
-                return items.sortedDescendingBy(_expression::apply);
-            default:
-                throw new IllegalArgumentException("direction");
+        var path = getPath(root, _expression);
+
+        return switch (direction) {
+            case Ascending -> cb.asc(path);
+            case Descending -> cb.desc(path);
+            default -> throw new IllegalArgumentException("direction");
+        };
+    }
+
+    public Path<TData> getPath(Root<T> root, String expression) {
+
+        if(expression  == null || expression.trim().isEmpty())
+            return null;
+
+        String[] names = expression .split("\\.");
+        var path = root.get(names[0]);
+
+        if(names.length > 1) {
+            for(int i = 1; i < names.length; i ++) {
+                path = path.get(names[i]);
+            }
         }
+
+        return (Path<TData>) path;
     }
 }

@@ -22,7 +22,7 @@ public class ColumnFilterValue {
     private String FilterValue;
 
     public String getFilterValueEncoded() throws UnsupportedEncodingException {
-        return URLEncoder.encode(FilterValue, StandardCharsets.UTF_8.toString());
+        return URLEncoder.encode(FilterValue, StandardCharsets.UTF_8);
     }
 
     public void setFilterValueEncoded(String value) {
@@ -38,8 +38,7 @@ public class ColumnFilterValue {
 
     @Override public boolean equals(Object o) {
         if (o == this) return true;
-        if (!(o instanceof ColumnFilterValue)) return false;
-        ColumnFilterValue other = (ColumnFilterValue) o;
+        if (!(o instanceof ColumnFilterValue other)) return false;
         if (!other.canEqual((Object)this)) return false;
         return ColumnName.equals(other.ColumnName) && FilterType.equals(other.FilterType) && FilterValue.equals(other.FilterValue);
     }
@@ -53,11 +52,17 @@ public class ColumnFilterValue {
         return result;
     }
 
+    public boolean isNull() { return !isNotNull(); }
+
     public boolean isNotNull() {
         return this.getFilterType() != null && this.getFilterType() != GridFilterType.None;
     }
 
     protected boolean canEqual(Object other) {
         return other instanceof ColumnFilterValue;
+    }
+
+    public static ColumnFilterValue Null() {
+        return new ColumnFilterValue(null, GridFilterType.None, null);
     }
 }

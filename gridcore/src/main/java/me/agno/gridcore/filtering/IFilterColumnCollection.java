@@ -2,9 +2,9 @@ package me.agno.gridcore.filtering;
 
 import me.agno.gridcore.columns.IGridColumn;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface IFilterColumnCollection extends Collection<ColumnFilterValue> {
+public interface IFilterColumnCollection extends List<ColumnFilterValue> {
 
-    Collection<ColumnFilterValue> GetByColumn(IGridColumn column);
+    List<ColumnFilterValue> GetByColumn(IGridColumn column);
 }

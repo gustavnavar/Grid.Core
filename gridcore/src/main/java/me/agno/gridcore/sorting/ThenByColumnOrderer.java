@@ -1,37 +1,45 @@
 package me.agno.gridcore.sorting;
 
-import org.jinq.orm.stream.JinqStream;
+import jakarta.persistence.criteria.*;
 
-import java.util.function.Function;
-
-public class ThenByColumnOrderer <T, TKey extends Comparable<TKey>> implements IColumnOrderer<T> {
-    private final Function<T, TKey> _expression;
+public class ThenByColumnOrderer <T, TData> implements IColumnOrderer<T> {
+    private final String _expression;
     private final GridSortDirection _initialDirection;
 
-    public ThenByColumnOrderer(Function<T, TKey> expression, GridSortDirection initialDirection) {
+    public ThenByColumnOrderer(String expression, GridSortDirection initialDirection) {
         _expression = expression;
         _initialDirection = initialDirection;
     }
 
-    private JinqStream<T> Apply(JinqStream<T> items) {
+    private Order Apply(CriteriaBuilder cb, Root<T> root) {
 
-        if (items == null) return items; //not ordered collection
+        var path = getPath(root, _expression);
 
-        switch (_initialDirection) {
-            case Ascending:
-                return items.sortedBy(_expression::apply);
-            case Descending:
-                return items.sortedDescendingBy(_expression::apply);
-            default:
-                throw new IllegalArgumentException();
+        return switch (_initialDirection) {
+            case Ascending -> cb.asc(path);
+            case Descending -> cb.desc(path);
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    public Path<TData> getPath(Root<T> root, String expression) {
+
+        if(expression  == null || expression.trim().isEmpty())
+            return null;
+
+        String[] names = expression .split("\\.");
+        var path = root.get(names[0]);
+
+        if(names.length > 1) {
+            for(int i = 1; i < names.length; i ++) {
+                path = path.get(names[i]);
             }
+        }
+
+        return (Path<TData>) path;
     }
 
-    public JinqStream<T> ApplyOrder(JinqStream<T> items, GridSortDirection direction) {
-        return Apply(items);
-    }
-
-    public JinqStream<T> ApplyThenBy(JinqStream<T> items, GridSortDirection direction) {
-        return Apply(items);
+    public Order ApplyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction) {
+        return Apply(cb, root);
     }
 }
