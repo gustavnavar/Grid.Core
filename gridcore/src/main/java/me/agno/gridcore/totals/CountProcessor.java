@@ -31,7 +31,9 @@ public class CountProcessor<T> {
         CriteriaQuery<Long> criteria = grid.getCriteriaBuilder().createQuery(Long.class);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().count(root));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<Long> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }

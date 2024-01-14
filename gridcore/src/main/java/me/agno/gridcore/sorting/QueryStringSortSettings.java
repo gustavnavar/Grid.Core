@@ -36,7 +36,7 @@ public class QueryStringSortSettings implements IGridSortSettings {
         this.directionQueryParameterName = DEFAULT_DIRECTION_QUERY_PARAMETER;
 
         var sortings = query.get(ColumnOrderValue.DEFAULT_SORTING_QUERY_PARAMETER);
-        if (!sortings.isEmpty()) {
+        if (sortings != null && !sortings.isEmpty()) {
             for (String sorting : sortings) {
                 ColumnOrderValue column = ColumnOrderValue.CreateColumnData(sorting);
                 if (!column.equals(ColumnOrderValue.Null()))

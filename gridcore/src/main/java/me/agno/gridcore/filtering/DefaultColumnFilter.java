@@ -25,7 +25,7 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
     public Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values,
                                  String removeDiacritics) {
-        if (values == null || values.stream().noneMatch(ColumnFilterValue::isNotNull))
+        if (values == null && values.stream().noneMatch(ColumnFilterValue::isNotNull))
             throw new IllegalArgumentException ("values");
 
         GridFilterCondition condition;

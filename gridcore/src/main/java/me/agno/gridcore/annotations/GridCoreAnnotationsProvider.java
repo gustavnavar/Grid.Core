@@ -36,8 +36,8 @@ public class GridCoreAnnotationsProvider<T> implements IGridAnnotationsProvider<
                 else if(o2.getAnnotation(GridColumn.class) == null)
                     return -1;
                 else
-                    return Integer.compare(o1.getAnnotation(GridColumn.class).getPosition(),
-                            o2.getAnnotation(GridColumn.class).getPosition());
+                    return Integer.compare(o1.getAnnotation(GridColumn.class).position(),
+                            o2.getAnnotation(GridColumn.class).position());
             }
         }).toList();
 

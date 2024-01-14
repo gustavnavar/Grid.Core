@@ -36,7 +36,7 @@ public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
         if (!this.annotations.isColumnMapped(expression, this.grid.getTargetType()))
             return null; //grid column not mapped
 
-        boolean isExpressionOk = expression == null;
+        boolean isExpressionOk = expression != null;
         if (isExpressionOk) {
             var column = new GridCoreColumn<T, TData>(expression, targetType, this.grid);
             column.setHidden(hidden);
@@ -50,10 +50,10 @@ public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
 
     private void applyColumnAnnotationSettings(IGridColumn<T> column, GridColumn options) {
         ((GridCoreColumn<T,?>)column
-                .filterable(options.isFilterEnabled()))
-                .internalSortable(options.isSortEnabled());
+                .filterable(options.filterEnabled()))
+                .internalSortable(options.sortEnabled());
 
-        GridSortDirection initialDirection = options.getSortInitialDirection();
+        GridSortDirection initialDirection = options.sortInitialDirection();
         column.sortInitialDirection(initialDirection);
     }
 }

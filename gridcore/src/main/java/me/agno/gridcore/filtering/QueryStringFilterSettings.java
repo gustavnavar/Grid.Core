@@ -25,7 +25,7 @@ public class QueryStringFilterSettings implements IGridFilterSettings {
         this.query = query;
 
         var filters = this.query.get(DEFAULT_TYPE_QUERY_PARAMETER);
-        if (filters.size() > 0)
+        if (filters != null && ! filters.isEmpty())
         {
             for (String filter : filters)
             {

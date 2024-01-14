@@ -18,9 +18,12 @@ import me.agno.gridcore.sorting.GridSortMode;
 import me.agno.gridcore.totals.TotalsDTO;
 import me.agno.gridcore.utils.ItemsDTO;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class GridServer<T> implements IGridServer<T> {
 
@@ -31,11 +34,30 @@ public class GridServer<T> implements IGridServer<T> {
     { }
 
     public GridServer(EntityManager entityManager, Class<T> targetType, Predicate predicate, List<Order> orderList,
-                      LinkedHashMap<String, List<String>> query, boolean renderOnlyRows,
+                      Map<String, String[]> query, Consumer<IGridColumnCollection<T>> columns) {
+        this(entityManager, targetType, predicate, orderList, query, true, "", columns,
+                0, null);
+    }
+
+    public GridServer(EntityManager entityManager, Class<T> targetType, Predicate predicate, List<Order> orderList,
+                      Map<String, String[]> query, boolean renderOnlyRows,
+                      String gridName, Consumer<IGridColumnCollection<T>> columns, int pageSize) {
+        this(entityManager, targetType, predicate, orderList, query, renderOnlyRows, gridName, columns,
+                pageSize, null);
+    }
+
+    public GridServer(EntityManager entityManager, Class<T> targetType, Predicate predicate, List<Order> orderList,
+                      Map<String, String[]> query, boolean renderOnlyRows,
                       String gridName, Consumer<IGridColumnCollection<T>> columns, int pageSize,
                       IColumnBuilder<T> columnBuilder) {
 
-        this.grid = new Grid<T>(entityManager, targetType, predicate, orderList, query, columnBuilder);
+        var map = query.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> Arrays.asList(entry.getValue())));
+
+        var linkedHashMap = new LinkedHashMap<>(map);
+
+        this.grid = new Grid<T>(entityManager, targetType, predicate, orderList, linkedHashMap, columnBuilder);
 
         if(columns != null)
             columns.accept(this.grid.getColumns());

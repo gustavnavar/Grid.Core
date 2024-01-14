@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface GridMetadataType {
 
     @NonNull
-    Class<?> getMetadataType();
+    Class<?> metadataType();
 }

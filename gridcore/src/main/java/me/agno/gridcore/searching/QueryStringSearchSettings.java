@@ -22,7 +22,7 @@ public class QueryStringSearchSettings implements IGridSearchSettings {
         this.query = query;
 
         var search = this.query.get(DEFAULT_SEARCH_QUERY_PARAMETER);
-        if (!search.isEmpty()) {
+        if (search != null && ! search.isEmpty()) {
             this.searchValue = search.get(0);
         }
     }

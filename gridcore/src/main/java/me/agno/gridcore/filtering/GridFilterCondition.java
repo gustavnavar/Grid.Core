@@ -1,5 +1,8 @@
 package me.agno.gridcore.filtering;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 public enum GridFilterCondition {
     NONE,
     AND,

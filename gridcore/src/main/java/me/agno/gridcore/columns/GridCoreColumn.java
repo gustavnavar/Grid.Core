@@ -169,7 +169,7 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
         this.targetType = targetType;
         this.parentGrid = grid;
 
-        if (expression == null) {
+        if (expression != null) {
             this.expression = expression;
             this.orderers.add(0, new OrderByGridOrderer<T, TData>(expression));
             this.filter = new DefaultColumnFilter<T, TData>(expression, targetType);

@@ -113,9 +113,15 @@ public class Grid<T> implements IGrid<T> {
             this.pagerProcessor = null;
         }
     }
-    @Getter
+
     @Setter
-    private IGridPager<T> pager = new GridPager<T>(this);
+    private IGridPager<T> pager;
+
+    public IGridPager<T> getPager() {
+        if (pager == null)
+            pager = new GridPager(this);
+        return pager;
+    }
 
     @Getter
     @Setter
@@ -191,20 +197,20 @@ public class Grid<T> implements IGrid<T> {
                 startIndex = Integer.parseInt(startIndexParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)this.pager).setStartIndex(startIndex);
+            ((GridPager<T>)this.getPager()).setStartIndex(startIndex);
             try {
                 virtualizedCount = Integer.parseInt(virtualizedCountParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)this.pager).setVirtualizedCount(virtualizedCount);
+            ((GridPager<T>)this.getPager()).setVirtualizedCount(virtualizedCount);
             try {
                 noTotals = Boolean.parseBoolean(noTotalsParameter.get(0).trim());
             }
             catch (Exception ignored) {}
-            ((GridPager<T>)this.pager).setNoTotals(noTotals);
+            ((GridPager<T>)this.getPager()).setNoTotals(noTotals);
         }
         else {
-            var pageParameter = query.get(((GridPager<T>)this.pager).getParameterName());
+            var pageParameter = query.get(((GridPager<T>)this.getPager()).getParameterName());
             if (pageParameter != null && ! pageParameter.isEmpty() &&
                     pageParameter.get(0) != null && ! pageParameter.get(0).trim().isEmpty()) {
                 try {
@@ -213,7 +219,7 @@ public class Grid<T> implements IGrid<T> {
             }
             if (page == 0)
                 page++;
-            ((GridPager<T>)this.pager).setCurrentPage(page);
+            ((GridPager<T>)this.getPager()).setCurrentPage(page);
         }
     }
 
@@ -257,9 +263,12 @@ public class Grid<T> implements IGrid<T> {
         if (!this.itemsProcessed) {
             this.itemsProcessed = true;
             this.criteriaQuery.select(this.root);
-            this.criteriaQuery.where(getPredicate());
+            var predicate = getPredicate();
+            if(predicate != null)
+                this.criteriaQuery.where(predicate);
             this.orderList = this.sortProcessor.process(this.orderList);
-            this.criteriaQuery.orderBy(this.orderList);
+            if(this.orderList != null && ! this.orderList.isEmpty())
+                this.criteriaQuery.orderBy(this.orderList);
             this.itemsToList = this.pagerProcessor.process(this.criteriaQuery).getResultList();
         }
     }
@@ -267,15 +276,15 @@ public class Grid<T> implements IGrid<T> {
     void applyGridSettings() {
         GridTable opt = this.annotations.getAnnotationForTable(getTargetType());
         if (opt == null) return;
-        this.pagingType = opt.getPagingType();
+        this.pagingType = opt.pagingType();
 
         if (this.pagingType == PagingType.PAGINATION)
         {
-            if (opt.getPageSize() > 0)
-                this.pager.setPageSize(opt.getPageSize());
+            if (opt.pageSize() > 0)
+                this.getPager().setPageSize(opt.pageSize());
 
-            if (opt.getPagingMaxDisplayedPages() > 0 && this.pager instanceof GridPager)
-                ((GridPager<T>)this.pager).setMaxDisplayedPages(opt.getPagingMaxDisplayedPages());
+            if (opt.pagingMaxDisplayedPages() > 0 && this.getPager() instanceof GridPager)
+                ((GridPager<T>)this.getPager()).setMaxDisplayedPages(opt.pagingMaxDisplayedPages());
         }
     }
 
@@ -289,9 +298,9 @@ public class Grid<T> implements IGrid<T> {
             GridColumn annotations = tuple.getThird();
 
             if(isKey)
-                this.columns.add(name, annotations.getType()).setPrimaryKey(true);
+                this.columns.add(name, annotations.type()).setPrimaryKey(true);
             else
-                this.columns.add(name, annotations.getType());
+                this.columns.add(name, annotations.type());
         }
     }
 

@@ -147,7 +147,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().sum(getPath(expression, root, Number.class)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }
@@ -156,7 +158,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().avg(getPath(expression, root, Number.class)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }
@@ -165,7 +169,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().max(getPath(expression, root, Number.class)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }
@@ -174,7 +180,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().min(getPath(expression, root, Number.class)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }
@@ -183,7 +191,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<TData> criteria = grid.getCriteriaBuilder().createQuery(type);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().greatest(getPath(expression, root, type)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<TData> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }
@@ -192,7 +202,9 @@ public class TotalsProcessor<T> {
         CriteriaQuery<TData> criteria = grid.getCriteriaBuilder().createQuery(type);
         Root<T> root = criteria.from(grid.getTargetType());
         criteria.select(grid.getCriteriaBuilder().least(getPath(expression, root, type)));
-        criteria.where(grid.getPredicate());
+        var predicate = grid.getPredicate();
+        if(predicate != null)
+            criteria.where(predicate);
         TypedQuery<TData> query = grid.getEntityManager().createQuery(criteria);
         return query.getSingleResult();
     }

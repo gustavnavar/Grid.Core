@@ -11,9 +11,9 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.TYPE)
 public @interface GridTable {
 
-    PagingType getPagingType() default PagingType.NONE;
+    PagingType pagingType() default PagingType.NONE;
 
-    int getPageSize() default 0;
+    int pageSize() default 0;
 
-    int getPagingMaxDisplayedPages() default 0;
+    int pagingMaxDisplayedPages() default 0;
 }
