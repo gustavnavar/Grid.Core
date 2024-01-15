@@ -1,11 +1,13 @@
 package me.agno.gridcore.totals;
 
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.*;
 import lombok.Setter;
 import me.agno.gridcore.IGrid;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.sqm.tree.SqmCopyContext;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
+import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 
 import java.util.function.Function;
 
@@ -28,14 +30,28 @@ public class CountProcessor<T> {
     }
 
     private Long getCount(IGrid<T> grid) {
-        CriteriaQuery<Long> criteria = grid.getCriteriaBuilder().createQuery(Long.class);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().count(root));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<Long> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
-    }
 
+        var field = grid.getColumns().values().stream()
+                .filter(r -> ! r.getName().isEmpty())
+                .findFirst().orElse(null);
+        if(field == null)
+            return 0L;
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Long.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(subQueryRoot.get(field.getName()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        totalQuery.select(totalBuilder.count(totalBuilder.literal(1)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
+    }
 }

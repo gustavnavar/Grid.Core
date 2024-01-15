@@ -1,5 +1,6 @@
 package me.agno.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Territory {
     @Column(name = "territorydescription", nullable = false, length = 50)
     private String territoryDescription;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "regionid", nullable = false)
     private Region regionID;

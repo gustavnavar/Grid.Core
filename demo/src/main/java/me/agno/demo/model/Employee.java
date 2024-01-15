@@ -18,7 +18,7 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employeeid", nullable = false)
-    private Integer id;
+    private Integer employeeID;
 
     @Nationalized
     @Column(name = "lastname", nullable = false, length = 20)

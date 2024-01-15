@@ -33,19 +33,12 @@ public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
 
     public <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden) {
 
-        if (!this.annotations.isColumnMapped(expression, this.grid.getTargetType()))
-            return null; //grid column not mapped
-
-        boolean isExpressionOk = expression != null;
-        if (isExpressionOk) {
-            var column = new GridCoreColumn<T, TData>(expression, targetType, this.grid);
-            column.setHidden(hidden);
-            GridColumn columnOpt = this.annotations.getAnnotationForColumn(expression, this.grid.getTargetType());
-            if (columnOpt != null)
-                applyColumnAnnotationSettings(column, columnOpt);
-            return column;
-        }
-        throw new IllegalArgumentException("Expression '" + expression + "' not supported by grid");
+        var column = new GridCoreColumn<T, TData>(expression, targetType, this.grid);
+        column.setHidden(hidden);
+        GridColumn columnOpt = this.annotations.getAnnotationForColumn(expression, this.grid.getTargetType());
+        if (columnOpt != null)
+            applyColumnAnnotationSettings(column, columnOpt);
+        return column;
     }
 
     private void applyColumnAnnotationSettings(IGridColumn<T> column, GridColumn options) {

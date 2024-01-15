@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,13 +23,19 @@ public class Order {
     @Column(name = "orderid", nullable = false)
     private Integer orderID;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerid")
-    private Customer customerID;
+    @Column(name = "customerid", insertable = false, updatable = false, nullable = false)
+    private String customerID;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customerid")
+    private Customer customer;
+
+    @Column(name = "employeeid", columnDefinition = "int", insertable = false, updatable = false, nullable = false)
+    private String employeeID;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeid")
-    private Employee employeeID;
+    private Employee employee;
 
     @Column(name = "orderdate")
     private Instant orderDate;
@@ -38,9 +46,12 @@ public class Order {
     @Column(name = "shippeddate")
     private Instant shippedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipvia")
-    private Shipper shipVia;
+    @Column(name = "shipVia", columnDefinition = "int", insertable = false, updatable = false, nullable = false)
+    private String shipVia;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "shipVia")
+    private Shipper shipper;
 
     @Column(name = "freight")
     private BigDecimal freight;

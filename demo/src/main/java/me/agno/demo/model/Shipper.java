@@ -17,7 +17,7 @@ public class Shipper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shipperid", nullable = false)
-    private Integer id;
+    private Integer shipperID;
 
     @Nationalized
     @Column(name = "companyname", nullable = false, length = 40)

@@ -36,3 +36,18 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e.xml
+/.idea/dataSources.local.xml
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/dbo.sYMBAA.meta
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/dbo.sYMBAA.meta
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/dbo.sYMBAA.zip
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/dbo.sYMBAA.zip
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d.xml
+/out/artifacts/gridcore_jar/gridcore.jar
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/INFORMATION_SCHEMA.NBgcMw.meta
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/INFORMATION_SCHEMA.NBgcMw.meta
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e/storage_v2/_src_/database/NORTHWIND.bf6LwA.meta
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d/storage_v2/_src_/database/NORTHWIND.bf6LwA.meta
+/.idea/dataSources/0c65a8f5-b3f4-462e-a382-2b383a0b633e/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/sys.zb4BAA.meta
+/.idea/dataSources/ede369a1-6fac-4381-baa8-49852c4d584d/storage_v2/_src_/database/NORTHWIND.bf6LwA/schema/sys.zb4BAA.meta
+/.idea/workspace.xml

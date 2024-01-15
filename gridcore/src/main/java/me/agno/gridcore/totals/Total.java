@@ -3,6 +3,8 @@ package me.agno.gridcore.totals;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.*;
 import java.util.Optional;
 
@@ -10,15 +12,11 @@ import java.util.Optional;
 @Setter
 public class Total {
 
-    private boolean isNumber = false;
+    private GridTotalType type = GridTotalType.NONE;
 
-    private Optional<Double> number;
-
-    private boolean isDateTime = false;
+    private Optional<BigDecimal> number;
 
     private Optional<LocalDateTime> dateTime;
-
-    private boolean isString = false;
 
     private String string;
 
@@ -26,83 +24,95 @@ public class Total {
     public Total()
     { }
 
-    public Total(double number) {
-        this.isNumber = true;
-        this.number = Optional.of(number);
+    public Total(Number number) {
+        this.type = GridTotalType.NUMBER;
+        if(number instanceof Byte)
+            this.number = Optional.of(BigDecimal.valueOf(Long.valueOf((byte)number)));
+        if(number instanceof Integer)
+            this.number = Optional.of(BigDecimal.valueOf((long)number));
+        if(number instanceof Long)
+            this.number = Optional.of(BigDecimal.valueOf((long)number));
+        if(number instanceof Float)
+            this.number = Optional.of(BigDecimal.valueOf((double)number));
+        if(number instanceof Double)
+            this.number = Optional.of(BigDecimal.valueOf((double)number));
+        if(number instanceof BigInteger)
+            this.number = Optional.of(new BigDecimal((BigInteger) number));
+        if(number instanceof BigDecimal)
+            this.number = Optional.of((BigDecimal)number);
     }
-
     public Total(java.sql.Date dateTime) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(dateTime.toLocalDate().atStartOfDay());
     }
 
     public Total(java.sql.Time time) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
     }
 
     public Total(java.sql.Timestamp timeStamp) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.ofNullable(timeStamp.toLocalDateTime());
     }
 
     public Total(java.util.Date date) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(LocalDateTime.from(date.toInstant()));
     }
 
     public Total(java.util.Calendar calendar) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(LocalDateTime.from(calendar.toInstant()));
     }
 
     public Total(java.time.Instant instant) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(LocalDateTime.from(instant));
     }
 
     public Total(LocalDate date) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(date.atStartOfDay());
     }
 
     public Total(LocalTime time) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(time.atDate(LocalDate.now()));
     }
 
     public Total(LocalDateTime dateTime) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.ofNullable(dateTime);
     }
 
     public Total(OffsetTime time) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
     }
 
     public Total(OffsetDateTime dateTime) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
     }
 
     public Total(ZonedDateTime dateTime) {
-        this.isDateTime = true;
+        this.type = GridTotalType.DATE_TIME;
         this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
     }
 
     public Total(String str) {
-        this.isString = true;
+        this.type = GridTotalType.STRING;
         this.string = str;
     }
 
     public String GetString(String valuePattern) {
         Object value;
-        if (this.isNumber)
+        if (this.type == GridTotalType.NUMBER)
             value = this.number;
-        else if (this.isDateTime)
+        else if (this.type == GridTotalType.DATE_TIME)
             value = this.dateTime;
-        else if (this.isString)
+        else if (this.type == GridTotalType.STRING)
             value = this.string;
         else
             return null;

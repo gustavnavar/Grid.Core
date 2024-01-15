@@ -1,5 +1,8 @@
 package me.agno.gridcore.sorting;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 public enum GridSortDirection {
     ASCENDING,
     DESCENDING;

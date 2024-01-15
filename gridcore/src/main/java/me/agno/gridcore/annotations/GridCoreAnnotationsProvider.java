@@ -10,13 +10,33 @@ import java.util.*;
 public class GridCoreAnnotationsProvider<T> implements IGridAnnotationsProvider<T> {
 
     public GridColumn getAnnotationForColumn(String name, Class<T> type) {
-        var field = Arrays.stream(type.getDeclaredFields()).filter(r -> r.getName().equals(name)).findFirst();
-        return field.map(value -> value.getAnnotation(GridColumn.class)).orElse(null);
+        var names = name.split(".");
+        if(names.length == 0)
+            return null;
+        else if(names.length == 1) {
+            if(names[0] != null && ! names[0].isEmpty())
+                return null;
+            var field = Arrays.stream(type.getDeclaredFields()).filter(r -> r.getName().equals(names[0])).findFirst();
+            return field.map(value -> value.getAnnotation(GridColumn.class)).orElse(null);
+        }
+        else {
+            Class<?> capturedType = type;
+            GridColumn annotation = null;
+            for(int i = 0; i < names.length; i ++) {
+                if(names[i] != null && ! names[i].isEmpty())
+                    return null;
+                var field = getField(names[i], capturedType);
+                annotation = field.map(value -> value.getAnnotation(GridColumn.class)).orElse(null);
+                if(annotation == null)
+                    return null;
+                capturedType = annotation.type();
+            }
+            return annotation;
+        }
     }
 
-    public boolean isColumnMapped(String name, Class<T> type) {
-        return Arrays.stream(type.getDeclaredFields()).anyMatch(r -> r.getName().equals(name)
-                && r.getAnnotation(NotMappedColumn.class) == null);
+    private Optional<Field> getField(String name, Class<?> type) {
+        return Arrays.stream(type.getDeclaredFields()).filter(r -> r.getName().equals(name)).findFirst();
     }
 
     public GridTable getAnnotationForTable(Class<T> type) {

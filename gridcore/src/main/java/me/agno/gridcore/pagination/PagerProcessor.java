@@ -17,7 +17,7 @@ public class PagerProcessor<T> implements IPagerProcessor<T> {
         this.grid = grid;
     }
 
-    public TypedQuery<T> Process(CriteriaQuery<T> items, int count) {
+    public TypedQuery<T> process(CriteriaQuery<T> items, int count) {
         this.grid.getPager().initialize(count);
         return process(items);
     }

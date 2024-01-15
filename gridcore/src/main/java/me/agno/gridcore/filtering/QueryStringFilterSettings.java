@@ -45,7 +45,14 @@ public class QueryStringFilterSettings implements IGridFilterSettings {
         if (data.length != 2 && data.length != 3)
             return ColumnFilterValue.Null();
 
-        GridFilterType type = Enum.valueOf(GridFilterType.class, data[1]);
+        GridFilterType type;
+        try {
+            var ordinal = Integer.parseInt(data[1]);
+            type = GridFilterType.values()[ordinal];
+        }
+        catch (Exception e) {
+            type = GridFilterType.NONE;
+        }
 
         if (data.length == 2)
             return new ColumnFilterValue(data[0], type, "" );

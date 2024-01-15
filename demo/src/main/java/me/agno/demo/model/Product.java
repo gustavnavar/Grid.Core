@@ -24,10 +24,12 @@ public class Product {
     @Column(name = "productname", nullable = false, length = 40)
     private String productName;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplierid")
     private Supplier supplierID;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryid")
     private Category categoryID;

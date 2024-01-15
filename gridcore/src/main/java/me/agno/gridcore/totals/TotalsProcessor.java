@@ -1,5 +1,6 @@
 package me.agno.gridcore.totals;
 
+import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
@@ -9,6 +10,10 @@ import lombok.Setter;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.columns.IGridColumn;
 import me.agno.gridcore.pagination.PagingType;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.sqm.tree.SqmCopyContext;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
+import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -62,16 +67,16 @@ public class TotalsProcessor<T> {
                     type == Float.class) {
 
                 if (gridColumn.isSumEnabled())
-                    gridColumn.setSumValue(new Total((double)getSum(expression, this.grid)));
+                    gridColumn.setSumValue(new Total(getSum(expression, this.grid)));
 
                 if (gridColumn.isAverageEnabled())
-                    gridColumn.setAverageValue(new Total((double)getAverage(expression, this.grid)));
+                    gridColumn.setAverageValue(new Total(getAverage(expression, this.grid)));
 
                 if (gridColumn.isMaxEnabled())
-                    gridColumn.setMaxValue(new Total((double)getMax(expression, this.grid)));
+                    gridColumn.setMaxValue(new Total(getMax(expression, this.grid)));
 
                 if (gridColumn.isMinEnabled())
-                    gridColumn.setMinValue(new Total((double)getMin(expression, this.grid)));
+                    gridColumn.setMinValue(new Total(getMin(expression, this.grid)));
             }
             /**
             // java.sql.Date is not Comparable
@@ -115,7 +120,7 @@ public class TotalsProcessor<T> {
                 if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
                         type == Integer.class || type == Double.class || type == Long.class ||
                         type == Float.class) {
-                    gridColumn.getCalculationValues().put(key, new Total((double)value));
+                    gridColumn.getCalculationValues().put(key, new Total((Number) value));
                 }
                 else if (type == LocalDateTime.class) {
                     gridColumn.getCalculationValues().put(key, new Total((LocalDateTime)value));
@@ -127,7 +132,7 @@ public class TotalsProcessor<T> {
         }
     }
 
-    private <TData> Path<TData> getPath(String expression, Root<T> root, Class<TData> type) {
+    private <TData> Path<TData> getPath(String expression, Root<?> root, Class<TData> type) {
         if(expression  == null || expression.trim().isEmpty())
             return null;
 
@@ -144,68 +149,128 @@ public class TotalsProcessor<T> {
     }
 
     private Number getSum(String expression, IGrid<T> grid) {
-        CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().sum(getPath(expression, root, Number.class)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.sum(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
     private Number getAverage(String expression, IGrid<T> grid) {
-        CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().avg(getPath(expression, root, Number.class)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.avg(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
     private Number getMax(String expression, IGrid<T> grid) {
-        CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().max(getPath(expression, root, Number.class)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.max(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
     private Number getMin(String expression, IGrid<T> grid) {
-        CriteriaQuery<Number> criteria = grid.getCriteriaBuilder().createQuery(Number.class);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().min(getPath(expression, root, Number.class)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<Number> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.min(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
     private <TData extends Comparable<TData>> TData getGreatest(String expression, IGrid<T> grid, Class<TData> type) {
-        CriteriaQuery<TData> criteria = grid.getCriteriaBuilder().createQuery(type);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().greatest(getPath(expression, root, type)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<TData> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(type);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<TData> totalRoot = (Root<TData>)totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.greatest(getPath("totalColumn", totalRoot, type)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
     private <TData extends Comparable<TData>> TData getLeast(String expression, IGrid<T> grid, Class<TData> type) {
-        CriteriaQuery<TData> criteria = grid.getCriteriaBuilder().createQuery(type);
-        Root<T> root = criteria.from(grid.getTargetType());
-        criteria.select(grid.getCriteriaBuilder().least(getPath(expression, root, type)));
-        var predicate = grid.getPredicate();
-        if(predicate != null)
-            criteria.where(predicate);
-        TypedQuery<TData> query = grid.getEntityManager().createQuery(criteria);
-        return query.getSingleResult();
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(type);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+        subQuery.multiselect(getPath(expression, subQueryRoot, grid.getTargetType()).alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<TData> totalRoot = (Root<TData>)totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.least(getPath("totalColumn", totalRoot, type)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 }

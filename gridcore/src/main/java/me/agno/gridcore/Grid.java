@@ -29,7 +29,6 @@ public class Grid<T> implements IGrid<T> {
 
     private final IGridAnnotationsProvider<T> annotations;
     private final IColumnBuilder<T> columnBuilder;
-    private final CriteriaQuery<T> criteriaQuery;
 
     private long itemsCount = -1; // total items count on collection
     private long displayingItemsCount = -1; // count of displaying items (if using pagination)
@@ -43,6 +42,9 @@ public class Grid<T> implements IGrid<T> {
 
     @Getter
     private CriteriaBuilder criteriaBuilder;
+
+    @Getter
+    private CriteriaQuery<T> criteriaQuery;
 
     @Getter
     private Root<T> root;
@@ -229,6 +231,11 @@ public class Grid<T> implements IGrid<T> {
             this.predicate = this.filterProcessor.process(this.predicate);
             this.predicate = this.searchProcessor.process(this.predicate);
 
+            this.criteriaQuery.select(this.root);
+            var predicate = this.predicate;
+            if(predicate != null)
+                this.criteriaQuery.where(predicate);
+
             // added to avoid 2nd EF opened task if counting later
             this.itemsCount = this.countProcessor.process(this.predicate);
 
@@ -260,12 +267,9 @@ public class Grid<T> implements IGrid<T> {
     }
 
     protected void prepareItemsToDisplay() {
+        preProcess();
         if (!this.itemsProcessed) {
             this.itemsProcessed = true;
-            this.criteriaQuery.select(this.root);
-            var predicate = getPredicate();
-            if(predicate != null)
-                this.criteriaQuery.where(predicate);
             this.orderList = this.sortProcessor.process(this.orderList);
             if(this.orderList != null && ! this.orderList.isEmpty())
                 this.criteriaQuery.orderBy(this.orderList);

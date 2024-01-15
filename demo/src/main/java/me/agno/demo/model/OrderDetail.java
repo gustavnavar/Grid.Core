@@ -1,5 +1,6 @@
 package me.agno.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +15,13 @@ public class OrderDetail {
     @EmbeddedId
     private OrderDetailId id;
 
+    @JsonIgnore
     @MapsId("orderID")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "orderid", nullable = false)
     private Order orderID;
 
+    @JsonIgnore
     @MapsId("productID")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "productid", nullable = false)

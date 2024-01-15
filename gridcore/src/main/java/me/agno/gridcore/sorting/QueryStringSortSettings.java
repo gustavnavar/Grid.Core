@@ -2,6 +2,7 @@ package me.agno.gridcore.sorting;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.agno.gridcore.filtering.GridFilterType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,6 +82,12 @@ public class QueryStringSortSettings implements IGridSortSettings {
             return;
         }
 
-        this.direction = Enum.valueOf(GridSortDirection.class, currentDirection);
+        try {
+            var ordinal = Integer.parseInt(currentDirection);
+            this.direction = GridSortDirection.values()[ordinal];
+        }
+        catch (Exception e) {
+            this.direction = GridSortDirection.ASCENDING;
+        }
     }
 }
