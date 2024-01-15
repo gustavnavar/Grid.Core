@@ -9,9 +9,9 @@ The long-term objective is to develop a client Grid library for Vue.js projects.
 
 ## Folder description
 * [gridcore](./gridcore): Library to build back-ends bases on Spring Boot
-* [demo](./demo): Spring Boot demo project supporting the gridcore library. It can be testes with this [Blazor WASM project](https://github.com/gustavnavar/Grid.Blazor/tree/master/GridBlazorSpring)
+* [demo](./demo): Spring Boot demo project supporting the gridcore library. It can be tested with this [Blazor WASM project](https://github.com/gustavnavar/Grid.Blazor/tree/master/GridBlazorSpring)
 
-The SQL Server database for all demos can be downloaded from [here](./sample-database)
+The SQL Server database for all demos can be downloaded from [here](https://github.com/gustavnavar/Grid.Core/tree/master/sample_database)
 
 Alternatively, if you prefer to install a fresh version of the database you can perform the following steps:
 - run this script from Microsoft web to create a new database: https://github.com/microsoft/sql-server-samples/blob/master/samples/databases/northwind-pubs/instnwnd.sql
