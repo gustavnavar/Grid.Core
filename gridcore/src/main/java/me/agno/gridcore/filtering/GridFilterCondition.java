@@ -8,12 +8,21 @@ public enum GridFilterCondition {
     AND,
     OR;
 
+    @Override public String toString() {
+        return switch (this) {
+            case NONE -> "0";
+            case AND -> "1";
+            case OR -> "2";
+            default -> null;
+        };
+    }
+
     public static GridFilterCondition fromString(String x) {
         try {
             return fromInteger(Integer.parseInt(x));
         }
         catch (NumberFormatException e) {
-            return null;
+            return GridFilterCondition.NONE;
         }
     }
 

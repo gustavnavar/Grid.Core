@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.Order;
 import lombok.Setter;
 import me.agno.gridcore.IGrid;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +48,8 @@ public class SortProcessor<T>
 
             var firstSortedColumn = sortedColumns.get(0);
             var gridColumn = this.grid.getColumns().values().stream()
-                    .filter(c -> Objects.equals(c.getName(), firstSortedColumn.getColumnName()))
+                    .filter(c -> Objects.equals(c.getName().toUpperCase(),
+                            firstSortedColumn.getColumnName().toUpperCase()))
                     .findFirst();
             if(gridColumn.isEmpty())
                 return orderList;
@@ -55,14 +57,20 @@ public class SortProcessor<T>
             var columnOrderer = gridColumn.get().getOrderers().get(0);
             var order = columnOrderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
                     firstSortedColumn.getDirection());
-            if (order != null)
+            if (order != null) {
+                if (orderList == null)
+                    orderList = new ArrayList<>();
                 orderList.add(order);
+            }
 
             for (int i = 1; i < gridColumn.get().getOrderers().size(); i++) {
                 var orderer = gridColumn.get().getOrderers().get(i);
                 order = orderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(), GridSortDirection.ASCENDING);
-                if (order != null)
+                if (order != null) {
+                    if (orderList == null)
+                        orderList = new ArrayList<>();
                     orderList.add(order);
+                }
             }
 
             if(sortedColumns.size() > 1) {
@@ -70,21 +78,28 @@ public class SortProcessor<T>
 
                     int finalI = i;
                     var gridCol = this.grid.getColumns().values().stream()
-                            .filter(r -> Objects.equals(r.getName(), sortedColumns.get(finalI).getColumnName())).findFirst();
+                            .filter(r -> Objects.equals(r.getName().toUpperCase(),
+                                    sortedColumns.get(finalI).getColumnName().toUpperCase())).findFirst();
                     if(gridCol.isEmpty() || gridCol.get().getOrderers().isEmpty())
                         continue;
 
                     order = gridCol.get().getOrderers().get(0).applyOrder(this.grid.getCriteriaBuilder(),
                             this.grid.getRoot(), sortedColumns.get(finalI).getDirection());
-                    if (order != null)
+                    if (order != null) {
+                        if (orderList == null)
+                            orderList = new ArrayList<>();
                         orderList.add(order);
+                    }
 
                     for (int j = 1; j < gridCol.get().getOrderers().size(); j++) {
                         var orderer = gridCol.get().getOrderers().get(j);
                         order = orderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
                                 GridSortDirection.ASCENDING);
-                        if (order != null)
+                        if (order != null) {
+                            if (orderList == null)
+                                orderList = new ArrayList<>();
                             orderList.add(order);
+                        }
                     }
                 }
             }
@@ -94,15 +109,19 @@ public class SortProcessor<T>
 
             //determine gridColumn sortable:
             gridColumn = this.grid.getColumns().values().stream()
-                    .filter(c -> Objects.equals(c.getName(), this.settings.getColumnName())).findFirst();
+                    .filter(c -> Objects.equals(c.getName().toUpperCase(),
+                            this.settings.getColumnName().toUpperCase())).findFirst();
             if (gridColumn.isEmpty() || !gridColumn.get().isSortEnabled())
                 return orderList;
 
             for (var colOrderer : gridColumn.get().getOrderers()) {
                 order = colOrderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
                         this.settings.getDirection());
-                if (order != null)
+                if (order != null) {
+                    if (orderList == null)
+                        orderList = new ArrayList<>();
                     orderList.add(order);
+                }
             }
         }
         else {
@@ -111,15 +130,19 @@ public class SortProcessor<T>
 
             //determine gridColumn sortable:
             var gridColumn = this.grid.getColumns().values().stream()
-                    .filter(c -> Objects.equals(c.getName(), this.settings.getColumnName())).findFirst();
+                    .filter(c -> Objects.equals(c.getName().toUpperCase(),
+                            this.settings.getColumnName().toUpperCase())).findFirst();
             if (gridColumn.isEmpty() || !gridColumn.get().isSortEnabled())
                 return orderList;
 
             for (var columnOrderer : gridColumn.get().getOrderers()) {
                 var order = columnOrderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
                         this.settings.getDirection());
-                if (order != null)
+                if (order != null) {
+                    if (orderList == null)
+                        orderList = new ArrayList<>();
                     orderList.add(order);
+                }
             }
         }
         return orderList;

@@ -16,7 +16,7 @@ public class Total {
 
     private Optional<BigDecimal> number;
 
-    private Optional<LocalDateTime> dateTime;
+    private Optional<Instant> dateTime;
 
     private String string;
 
@@ -27,13 +27,13 @@ public class Total {
     public Total(Number number) {
         this.type = GridTotalType.NUMBER;
         if(number instanceof Byte)
-            this.number = Optional.of(BigDecimal.valueOf(Long.valueOf((byte)number)));
+            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
         if(number instanceof Integer)
-            this.number = Optional.of(BigDecimal.valueOf((long)number));
+            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
         if(number instanceof Long)
-            this.number = Optional.of(BigDecimal.valueOf((long)number));
+            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
         if(number instanceof Float)
-            this.number = Optional.of(BigDecimal.valueOf((double)number));
+            this.number = Optional.of(BigDecimal.valueOf(number.doubleValue()));
         if(number instanceof Double)
             this.number = Optional.of(BigDecimal.valueOf((double)number));
         if(number instanceof BigInteger)
@@ -41,64 +41,65 @@ public class Total {
         if(number instanceof BigDecimal)
             this.number = Optional.of((BigDecimal)number);
     }
+
     public Total(java.sql.Date dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(dateTime.toLocalDate().atStartOfDay());
+        this.dateTime = Optional.of(dateTime.toInstant());
     }
 
     public Total(java.sql.Time time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
+        this.dateTime = Optional.of(time.toInstant());
     }
 
     public Total(java.sql.Timestamp timeStamp) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.ofNullable(timeStamp.toLocalDateTime());
+        this.dateTime = Optional.of(timeStamp.toInstant());
     }
 
     public Total(java.util.Date date) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(LocalDateTime.from(date.toInstant()));
+        this.dateTime = Optional.of(date.toInstant());
     }
 
     public Total(java.util.Calendar calendar) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(LocalDateTime.from(calendar.toInstant()));
+        this.dateTime = Optional.of(calendar.toInstant());
     }
 
     public Total(java.time.Instant instant) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(LocalDateTime.from(instant));
+        this.dateTime = Optional.of(instant);
     }
 
     public Total(LocalDate date) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(date.atStartOfDay());
+        this.dateTime = Optional.of(date.atStartOfDay().toInstant(ZoneOffset.UTC));
     }
 
     public Total(LocalTime time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.atDate(LocalDate.now()));
+        this.dateTime = Optional.of(time.atDate(LocalDate.now()).toInstant(ZoneOffset.UTC));
     }
 
     public Total(LocalDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.ofNullable(dateTime);
+        this.dateTime = Optional.of(dateTime.toInstant(ZoneOffset.UTC));
     }
 
     public Total(OffsetTime time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.toLocalTime().atDate(LocalDate.now()));
+        this.dateTime = Optional.of(time.atDate(LocalDate.now()).toInstant());
     }
 
     public Total(OffsetDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
+        this.dateTime = Optional.of(dateTime.toInstant());
     }
 
     public Total(ZonedDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.ofNullable(dateTime.toLocalDateTime());
+        this.dateTime = Optional.of(dateTime.toInstant());
     }
 
     public Total(String str) {

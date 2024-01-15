@@ -35,7 +35,7 @@ public class SampleDataController {
 		Consumer<IGridColumnCollection<Order>> columns = c ->
 		{
 			c.add("orderID",Integer.class);
-			c.add("orderDate", Instant.class);
+			c.add("orderDate", Instant.class, "orderCustomDate");
 			c.add("customer.companyName", String.class);
 			c.add("customer.contactName", String.class);
 			c.add("customer.country", String.class, true);
@@ -60,8 +60,8 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c ->
 		{
-			c.add("orderID",Integer.class);
-			c.add("orderDate", Instant.class).max(true).min(true);
+			c.add("orderID",Integer.class).sum(true);
+			c.add("orderDate", Instant.class, "orderCustomDate").max(true).min(true);
 			c.add("customer.companyName", String.class).max(true).min(true);
 			c.add("customer.contactName", String.class).max(true).min(true);
 			c.add("freight", BigDecimal.class).sum(true).average(true).max(true).min(true)

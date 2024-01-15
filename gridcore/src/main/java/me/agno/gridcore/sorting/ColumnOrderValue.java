@@ -69,6 +69,6 @@ public class ColumnOrderValue {
         if (data.length != 3)
             return ColumnOrderValue.Null();
 
-        return new ColumnOrderValue(data[0], GridSortDirection.valueOf(data[1]), Integer.parseInt(data[2]));
+        return new ColumnOrderValue(data[0], GridSortDirection.fromString(data[1]), Integer.parseInt(data[2]));
     }
 }

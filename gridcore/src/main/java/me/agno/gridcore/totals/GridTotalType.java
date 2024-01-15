@@ -18,4 +18,17 @@ public enum GridTotalType {
             default -> null;
         };
     }
+
+    public static GridTotalType fromString(String x) {
+        try {
+            return fromInteger(Integer.parseInt(x));
+        }
+        catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static GridTotalType fromInteger(int x) {
+        return GridTotalType.values()[x];
+    }
 }

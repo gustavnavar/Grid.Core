@@ -14,4 +14,17 @@ public enum GridSortDirection {
             default -> null;
         };
     }
+
+    public static GridSortDirection fromString(String x) {
+        try {
+            return fromInteger(Integer.parseInt(x));
+        }
+        catch (NumberFormatException e) {
+            return GridSortDirection.ASCENDING;
+        }
+    }
+
+    public static GridSortDirection fromInteger(int x) {
+        return GridSortDirection.values()[x];
+    }
 }

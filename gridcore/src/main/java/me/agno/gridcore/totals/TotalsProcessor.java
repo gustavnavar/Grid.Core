@@ -1,8 +1,6 @@
 package me.agno.gridcore.totals;
 
 import jakarta.persistence.Tuple;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -17,7 +15,9 @@ import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.function.Consumer;
 
 public class TotalsProcessor<T> {
@@ -62,6 +62,10 @@ public class TotalsProcessor<T> {
             }
 
             var type = gridColumn.getTargetType();
+
+            // java.sql.Date, java.sql.Time and java.sql.Timestamp,
+            // LocalDate, LocalDateTime and ZonedDateTime are not Comparable
+
             if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
                     type == Integer.class || type == Double.class || type == Long.class ||
                     type == Float.class) {
@@ -78,18 +82,66 @@ public class TotalsProcessor<T> {
                 if (gridColumn.isMinEnabled())
                     gridColumn.setMinValue(new Total(getMin(expression, this.grid)));
             }
-            /**
-            // java.sql.Date is not Comparable
-            else if (type == SqlDateFilterType.class) {
+            else if (type == Date.class) {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);
 
                 if (gridColumn.isMaxEnabled())
-                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, java.sql.Date.class)));
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, Date.class)));
 
                 if (gridColumn.isMinEnabled())
-                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, java.sql.Date.class)));
-            }*/
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, Date.class)));
+            }
+            else if (type == Calendar.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, Calendar.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, Calendar.class)));
+            }
+            else if (type == Instant.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, Instant.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, Instant.class)));
+            }
+            else if (type == LocalTime.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, LocalTime.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, LocalTime.class)));
+            }
+            else if (type == OffsetTime.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, OffsetTime.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, OffsetTime.class)));
+            }
+            else if (type == OffsetDateTime.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, OffsetDateTime.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, OffsetDateTime.class)));
+            }
             else if (type == String.class) {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);

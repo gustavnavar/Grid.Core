@@ -2,7 +2,6 @@ package me.agno.gridcore.sorting;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.agno.gridcore.filtering.GridFilterType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,8 +32,8 @@ public class QueryStringSortSettings implements IGridSortSettings {
             throw new IllegalArgumentException("No http context here!");
 
         this.query = query;
-        this.columnQueryParameterName = DEFAULT_COLUMN_QUERY_PARAMETER;
-        this.directionQueryParameterName = DEFAULT_DIRECTION_QUERY_PARAMETER;
+        setColumnQueryParameterName(DEFAULT_COLUMN_QUERY_PARAMETER);
+        setDirectionQueryParameterName(DEFAULT_DIRECTION_QUERY_PARAMETER);
 
         var sortings = query.get(ColumnOrderValue.DEFAULT_SORTING_QUERY_PARAMETER);
         if (sortings != null && !sortings.isEmpty()) {
@@ -57,12 +56,17 @@ public class QueryStringSortSettings implements IGridSortSettings {
     }
 
 
-    private void refreshColumn()
-    {
-        //Columns
-        String currentSortColumn = this.query.get(this.columnQueryParameterName).toString();
-        if(currentSortColumn == null  || currentSortColumn.trim().isEmpty())
+    private void refreshColumn() {
+
+        String currentSortColumn;
+        var currentSortColumns = this.query.get(this.columnQueryParameterName);
+        if(currentSortColumns == null ||currentSortColumns.isEmpty())
             currentSortColumn = "";
+        else {
+            currentSortColumn = currentSortColumns.get(0).toString();
+            if (currentSortColumn == null || currentSortColumn.trim().isEmpty())
+                currentSortColumn = "";
+        }
 
         this.columnName = currentSortColumn;
         if (currentSortColumn.trim().isEmpty()) {
@@ -72,22 +76,21 @@ public class QueryStringSortSettings implements IGridSortSettings {
 
     private void refreshDirection()
     {
-        //Direction
-        String currentDirection = this.query.get(this.directionQueryParameterName).toString();
-        if(currentDirection == null  || currentDirection.trim().isEmpty())
+        String currentDirection;
+        var currentDirections= this.query.get(this.directionQueryParameterName);
+        if(currentDirections == null || currentDirections.isEmpty())
             currentDirection = "";
+        else {
+            currentDirection = currentDirections.get(0).toString();
+            if (currentDirection == null || currentDirection.trim().isEmpty())
+                currentDirection = "";
+        }
 
         if (currentDirection.trim().isEmpty()) {
             this.direction = GridSortDirection.ASCENDING;
             return;
         }
 
-        try {
-            var ordinal = Integer.parseInt(currentDirection);
-            this.direction = GridSortDirection.values()[ordinal];
-        }
-        catch (Exception e) {
-            this.direction = GridSortDirection.ASCENDING;
-        }
+        this.direction = GridSortDirection.fromString(currentDirection);
     }
 }
