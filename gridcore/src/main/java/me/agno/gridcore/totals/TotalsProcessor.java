@@ -67,8 +67,8 @@ public class TotalsProcessor<T> {
             // LocalDate, LocalDateTime and ZonedDateTime are not Comparable
 
             if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
-                    type == Integer.class || type == Double.class || type == Long.class ||
-                    type == Float.class) {
+                    type == Integer.class || type == Short.class || type == Double.class ||
+                    type == Long.class || type == Float.class) {
 
                 if (gridColumn.isSumEnabled())
                     gridColumn.setSumValue(new Total(getSum(expression, this.grid)));
@@ -170,8 +170,8 @@ public class TotalsProcessor<T> {
                 Class<?> type = value.getClass();
 
                 if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
-                        type == Integer.class || type == Double.class || type == Long.class ||
-                        type == Float.class) {
+                        type == Integer.class || type == Short.class || type == Double.class ||
+                        type == Long.class || type == Float.class) {
                     gridColumn.getCalculationValues().put(key, new Total((Number) value));
                 }
                 else if (type == LocalDateTime.class) {

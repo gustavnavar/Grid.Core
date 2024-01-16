@@ -28,6 +28,7 @@ public class FilterTypeResolver {
         filterCollection.add(new BigDecimalFilterType());
         filterCollection.add(new BigIntegerFilterType());
         filterCollection.add(new IntegerFilterType());
+        filterCollection.add(new ShortFilterType());
         filterCollection.add(new DoubleFilterType());
         filterCollection.add(new LongFilterType());
         filterCollection.add(new FloatFilterType());
