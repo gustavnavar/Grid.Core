@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import me.agno.gridcore.annotations.GridColumn;
+import me.agno.gridcore.annotations.GridTable;
+import me.agno.gridcore.pagination.PagingType;
+import me.agno.gridcore.sorting.GridSortDirection;
 import org.hibernate.annotations.Nationalized;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -17,13 +20,16 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "orders")
+@GridTable(pagingType = PagingType.PAGINATION, pageSize = 20)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orderid", nullable = false)
+    @GridColumn(position = 0, type = Integer.class)
     private Integer orderID;
 
     @Column(name = "customerid", insertable = false, updatable = false, nullable = false)
+    @GridColumn(position = 5, type = String.class)
     private String customerID;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -31,6 +37,7 @@ public class Order {
     private Customer customer;
 
     @Column(name = "employeeid", columnDefinition = "int", insertable = false, updatable = false, nullable = false)
+    @GridColumn(position = 4, type = String.class)
     private String employeeID;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,15 +45,19 @@ public class Order {
     private Employee employee;
 
     @Column(name = "orderdate")
+    @GridColumn(position = 1, type = Instant.class, sortEnabled = true, filterEnabled = true, sortInitialDirection = GridSortDirection.ASCENDING)
     private Instant orderDate;
 
     @Column(name = "requireddate")
+    @GridColumn(position = 2, type = Instant.class)
     private Instant requiredDate;
 
     @Column(name = "shippeddate")
+    @GridColumn(position = 3, type = Instant.class)
     private Instant shippedDate;
 
     @Column(name = "shipVia", columnDefinition = "int", insertable = false, updatable = false, nullable = false)
+    @GridColumn(position = 6, type = String.class)
     private String shipVia;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -54,30 +65,37 @@ public class Order {
     private Shipper shipper;
 
     @Column(name = "freight")
+    @GridColumn(position = 7, type = BigDecimal.class, sortEnabled = true, filterEnabled = true)
     private BigDecimal freight;
 
     @Nationalized
     @Column(name = "shipname", length = 40)
+    @GridColumn(position = 8, type = String.class)
     private String shipName;
 
     @Nationalized
     @Column(name = "shipaddress", length = 60)
+    @GridColumn(position = 9, type = String.class)
     private String shipAddress;
 
     @Nationalized
     @Column(name = "shipcity", length = 15)
+    @GridColumn(position = 10, type = String.class)
     private String shipCity;
 
     @Nationalized
     @Column(name = "shipregion", length = 15)
+    @GridColumn(position = 11, type = String.class)
     private String shipRegion;
 
     @Nationalized
     @Column(name = "shippostalcode", length = 10)
+    @GridColumn(position = 12, type = String.class)
     private String shipPostalCode;
 
     @Nationalized
     @Column(name = "shipcountry", length = 15)
+    @GridColumn(position = 13, type = String.class)
     private String shipCountry;
 
     @JsonIgnore

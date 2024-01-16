@@ -33,8 +33,12 @@ public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
 
     public <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden) {
 
+        if (!this.annotations.isColumnMapped(expression, grid.getTargetType()))
+            return null; //grid column not mapped
+
         var column = new GridCoreColumn<T, TData>(expression, targetType, this.grid);
         column.setHidden(hidden);
+
         GridColumn columnOpt = this.annotations.getAnnotationForColumn(expression, this.grid.getTargetType());
         if (columnOpt != null)
             applyColumnAnnotationSettings(column, columnOpt);
@@ -42,11 +46,18 @@ public class DefaultColumnBuilder<T> implements IColumnBuilder<T>
     }
 
     private void applyColumnAnnotationSettings(IGridColumn<T> column, GridColumn options) {
-        ((GridCoreColumn<T,?>)column
-                .filterable(options.filterEnabled()))
-                .internalSortable(options.sortEnabled());
 
-        GridSortDirection initialDirection = options.sortInitialDirection();
-        column.sortInitialDirection(initialDirection);
+        column.setHidden(options.hidden());
+        column.setPrimaryKey(options.key());
+        ((GridCoreColumn<T, ?>) column).setTargetType(options.type());
+
+        if(!options.hidden()) {
+            column.filterable(options.filterEnabled());
+            ((GridCoreColumn<T, ?>) column).internalSortable(options.sortEnabled());
+
+            GridSortDirection initialDirection = options.sortInitialDirection();
+            column.sortInitialDirection(initialDirection);
+        }
     }
+
 }

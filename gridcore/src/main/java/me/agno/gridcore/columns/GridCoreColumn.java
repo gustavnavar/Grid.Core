@@ -42,6 +42,10 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
     @Getter
     private Class<TData> targetType;
 
+    void setTargetType(Class<?> targetType) {
+        this.targetType = (Class<TData>)targetType;
+    }
+
     @Getter
     private IGrid<T> parentGrid;
 

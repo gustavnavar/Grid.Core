@@ -53,6 +53,21 @@ public class SampleDataController {
 		return ResponseEntity.ok(items);
 	}
 
+	@GetMapping(value = {"getordersgridordersautogeneratecolumns", "GetOrdersGridordersAutoGenerateColumns"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ItemsDTO<Order>> getOrdersGridordersAutoGenerateColumns(HttpServletRequest request) {
+
+		EntityManager em = entityManagerFactory.createEntityManager();
+
+		IGridServer<Order> server = new GridServer<Order>(em, Order.class, null, null,
+				request.getParameterMap(), null)
+				.autoGenerateColumns()
+				.sortable()
+				.filterable();
+
+		var items = server.getItemsToDisplay();
+		return ResponseEntity.ok(items);
+	}
+
 	@GetMapping(value = {"getordersgridwithtotals", "GetOrdersGridWithTotals"}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ItemsDTO<Order>> getOrdersGridWithTotals(HttpServletRequest request) {
 

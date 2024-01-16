@@ -10,7 +10,7 @@
     </parent>
     <groupId>me.agno</groupId>
     <artifactId>demo</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8</version>
     <name>demo</name>
     <description>demo</description>
     <properties>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>me.agno.gridcore</groupId>
             <artifactId>gridcore</artifactId>
-            <version>0.0.5</version>
+            <version>0.0.8</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

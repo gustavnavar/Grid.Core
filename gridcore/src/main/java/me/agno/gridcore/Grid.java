@@ -194,7 +194,7 @@ public class Grid<T> implements IGrid<T> {
                 noTotalsParameter != null && ! noTotalsParameter.isEmpty() &&
                 noTotalsParameter.get(0) != null && ! noTotalsParameter.get(0).trim().isEmpty()) {
 
-            this.pagingType = PagingType.VIRTUALIZATION;
+            setPagingType(PagingType.VIRTUALIZATION);
             try {
                 startIndex = Integer.parseInt(startIndexParameter.get(0).trim());
             }
@@ -280,9 +280,9 @@ public class Grid<T> implements IGrid<T> {
     void applyGridSettings() {
         GridTable opt = this.annotations.getAnnotationForTable(getTargetType());
         if (opt == null) return;
-        this.pagingType = opt.pagingType();
+        setPagingType(opt.pagingType());
 
-        if (this.pagingType == PagingType.PAGINATION)
+        if (getPagingType() == PagingType.PAGINATION)
         {
             if (opt.pageSize() > 0)
                 this.getPager().setPageSize(opt.pageSize());
@@ -294,17 +294,16 @@ public class Grid<T> implements IGrid<T> {
 
     public void autoGenerateColumns() {
 
-        var tuples = this.annotations.getAnnotationsForTableColumns(this.targetType);
+        var annotationsList = this.annotations.getAnnotationsForTableColumns(this.targetType);
 
-        for (var tuple : tuples) {
-            String name = tuple.getFirst();
-            Boolean isKey = tuple.getSecond();
-            GridColumn annotations = tuple.getThird();
+        for (var item : annotationsList) {
+            String name = item.getKey();
+            GridColumn annotation = item.getValue();
 
-            if(isKey)
-                this.columns.add(name, annotations.type()).setPrimaryKey(true);
+            if(annotation.key())
+                this.columns.add(name, annotation.type()).setPrimaryKey(true);
             else
-                this.columns.add(name, annotations.type());
+                this.columns.add(name, annotation.type());
         }
     }
 
