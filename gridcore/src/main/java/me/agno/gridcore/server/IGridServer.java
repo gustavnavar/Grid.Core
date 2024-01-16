@@ -1,11 +1,14 @@
 package me.agno.gridcore.server;
 
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.IGridColumnCollection;
 import me.agno.gridcore.SearchOptions;
 import me.agno.gridcore.sorting.GridSortMode;
 import me.agno.gridcore.utils.ItemsDTO;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface IGridServer<T> {
@@ -50,6 +53,10 @@ public interface IGridServer<T> {
     IGridServer<T> autoGenerateColumns();
 
     IGridServer<T> setRemoveDiacritics(String methodName);
+
+    IGridServer<T> setPredicate(Predicate predicate);
+
+    IGridServer<T> setOrder(List<Order> orderList);
 
     ItemsDTO<T> getItemsToDisplay();
 

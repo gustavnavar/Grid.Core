@@ -52,15 +52,12 @@ public class Grid<T> implements IGrid<T> {
     @Getter
     private Class<T> targetType;
 
+    @Getter
+    @Setter
     private Predicate predicate;
 
-    public Predicate getPredicate() {
-        //call preprocessors before:
-        preProcess();
-        return this.predicate;
-    }
-
     @Getter
+    @Setter
     private List<Order> orderList;
 
     @Getter
@@ -145,17 +142,14 @@ public class Grid<T> implements IGrid<T> {
     @Setter
     private String removeDiacritics = null;
 
-    public Grid(EntityManager entityManager, Class<T> targetType, Predicate predicate, List<Order> orderList,
-                LinkedHashMap<String, List<String>> query, IColumnBuilder<T> columnBuilder) {
+    public Grid(EntityManager entityManager, Class<T> targetType, LinkedHashMap<String, List<String>> query,
+                IColumnBuilder<T> columnBuilder) {
 
         this.entityManager = entityManager;
         this.targetType = targetType;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
         this.criteriaQuery = this.criteriaBuilder.createQuery(this.targetType);
         this.root = this.criteriaQuery.from(this.targetType);
-
-        this.predicate = predicate;
-        this.orderList = orderList;
 
         this.query = query;
 

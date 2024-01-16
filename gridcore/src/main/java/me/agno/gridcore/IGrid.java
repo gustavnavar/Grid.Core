@@ -1,10 +1,7 @@
 package me.agno.gridcore;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import me.agno.gridcore.columns.GridColumnCollection;
 import me.agno.gridcore.filtering.FilterProcessor;
 import me.agno.gridcore.pagination.IGridPager;
@@ -103,4 +100,6 @@ public interface IGrid<T> extends IGridOptions{
     Class<T> getTargetType();
 
     Predicate getPredicate();
+
+    List<Order> getOrderList();
 }
