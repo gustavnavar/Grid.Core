@@ -52,9 +52,13 @@ public class Grid<T> implements IGrid<T> {
     @Getter
     private Class<T> targetType;
 
-    @Getter
     @Setter
     private Predicate predicate;
+
+    public Predicate getPredicate() {
+        preProcess();
+        return predicate;
+    }
 
     @Getter
     @Setter
