@@ -3,6 +3,7 @@ package me.agno.demo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.agno.gridcore.annotations.GridColumn;
 import me.agno.gridcore.annotations.GridTable;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 @GridTable(pagingType = PagingType.PAGINATION, pageSize = 20)
@@ -66,7 +68,7 @@ public class Order {
 
     @Column(name = "freight")
     @GridColumn(position = 7, type = BigDecimal.class, sortEnabled = true, filterEnabled = true)
-    private BigDecimal freight;
+    private Double freight;
 
     @Nationalized
     @Column(name = "shipname", length = 40)
@@ -102,4 +104,7 @@ public class Order {
     @OneToMany(mappedBy = "orderID")
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
 
+    public Order (double freight) {
+        this.freight = freight;
+    }
 }

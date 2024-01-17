@@ -17,7 +17,7 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "supplierid", nullable = false)
-    private Integer id;
+    private Integer supplierID;
 
     @Nationalized
     @Column(name = "companyname", nullable = false, length = 40)

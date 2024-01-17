@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -71,7 +73,23 @@ public class Employee {
     private String extension;
 
     @Column(name = "photo")
+    @JsonIgnore
     private byte[] photo;
+
+    @Transient
+    private String base64String;
+
+    public String getBase64String() {
+        if (base64String == null || base64String.trim().isEmpty()) {
+            base64String = "";
+            if (photo != null && photo.length >= 78) {
+                var newPhoto = Arrays.copyOfRange(photo, 78, photo.length);
+                base64String = Base64.getEncoder().encodeToString(newPhoto);
+            }
+        }
+        return base64String;
+    }
+
 
     @Nationalized
     @Lob
