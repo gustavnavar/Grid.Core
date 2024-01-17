@@ -156,40 +156,6 @@ public class GridServer<T> implements IGridServer<T> {
         return this;
     }
 
-    public IGridServer<T> extSortable()
-    {
-        return extSortable(true);
-    }
-
-    public IGridServer<T> extSortable(boolean enable) {
-        this.grid.setExtSortingEnabled(enable);
-        return this;
-    }
-
-    public IGridServer<T> extSortable(boolean enable, boolean hidden) {
-        this.grid.setExtSortingEnabled(enable);
-        this.grid.setHiddenExtSortingHeader(hidden);
-        return this;
-    }
-
-    public IGridServer<T> groupable()
-    {
-        return groupable(true);
-    }
-
-    public IGridServer<T> groupable(boolean enable) {
-        this.grid.setExtSortingEnabled(enable);
-        this.grid.setGroupingEnabled(enable);
-        return this;
-    }
-
-    public IGridServer<T> groupable(boolean enable, boolean hidden) {
-        this.grid.setExtSortingEnabled(enable);
-        this.grid.setGroupingEnabled(enable);
-        this.grid.setHiddenExtSortingHeader(hidden);
-        return this;
-    }
-
     public IGridServer<T> autoGenerateColumns() {
         this.grid.autoGenerateColumns();
         return this;

@@ -37,18 +37,6 @@ public interface IGrid<T> extends IGridOptions{
 
     void setSearchOptions(SearchOptions searchOptions);
 
-    boolean isExtSortingEnabled();
-
-    void setExtSortingEnabled(boolean extSortingEnabled);
-
-    boolean isHiddenExtSortingHeader();
-
-    void setHiddenExtSortingHeader(boolean hiddenExtSortingHeader);
-
-    boolean isGroupingEnabled();
-
-    void setGroupingEnabled(boolean groupingEnabled);
-
     String getRemoveDiacritics();
 
     void setRemoveDiacritics(String removeDiacritics);

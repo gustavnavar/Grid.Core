@@ -128,18 +128,6 @@ public class Grid<T> implements IGrid<T> {
 
     @Getter
     @Setter
-    private boolean extSortingEnabled;
-
-    @Getter
-    @Setter
-    private boolean hiddenExtSortingHeader = false;
-
-    @Getter
-    @Setter
-    private boolean groupingEnabled;
-
-    @Getter
-    @Setter
     private String removeDiacritics = null;
 
     public Grid(EntityManager entityManager, Class<T> targetType, LinkedHashMap<String, List<String>> query,

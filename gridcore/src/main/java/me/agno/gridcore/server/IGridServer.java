@@ -38,18 +38,6 @@ public interface IGridServer<T> {
 
     IGridServer<T> searchable(Consumer<SearchOptions> searchOptions);
 
-    IGridServer<T> extSortable();
-
-    IGridServer<T> extSortable(boolean enable);
-
-    IGridServer<T> extSortable(boolean enable, boolean hidden);
-
-    IGridServer<T> groupable();
-
-    IGridServer<T> groupable(boolean enable);
-
-    IGridServer<T> groupable(boolean enable, boolean hidden);
-
     IGridServer<T> autoGenerateColumns();
 
     IGridServer<T> setRemoveDiacritics(String methodName);
