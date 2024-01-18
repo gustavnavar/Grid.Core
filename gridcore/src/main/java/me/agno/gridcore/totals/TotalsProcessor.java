@@ -63,9 +63,6 @@ public class TotalsProcessor<T> {
 
             var type = gridColumn.getTargetType();
 
-            // java.sql.Date, java.sql.Time and java.sql.Timestamp,
-            // LocalDate, LocalDateTime and ZonedDateTime are not Comparable
-
             if (type == Byte.class || type == BigDecimal.class || type == BigInteger.class ||
                     type == Integer.class || type == Short.class || type == Double.class ||
                     type == Long.class || type == Float.class) {
@@ -81,6 +78,36 @@ public class TotalsProcessor<T> {
 
                 if (gridColumn.isMinEnabled())
                     gridColumn.setMinValue(new Total(getMin(expression, this.grid)));
+            }
+            else if (type == java.sql.Time.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, java.sql.Time.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, java.sql.Time.class)));
+            }
+            else if (type == java.sql.Date.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, java.sql.Date.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, java.sql.Date.class)));
+            }
+            else if (type == java.sql.Timestamp.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, java.sql.Timestamp.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, java.sql.Timestamp.class)));
             }
             else if (type == Date.class) {
                 gridColumn.setSumEnabled(false);
@@ -122,6 +149,26 @@ public class TotalsProcessor<T> {
                 if (gridColumn.isMinEnabled())
                     gridColumn.setMinValue(new Total(getLeast(expression, this.grid, LocalTime.class)));
             }
+            else if (type == LocalDate.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, LocalDate.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, LocalDate.class)));
+            }
+            else if (type == LocalDateTime.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, LocalDateTime.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, LocalDateTime.class)));
+            }
             else if (type == OffsetTime.class) {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);
@@ -141,6 +188,16 @@ public class TotalsProcessor<T> {
 
                 if (gridColumn.isMinEnabled())
                     gridColumn.setMinValue(new Total(getLeast(expression, this.grid, OffsetDateTime.class)));
+            }
+            else if (type == ZonedDateTime.class) {
+                gridColumn.setSumEnabled(false);
+                gridColumn.setAverageEnabled(false);
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getGreatest(expression, this.grid, ZonedDateTime.class)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getLeast(expression, this.grid, ZonedDateTime.class)));
             }
             else if (type == String.class) {
                 gridColumn.setSumEnabled(false);
@@ -284,7 +341,7 @@ public class TotalsProcessor<T> {
         return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
-    private <TData extends Comparable<TData>> TData getGreatest(String expression, IGrid<T> grid, Class<TData> type) {
+    private <TData extends Comparable<? super TData>> TData getGreatest(String expression, IGrid<T> grid, Class<TData> type) {
 
         var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
         var gridQuerySpec = gridQuery.getQuerySpec();
@@ -305,7 +362,7 @@ public class TotalsProcessor<T> {
         return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }
 
-    private <TData extends Comparable<TData>> TData getLeast(String expression, IGrid<T> grid, Class<TData> type) {
+    private <TData extends Comparable<? super TData>> TData getLeast(String expression, IGrid<T> grid, Class<TData> type) {
 
         var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
         var gridQuerySpec = gridQuery.getQuerySpec();
