@@ -2,7 +2,7 @@ package me.agno.demo.controllers;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 import jakarta.persistence.EntityManager;
@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.agno.demo.model.Order;
 import me.agno.demo.model.OrderDetail;
-import me.agno.demo.repositories.CustomerRepository;
-import me.agno.demo.repositories.EmployeeRepository;
-import me.agno.demo.repositories.ProductRepository;
-import me.agno.demo.repositories.ShipperRepository;
+import me.agno.demo.repositories.*;
 import me.agno.gridcore.IGridColumnCollection;
 import me.agno.gridcore.SelectItem;
 import me.agno.gridcore.server.GridServer;
@@ -31,16 +28,14 @@ import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = {"/api/sampledata", "/api/SampleData"})
 public class SampleDataController {
 
+	private final OrderRepository orderRepository;
 	private final CustomerRepository customerRepository;
 	private final EmployeeRepository employeeRepository;
 	private final ProductRepository productRepository;
@@ -56,7 +51,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class);
 			c.add("customer.contactName", String.class);
 			c.add("customer.country", String.class, true);
@@ -64,7 +59,7 @@ public class SampleDataController {
 			c.add("customer.isVip",Boolean.class);
 		};
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable();
@@ -78,7 +73,7 @@ public class SampleDataController {
 
 		EntityManager em = entityManagerFactory.createEntityManager();
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), null)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), null)
 				.autoGenerateColumns()
 				.sortable()
 				.filterable();
@@ -94,7 +89,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class).sum(true);
-			c.add("orderDate", Instant.class, "orderCustomDate").max(true).min(true);
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate").max(true).min(true);
 			c.add("customer.companyName", String.class).max(true).min(true);
 			c.add("customer.contactName", String.class).max(true).min(true);
 			c.add("freight", BigDecimal.class).sum(true).average(true).max(true).min(true)
@@ -104,7 +99,7 @@ public class SampleDataController {
 								.divide(BigDecimal.valueOf(x.getGrid().getItemsCount()), MathContext.DECIMAL32))
 					.calculate("Average 3", x -> x.get("orderID") == null || x.get("orderID").getSumValue() == null
 							|| x.get("orderID").getSumValue().getNumber().isEmpty()
-							|| x.get("orderID").getSumValue().getNumber().get() == BigDecimal.ZERO
+							|| x.get("orderID").getSumValue().getNumber().get().equals(BigDecimal.ZERO)
 							|| x.get("freight") == null || x.get("freight").getSumValue() == null
 							|| x.get("freight").getSumValue().getNumber().isEmpty()
 							? "" : x.get("freight").getSumValue().getNumber().get()
@@ -112,7 +107,7 @@ public class SampleDataController {
 			c.add("customer.isVip",Boolean.class);
 		};
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable();
@@ -128,7 +123,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class);
 			c.add("customer.contactName", String.class);
 			c.add("customer.country", String.class, true);
@@ -136,7 +131,7 @@ public class SampleDataController {
 			c.add("customer.isVip",Boolean.class);
 		};
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable()
@@ -154,7 +149,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class)
 					.thenSortBy("shipVia").thenSortByDescending("freight");
 			c.add("customer.contactName", String.class);
@@ -163,7 +158,7 @@ public class SampleDataController {
 			c.add("customer.isVip",Boolean.class);
 		};
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable();
@@ -180,7 +175,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class)
 					.thenSortBy("shipVia").thenSortByDescending("freight");
 			c.add("customer.contactName", String.class);
@@ -189,7 +184,7 @@ public class SampleDataController {
 			c.add("customer.isVip",Boolean.class);
 		};
 
-		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable();
@@ -199,19 +194,76 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"ordercolumnslistfilter", "OrderColumnsListFilter"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public  ResponseEntity<ItemsDTO<Order>> orderColumnsListFilter(HttpServletRequest request) {
+	public ResponseEntity<ItemsDTO<Order>> orderColumnsListFilter(HttpServletRequest request) {
 
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class);
 			c.add("customer.contactName", String.class);
 			c.add("customer.country", String.class, true);
 			c.add("shipVia", String.class);
 			c.add("freight", BigDecimal.class);
 			c.add("customer.isVip",Boolean.class);
+		};
+
+		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
+            .withPaging(10)
+			.sortable()
+			.filterable();
+
+		var items = server.getItemsToDisplay();
+		return ResponseEntity.ok(items);
+	}
+
+	@GetMapping(value = {"ordercolumnswithedit", "OrderColumnsWithEdit"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ItemsDTO<Order>> orderColumnsWithEdit(HttpServletRequest request) {
+
+		EntityManager em = entityManagerFactory.createEntityManager();
+
+		Consumer<IGridColumnCollection<Order>> columns = c -> {
+			c.add("orderID", Integer.class);
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
+			c.add("customer.companyName", String.class);
+			c.add("customer.contactName", String.class);
+			c.add("freight", BigDecimal.class);
+			c.add("customer.isVip",Boolean.class);
+		};
+
+		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
+            .withPaging(10)
+			.sortable()
+			.filterable();
+
+		var items = server.getItemsToDisplay();
+		return ResponseEntity.ok(items);
+	}
+
+	@GetMapping(value = {"ordercolumnswithcrud", "OrderColumnsWithCrud"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ItemsDTO<Order>> orderColumnsWithCrud(HttpServletRequest request)
+	{
+		EntityManager em = entityManagerFactory.createEntityManager();
+
+		Consumer<IGridColumnCollection<Order>> columns = c -> {
+			c.add("orderID", Integer.class).setPrimaryKey(true);
+			c.add("customerID", String.class);
+			c.add("employeeID", Integer.class);
+			c.add("shipVia", Integer.class, true);
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
+			c.add("customer.companyName", String.class);
+			c.add("customer.contactName", String.class);
+			c.add("freight", BigDecimal.class);
+			c.add("customer.isVip",Boolean.class);
+			c.add("requiredDate",  LocalDateTime.class, true);
+			c.add("shippedDate",  LocalDateTime.class, true);
+			c.add("shipName",  String.class, true);
+			c.add("shipAddress",  String.class, true);
+			c.add("shipCity",  String.class, true);
+			c.add("shipPostalCode",  String.class, true);
+			c.add("shipRegion",  String.class, true);
+			c.add("shipCountry",  String.class, true);
 		};
 
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
@@ -230,7 +282,7 @@ public class SampleDataController {
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
 			c.add("orderID", Integer.class);
-			c.add("orderDate", Instant.class, "orderCustomDate");
+			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class);
 			c.add("customer.contactName", String.class);
 			c.add("customer.country", String.class, true);
@@ -239,7 +291,7 @@ public class SampleDataController {
 		};
 
 		// get all customer ids in the grid with the current filters
-		var server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns);
+		var server = new GridServer<>(em, Order.class, request.getParameterMap(), columns);
 
 		// add new predicate to filter records with orderID null or empty
 		CriteriaBuilder cb = server.getGrid().getCriteriaBuilder();
@@ -250,7 +302,7 @@ public class SampleDataController {
 
 		// get the full predicate (after pre-process)
 		var grid = server.getGrid();
-		predicate = grid.getPredicate();
+		grid.getPredicate();
 
 		// create a query spec to copy the predicate to a new query
 		var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
@@ -278,7 +330,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallcustomers", "GetAllCustomers"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllCustomers() {
+	public ResponseEntity<?> getAllCustomers() {
 
 		return ResponseEntity.ok(customerRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getCustomerID(), r.getCustomerID() + " - " + r.getCompanyName()))
@@ -286,7 +338,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallcustomers2", "GetAllCustomers2"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllCustomers2() {
+	public ResponseEntity<?> getAllCustomers2() {
 
 		return ResponseEntity.ok(customerRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getCompanyName(), r.getCompanyName()))
@@ -294,7 +346,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallcontacts", "GetAllContacts"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllContacts() {
+	public ResponseEntity<?> getAllContacts() {
 
 		return ResponseEntity.ok(customerRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getContactName(), r.getContactName()))
@@ -302,7 +354,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallemployees", "GetAllEmployees"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllEmployees() {
+	public ResponseEntity<?> getAllEmployees() {
 
 		return ResponseEntity.ok(employeeRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getEmployeeID().toString(), r.getEmployeeID().toString() + " - "
@@ -311,7 +363,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallshippers", "GetAllShippers"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllShippers() {
+	public ResponseEntity<?> getAllShippers() {
 
 		return ResponseEntity.ok(shipperRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getShipperID().toString(), r.getShipperID().toString() + " - "
@@ -320,7 +372,7 @@ public class SampleDataController {
 	}
 
 	@GetMapping(value = {"getallproducts", "GetAllProducts"}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getAllProducts() {
+	public ResponseEntity<?> getAllProducts() {
 
 		return ResponseEntity.ok(productRepository.findAll().stream()
 				.map(r -> new SelectItem(r.getProductID().toString(), r.getProductID().toString() + " - "
@@ -343,7 +395,7 @@ public class SampleDataController {
 			c.add("discount", Float.class);
 		};
 
-		var server = new GridServer<OrderDetail>(em, OrderDetail.class, request.getParameterMap(), columns)
+		var server = new GridServer<>(em, OrderDetail.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable();
@@ -355,5 +407,29 @@ public class SampleDataController {
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
+	}
+
+	@PostMapping(value = {"add1tofreight", "Add1ToFreight"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> add1ToFreight(@RequestParam(value = "id") int id) {
+
+		var order =  orderRepository.findById(id);
+		if (order.isPresent() && order.get().getFreight() != null) {
+			order.get().setFreight(order.get().getFreight() + 1);
+			orderRepository.saveAndFlush(order.get());
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.badRequest().build();
+	}
+
+	@PostMapping(value = {"subtract1tofreight", "Subtract1ToFreight"}, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> subtract1ToFreight(@RequestParam(value = "id") int id)
+	{
+		var order =  orderRepository.findById(id);
+		if (order.isPresent() && order.get().getFreight() != null) {
+			order.get().setFreight(order.get().getFreight() - 1);
+			orderRepository.saveAndFlush(order.get());
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.badRequest().build();
 	}
 }

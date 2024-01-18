@@ -11,9 +11,8 @@ import me.agno.gridcore.pagination.PagingType;
 import me.agno.gridcore.sorting.GridSortDirection;
 import org.hibernate.annotations.Nationalized;
 
-
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -47,16 +46,16 @@ public class Order {
     private Employee employee;
 
     @Column(name = "orderdate")
-    @GridColumn(position = 1, type = Instant.class, sortEnabled = true, filterEnabled = true, sortInitialDirection = GridSortDirection.ASCENDING)
-    private Instant orderDate;
+    @GridColumn(position = 1, type = LocalDateTime.class, sortEnabled = true, filterEnabled = true, sortInitialDirection = GridSortDirection.ASCENDING)
+    private LocalDateTime orderDate;
 
     @Column(name = "requireddate")
-    @GridColumn(position = 2, type = Instant.class)
-    private Instant requiredDate;
+    @GridColumn(position = 2, type = LocalDateTime.class)
+    private LocalDateTime requiredDate;
 
     @Column(name = "shippeddate")
-    @GridColumn(position = 3, type = Instant.class)
-    private Instant shippedDate;
+    @GridColumn(position = 3, type = LocalDateTime.class)
+    private LocalDateTime shippedDate;
 
     @Column(name = "shipVia", columnDefinition = "int", insertable = false, updatable = false, nullable = false)
     @GridColumn(position = 6, type = String.class)

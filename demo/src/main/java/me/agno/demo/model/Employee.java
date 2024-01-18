@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedHashSet;
@@ -39,10 +39,10 @@ public class Employee {
     private String titleOfCourtesy;
 
     @Column(name = "birthdate")
-    private Instant birthDate;
+    private LocalDateTime birthDate;
 
     @Column(name = "hiredate")
-    private Instant hireDate;
+    private LocalDateTime hireDate;
 
     @Nationalized
     @Column(name = "address", length = 60)
