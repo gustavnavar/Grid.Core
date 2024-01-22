@@ -17,24 +17,64 @@ public class GridPager<T> implements IGridPager<T> {
     public final static String DEFAULT_VIRTUALIZED_COUNT_QUERY_PARAMETER = "grid-virt-count";
     public final static String DEFAULT_NO_TOTALS_PARAMETER = "grid-no-totals";
 
+    private final CustomQueryStringBuilder queryBuilder;
+
+
     @Getter
     private final IGrid<T> grid;
 
-    private final CustomQueryStringBuilder queryBuilder;
-
     private int currentPage;
 
+    public int getCurrentPage() {
+
+        if (this.currentPage >= 0 || this.grid.getPagingType() == PagingType.VIRTUALIZATION) return this.currentPage;
+        var currentPageParameter = this.grid.getQuery().get(this.parameterName);
+        if(currentPageParameter != null && currentPageParameter.size() == 1)
+            this.currentPage = Integer.parseInt(currentPageParameter.get(0));
+        else
+            this.currentPage = 1;
+
+        if (this.currentPage > this.pageCount)
+            this.currentPage = this.pageCount;
+        return this.currentPage;
+    }
+
+    public void setCurrentPage(int value) {
+        this.currentPage = value;
+        RecalculatePages();
+    }
+
     @Getter
-    private int itemsCount;
+    private long itemsCount;
+
+    public void setItemsCount(long value) {
+        this.itemsCount = value;
+        RecalculatePages();
+    }
 
     @Getter
     private int maxDisplayedPages = DEFAULT_MAX_DISPLAYED_PAGES;
 
+    public void setMaxDisplayedPages(int value) {
+        this.maxDisplayedPages = value;
+        RecalculatePages();
+    }
+
     @Getter
     private int pageSize;
 
+    public void setPageSize(int value) {
+        this.pageSize = value;
+        RecalculatePages();
+    }
+
     @Getter
     private int queryPageSize;
+
+    public void setQueryPageSize(int value) {
+        this.queryPageSize = value;
+        RecalculatePages();
+    }
 
     @Getter
     @Setter
@@ -99,47 +139,8 @@ public class GridPager<T> implements IGridPager<T> {
         }
     }
 
-    public void initialize(int count) {
-        this.itemsCount = count;
-    }
-
-    public void setPageSize(int value) {
-        this.pageSize = value;
-        RecalculatePages();
-    }
-
-    public void setQueryPageSize(int value) {
-        this.queryPageSize = value;
-        RecalculatePages();
-    }
-
-    public int getCurrentPage() {
-
-        if (this.currentPage >= 0 || this.grid.getPagingType() == PagingType.VIRTUALIZATION) return this.currentPage;
-        var currentPageParameter = this.grid.getQuery().get(this.parameterName);
-        if(currentPageParameter != null && currentPageParameter.size() == 1)
-            this.currentPage = Integer.parseInt(currentPageParameter.get(0));
-        else
-            this.currentPage = 1;
-
-        if (this.currentPage > this.pageCount)
-            this.currentPage = this.pageCount;
-        return this.currentPage;
-    }
-
-    public void setCurrentPage(int value) {
-        this.currentPage = value;
-        RecalculatePages();
-    }
-
-    public void setItemsCount(int value) {
-        this.itemsCount = value;
-        RecalculatePages();
-    }
-
-    public void setMaxDisplayedPages(int value) {
-        this.maxDisplayedPages = value;
-        RecalculatePages();
+    public void initialize(long count) {
+        setItemsCount(count);
     }
 
     protected void RecalculatePages() {

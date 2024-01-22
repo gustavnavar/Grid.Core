@@ -259,7 +259,7 @@ public class Grid<T> implements IGrid<T> {
             this.orderList = this.sortProcessor.process(this.orderList);
             if(this.orderList != null && ! this.orderList.isEmpty())
                 this.criteriaQuery.orderBy(this.orderList);
-            this.itemsToList = this.pagerProcessor.process(this.criteriaQuery).getResultList();
+            this.itemsToList = ((PagerProcessor<T>)this.pagerProcessor).process(this.criteriaQuery, getItemsCount()).getResultList();
         }
     }
 

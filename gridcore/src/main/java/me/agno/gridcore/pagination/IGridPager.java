@@ -6,7 +6,7 @@ public interface IGridPager<T> {
 
     IGrid<T> getGrid();
 
-    void initialize(int count);
+    void initialize(long count);
 
     int getPageSize();
 
@@ -18,9 +18,9 @@ public interface IGridPager<T> {
 
     int getCurrentPage();
 
-    int getItemsCount();
+    long getItemsCount();
 
-    void setItemsCount(int itemsCount);
+    void setItemsCount(long itemsCount);
 
     int getStartIndex();
 
