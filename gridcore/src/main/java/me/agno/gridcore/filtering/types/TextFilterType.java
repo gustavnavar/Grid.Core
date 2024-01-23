@@ -33,7 +33,7 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
         
         var path = getPath(root, expression);
 
-        if(removeDiacritics == null) {
+        if(removeDiacritics == null || removeDiacritics.isBlank()) {
             return switch (filterType) {
                 case EQUALS -> cb.equal(cb.upper(path), typedValue.toUpperCase());
                 case IS_NULL -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
@@ -50,16 +50,18 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
         }
         else {
             return switch (filterType) {
-                case EQUALS -> cb.equal(cb.upper(path), typedValue.toUpperCase());
+                case EQUALS -> cb.equal(cb.function(removeDiacritics, String.class, cb.upper(path)),
+                        cb.function(removeDiacritics, String.class, cb.literal(typedValue.toUpperCase())));
                 case IS_NULL -> cb.or(cb.isNull(path), cb.equal(cb.trim(path), ""));
-                case NOT_EQUALS -> cb.notEqual(cb.upper(path), typedValue.toUpperCase());
+                case NOT_EQUALS -> cb.notEqual(cb.function(removeDiacritics, String.class, cb.upper(path)),
+                        cb.function(removeDiacritics, String.class, cb.literal(typedValue.toUpperCase())));
                 case IS_NOT_NULL -> cb.and(cb.isNotNull(path), cb.notEqual(cb.trim(path), ""));
-                case CONTAINS -> cb.like(cb.upper(path),
-                        '%' + typedValue.toUpperCase() + '%');
-                case STARTS_WITH -> cb.like(cb.upper(path),
-                        typedValue.toUpperCase() + '%');
-                case ENDS_WIDTH -> cb.like(cb.upper(path),
-                        '%' + typedValue.toUpperCase());
+                case CONTAINS -> cb.like(cb.function(removeDiacritics, String.class, cb.upper(path)),
+                        cb.function(removeDiacritics, String.class, cb.literal('%' + typedValue.toUpperCase() + '%')));
+                case STARTS_WITH -> cb.like(cb.function(removeDiacritics, String.class, cb.upper(path)),
+                        cb.function(removeDiacritics, String.class, cb.literal(typedValue.toUpperCase() + '%')));
+                case ENDS_WIDTH -> cb.like(cb.function(removeDiacritics, String.class, cb.upper(path)),
+                        cb.function(removeDiacritics, String.class, cb.literal('%' + typedValue.toUpperCase())));
                 default -> throw new IllegalArgumentException();
             };
         }

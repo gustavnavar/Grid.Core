@@ -37,8 +37,8 @@ public class DefaultColumnSearch<T, TData> implements IColumnSearch<T> {
                     '%' + value.toUpperCase() + '%');
         }
         else {
-            return cb.like(cb.upper(path.as(String.class)),
-                    '%' + value.toUpperCase() + '%');
+            return cb.like(cb.function(removeDiacritics, String.class,cb.upper(path.as(String.class))),
+                    cb.function(removeDiacritics, String.class, cb.literal('%' + value.toUpperCase() + '%')));
         }
     }
 
