@@ -24,8 +24,14 @@ public class EmployeeController {
     @PostMapping(value = {"/employee", "/Employee"})
     public ResponseEntity<Object> create(@RequestBody Employee employee) {
 
-        Employee savedEmployee = employeeRepository.saveAndFlush(employee);
-        return ResponseEntity.ok(savedEmployee.getEmployeeID());
+        try {
+            Employee savedEmployee = employeeRepository.saveAndFlush(employee);
+            return ResponseEntity.ok(savedEmployee.getEmployeeID());
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @GetMapping(value = {"/employee/{id}", "/Employee/{id}"})
@@ -42,10 +48,15 @@ public class EmployeeController {
         if (attachedEmployee.isEmpty())
             return ResponseEntity.notFound().build();
 
-        employee.setEmployeeID(id);
-        employeeRepository.saveAndFlush(employee);
-
-        return ResponseEntity.noContent().build();
+        try {
+            employee.setPhoto(attachedEmployee.get().getPhoto());
+            employeeRepository.saveAndFlush(employee);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @DeleteMapping(value = {"/employee/{id}", "/Employee/{id}"})
@@ -55,9 +66,14 @@ public class EmployeeController {
         if (employee.isEmpty())
             return ResponseEntity.notFound().build();
 
-        employeeRepository.delete(employee.get());
-        employeeRepository.flush();
-
-        return ResponseEntity.noContent().build();
+        try {
+            employeeRepository.delete(employee.get());
+            employeeRepository.flush();
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 }

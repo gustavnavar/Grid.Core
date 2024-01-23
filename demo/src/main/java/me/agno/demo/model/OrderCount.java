@@ -22,7 +22,7 @@ import java.util.Set;
 @Entity
 @Table(name = "orders")
 @GridTable(pagingType = PagingType.PAGINATION, pageSize = 20)
-public class Order {
+public class OrderCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orderid", nullable = false)
@@ -99,11 +99,10 @@ public class Order {
     @GridColumn(position = 13, type = String.class)
     private String shipCountry;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "orderID")
-    private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
+    private Set<OrderDetailCount> orderDetails = new LinkedHashSet<>();
 
-    public Order (double freight) {
+    public OrderCount(double freight) {
         this.freight = freight;
     }
 }

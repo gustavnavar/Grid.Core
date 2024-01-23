@@ -25,8 +25,14 @@ public class OrderDetailController {
     @PostMapping(value = {"/orderdetail", "/OrderDetail"})
     public ResponseEntity<Object> create(@RequestBody OrderDetail orderDetail) {
 
-        orderDetailRepository.saveAndFlush(orderDetail);
-        return ResponseEntity.ok().build();
+        try {
+            orderDetailRepository.saveAndFlush(orderDetail);
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @GetMapping(value = {"/orderdetail/{orderId}/{productId}", "/OrderDetail/{orderId}/{productId}"})
@@ -44,11 +50,16 @@ public class OrderDetailController {
         if (attachedOrderDetail.isEmpty())
             return ResponseEntity.notFound().build();
 
-        orderDetail.setOrderID(orderId);
-        orderDetail.setProductID(productId);
-        orderDetailRepository.saveAndFlush(orderDetail);
-
-        return ResponseEntity.noContent().build();
+        try {
+            orderDetail.setOrderID(orderId);
+            orderDetail.setProductID(productId);
+            orderDetailRepository.saveAndFlush(orderDetail);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @DeleteMapping(value = {"/orderdetail/{orderId}/{productId}", "/OrderDetail/{orderId}/{productId}"})
@@ -58,9 +69,14 @@ public class OrderDetailController {
         if (orderDetail.isEmpty())
             return ResponseEntity.notFound().build();
 
-        orderDetailRepository.delete(orderDetail.get());
-        orderDetailRepository.flush();
-
-        return ResponseEntity.noContent().build();
+        try {
+            orderDetailRepository.delete(orderDetail.get());
+            orderDetailRepository.flush();
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 }

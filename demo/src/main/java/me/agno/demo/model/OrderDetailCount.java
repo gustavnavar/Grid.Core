@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "\"order details\"")
 @IdClass(OrderDetailKey.class)
-public class OrderDetail {
+public class OrderDetailCount {
 
     @Id
     @Column(name = "orderid", nullable = false)
@@ -21,17 +21,6 @@ public class OrderDetail {
     @Id
     @Column(name = "productid", nullable = false)
     private Integer productID;
-
-    @JsonIgnore
-    @MapsId("orderID")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "orderid", nullable = false)
-    private Order order;
-
-    @MapsId("productID")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "productid", nullable = false)
-    private Product product;
 
     @Column(name = "unitprice", nullable = false)
     private BigDecimal unitPrice;

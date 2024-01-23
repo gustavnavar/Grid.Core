@@ -24,8 +24,14 @@ public class CustomerController {
     @PostMapping(value = {"/customer", "/Customer"})
     public ResponseEntity<Object> create(@RequestBody Customer customer) {
 
-        Customer savedCustomer = customerRepository.saveAndFlush(customer);
-        return ResponseEntity.ok(savedCustomer.getCustomerID());
+        try {
+            Customer savedCustomer = customerRepository.saveAndFlush(customer);
+            return ResponseEntity.ok(savedCustomer.getCustomerID());
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @GetMapping(value = {"/customer/{id}", "/Customer/{id}"})
@@ -42,10 +48,15 @@ public class CustomerController {
         if (attachedCustomer.isEmpty())
             return ResponseEntity.notFound().build();
 
-        customer.setCustomerID(id);
-        customerRepository.saveAndFlush(customer);
-
-        return ResponseEntity.noContent().build();
+        try {
+            customer.setCustomerID(id);
+            customerRepository.saveAndFlush(customer);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 
     @DeleteMapping(value = {"/customer/{id}", "/Customer/{id}"})
@@ -55,9 +66,14 @@ public class CustomerController {
         if (customer.isEmpty())
             return ResponseEntity.notFound().build();
 
-        customerRepository.delete(customer.get());
-        customerRepository.flush();
-
-        return ResponseEntity.noContent().build();
+        try {
+            customerRepository.delete(customer.get());
+            customerRepository.flush();
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage().replace('{', '(').replace('}', ')'));
+        }
     }
 }
