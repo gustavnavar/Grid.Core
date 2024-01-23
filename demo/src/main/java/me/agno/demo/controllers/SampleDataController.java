@@ -63,7 +63,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -77,7 +78,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), null)
 				.autoGenerateColumns()
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -111,7 +113,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -136,7 +139,8 @@ public class SampleDataController {
 				.withPaging(10)
 				.sortable()
 				.filterable()
-				.searchable(true, false, false);
+				.searchable(true, false, false)
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -161,7 +165,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -186,7 +191,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -211,7 +217,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -234,9 +241,10 @@ public class SampleDataController {
 		};
 
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
-            .withPaging(10)
-			.sortable()
-			.filterable();
+				.withPaging(10)
+				.sortable()
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -257,9 +265,10 @@ public class SampleDataController {
 		};
 
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
-            .withPaging(10)
-			.sortable()
-			.filterable();
+            	.withPaging(10)
+				.sortable()
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -291,9 +300,10 @@ public class SampleDataController {
 		};
 
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
-            .withPaging(10)
-			.sortable()
-			.filterable();
+            	.withPaging(10)
+				.sortable()
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -327,7 +337,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -351,7 +362,8 @@ public class SampleDataController {
 		IGridServer<OrderCount> server = new GridServer<>(em, OrderCount.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -379,7 +391,8 @@ public class SampleDataController {
 		IGridServer<Order> server = new GridServer<>(em, Order.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -415,8 +428,9 @@ public class SampleDataController {
 		};
 
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
-            .sortable()
-			.filterable();
+            	.sortable()
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -452,10 +466,11 @@ public class SampleDataController {
 		};
 
 		IGridServer<Order> server = new GridServer<Order>(em, Order.class, request.getParameterMap(), columns)
-            .withPaging(10)
-			.sortable()
-			.filterable()
-			.searchable(true, false);
+            	.withPaging(10)
+				.sortable()
+				.filterable()
+				.searchable(true, false)
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -479,7 +494,8 @@ public class SampleDataController {
 		IGridServer<Customer> server = new GridServer<Customer>(em, Customer.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
@@ -513,7 +529,8 @@ public class SampleDataController {
 		IGridServer<Employee> server = new GridServer<Employee>(em, Employee.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
-				.filterable();
+				.filterable()
+				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();
 		return ResponseEntity.ok(items);
