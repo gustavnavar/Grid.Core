@@ -1,10 +1,12 @@
 package me.agno.gridcore.filtering.types;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridcore.filtering.GridFilterType;
+import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.util.Objects;
 
@@ -23,7 +25,8 @@ public final class BooleanFilterType<T> extends FilterTypeBase<T, Boolean> {
         return "true".equalsIgnoreCase(value);
     }
 
-    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value,
+    public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                         SqmQuerySpec source, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions

@@ -1,10 +1,12 @@
 package me.agno.gridcore.filtering;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import me.agno.gridcore.filtering.types.FilterTypeResolver;
 import me.agno.gridcore.filtering.types.IFilterType;
+import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.util.List;
 
@@ -19,12 +21,13 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
         this.targetType = targetType;
     }
 
-    public Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values) {
-        return applyFilter(cb, root, values, null);
+    public Predicate applyFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                 SqmQuerySpec source, List<ColumnFilterValue> values) {
+        return applyFilter(cb, cq, root, source, values,null);
     }
 
-    public Predicate applyFilter(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values,
-                                 String removeDiacritics) {
+    public Predicate applyFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                 SqmQuerySpec source, List<ColumnFilterValue> values, String removeDiacritics) {
         if (values == null && values.stream().noneMatch(ColumnFilterValue::isNotNull))
             throw new IllegalArgumentException ("values");
 
@@ -41,11 +44,12 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
         var filterValues = values.stream().filter(r -> r.isNotNull() && r.getFilterType() != GridFilterType.CONDITION).toList();
 
-        return GetFilterExpression(cb, root, filterValues, condition, removeDiacritics);
+        return GetFilterExpression(cb, cq, root, source, filterValues, condition, removeDiacritics);
     }
 
-    private Predicate GetFilterExpression(CriteriaBuilder cb, Root<T> root, List<ColumnFilterValue> values,
-                                             GridFilterCondition condition, String removeDiacritics) {
+    private Predicate GetFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                          SqmQuerySpec source, List<ColumnFilterValue> values, GridFilterCondition condition,
+                                          String removeDiacritics) {
 
         Predicate mainPredicate = null;
 
@@ -54,7 +58,7 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
             if (value.isNull())
                 continue;
 
-            Predicate predicate  = GetExpression(cb, root, value, removeDiacritics);
+            Predicate predicate  = GetExpression(cb, cq, root, source, value, removeDiacritics);
             if (predicate != null) {
                 if (mainPredicate == null)
                     mainPredicate = predicate;
@@ -71,10 +75,11 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
         return mainPredicate;
     }
 
-    private Predicate GetExpression(CriteriaBuilder cb, Root<T> root, ColumnFilterValue value, String removeDiacritics)
+    private Predicate GetExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                    SqmQuerySpec source, ColumnFilterValue value, String removeDiacritics)
     {
         IFilterType<T, TData> filterType = this.typeResolver.GetFilterType(this.targetType);
-        return filterType.getFilterExpression(cb, root, this.expression, value.getFilterValue(),
+        return filterType.getFilterExpression(cb, cq, root, source, this.expression, value.getFilterValue(),
                 value.getFilterType(), removeDiacritics);
     }
 }

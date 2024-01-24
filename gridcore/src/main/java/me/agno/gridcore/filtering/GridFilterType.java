@@ -16,7 +16,9 @@ public enum GridFilterType {
     CONDITION,
     NOT_EQUALS,
     IS_NULL,
-    IS_NOT_NULL;
+    IS_NOT_NULL,
+    IS_DUPLICATED,
+    IS_NOT_DUPLICATED;
 
     @Override public String toString() {
         return switch (this) {
@@ -33,6 +35,8 @@ public enum GridFilterType {
             case NOT_EQUALS -> "10";
             case IS_NULL -> "11";
             case IS_NOT_NULL -> "12";
+            case IS_DUPLICATED -> "13";
+            case IS_NOT_DUPLICATED -> "14";
             default -> null;
         };
     }

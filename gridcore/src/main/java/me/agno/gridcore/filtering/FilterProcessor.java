@@ -4,6 +4,9 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.Setter;
 import me.agno.gridcore.IGrid;
 import me.agno.gridcore.columns.IGridColumn;
+import org.hibernate.query.sqm.tree.SqmCopyContext;
+import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,10 @@ public class FilterProcessor<T> {
         if (this.process != null)
             return this.process.apply(predicate);
 
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        SqmQuerySpec source = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
         for (IGridColumn<T> gridColumn : this.grid.getColumns().values()) {
             if (gridColumn == null) continue;
             if (gridColumn.getFilter() == null) continue;
@@ -47,8 +54,8 @@ public class FilterProcessor<T> {
                 options = this.settings.getFilteredColumns().getByColumn(gridColumn);
             }
 
-            var newPredicate = gridColumn.getFilter().applyFilter(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
-                    options, this.grid.getRemoveDiacritics());
+            var newPredicate = gridColumn.getFilter().applyFilter(this.grid.getCriteriaBuilder(), this.grid.getCriteriaQuery(),
+                    this.grid.getRoot(), source, options, this.grid.getRemoveDiacritics());
 
             if(predicate == null)
                 predicate = newPredicate;

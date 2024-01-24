@@ -2,6 +2,8 @@ package me.agno.gridcore.filtering.types;
 
 import jakarta.persistence.criteria.*;
 import me.agno.gridcore.filtering.GridFilterType;
+import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
+import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 
 public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> {
 
@@ -9,11 +11,12 @@ public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> 
 
     public abstract TData getTypedValue(String value);
 
-    public Predicate getFilterExpression(CriteriaBuilder cb, Root<T> root, String expression, String value, GridFilterType filterType) {
-        return getFilterExpression(cb, root, expression, value, filterType, null);
+    public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                         SqmQuerySpec source, String expression, String value, GridFilterType filterType) {
+        return getFilterExpression(cb, cq, root, source, expression, value, filterType, null);
     }
 
-    public Path<TData> getPath(Root<T> root, String expression) {
+    public Path<TData> getPath(Root<?> root, String expression) {
 
         if(expression  == null || expression.trim().isEmpty())
             return null;
@@ -28,5 +31,33 @@ public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> 
         }
 
         return (Path<TData>) path;
+    }
+
+    public Predicate isDuplicated(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                  SqmQuerySpec source, Class<TData> columnTargetType, String expression) {
+        
+        var subQuery = (SqmSubQuery<TData>) cq.subquery(columnTargetType);
+        subQuery.setQueryPart(source);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+
+        subQuery.select(getPath(subQueryRoot, expression));
+        subQuery.groupBy(getPath(subQueryRoot, expression));
+        subQuery.having(cb.gt(cb.count(subQueryRoot), 1));
+
+        return cb.in(getPath(root, expression)).value(subQuery);
+    }
+
+    public Predicate isNotDuplicated(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                  SqmQuerySpec source, Class<TData> columnTargetType, String expression) {
+
+        var subQuery = (SqmSubQuery<TData>) cq.subquery(columnTargetType);
+        subQuery.setQueryPart(source);
+        Root<?> subQueryRoot = subQuery.getRootList().get(0);
+
+        subQuery.select(getPath(subQueryRoot, expression));
+        subQuery.groupBy(getPath(subQueryRoot, expression));
+        subQuery.having(cb.le(cb.count(subQueryRoot), 1));
+
+        return cb.in(getPath(root, expression)).value(subQuery);
     }
 }
