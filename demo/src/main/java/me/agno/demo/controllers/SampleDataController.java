@@ -280,7 +280,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class);//.setPrimaryKey(true);
+			c.add("orderID", Integer.class).setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -315,7 +315,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class);//.setPrimaryKey(true);
+			c.add("orderID", Integer.class).setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -404,7 +404,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class);//.setPrimaryKey(true);
+			c.add("orderID", Integer.class).setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -442,7 +442,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class);//.setPrimaryKey(true);
+			c.add("orderID", Integer.class).setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -507,7 +507,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Employee>> columns = c -> {
-			c.add("employeeID", Integer.class);//.setPrimaryKey(true);
+			c.add("employeeID", Integer.class).setPrimaryKey(true);
 			c.add("titleOfCourtesy", String.class);
 			c.add("firstName", String.class);
 			c.add("lastName", String.class);
@@ -664,8 +664,8 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<OrderDetail>> columns = c -> {
-			c.add("orderID", Integer.class, true); //.setPrimaryKey(true);
-			c.add("productID", Integer.class); //.setPrimaryKey(true);
+			c.add("orderID", Integer.class, true).setPrimaryKey(true);
+			c.add("productID", Integer.class).setPrimaryKey(true);
 			c.add("product.productName", String.class);
 			c.add("quantity", Short.class);
 			c.add("unitPrice", BigDecimal.class);
