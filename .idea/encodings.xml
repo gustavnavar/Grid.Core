@@ -2,8 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/demo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/gridcore/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/gridcore/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gridjavacore/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gridjavacore/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

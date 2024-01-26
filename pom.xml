@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>me.agno</groupId>
-  <artifactId>Grid.Core</artifactId>
-  <version>0.0.8</version>
+  <artifactId>Grid.Java.Core</artifactId>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
 
-  <name>Grid.Core</name>
+  <name>Grid.Java.Core</name>
   <url>http://maven.apache.org</url>
   <modules>
-    <module>gridcore</module>
+    <module>gridjavacore</module>
   </modules>
 
   <properties>

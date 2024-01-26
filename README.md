@@ -1,15 +1,21 @@
-# Grid.Core
+# GridJavaCore
 
-GridCore is a back-end library for Spring Boot projects that performs paging, sorting, filtering and others, to support client Blazor projects to show data in a grid. 
+GridJavaCore is a back-end library for Java JPA / Hibernate projects that performs paging, sorting, filtering and others, to support client Blazor projects to show data in a grid. It will also support clients based on Vue.js projects with a Grid library (no yet developed).
 
-It is in development and it is not production ready.
+## Documentation
+* [Documentation for Blazor WASM with GridJavaCore back-end (REST API)](./docs/java_backend/Documentation.md)
 
-The long-term objective is to develop a client Grid library for Vue.js projects.
+This is an example of a table of items using this component:
 
+![Image of GridBlazor](./docs/images/GridBlazor.png)
+
+## Change Log
+https://github.com/gustavnavar/Grid.Java.Core/releases
 
 ## Folder description
-* [gridcore](./gridcore): Library to build back-ends bases on Spring Boot
-* [demo](./demo): Spring Boot demo project supporting the gridcore library. It can be tested with this [Blazor WASM project](https://github.com/gustavnavar/Grid.Blazor/tree/master/GridBlazorSpring)
+* [gridjavacore](./gridjavacore): Library to build back-ends based on Java JPA / Hibernate
+* [demo](./demo): Spring Boot demo project supporting the gridjavacore library. It can be tested with this [Blazor WASM project](https://github.com/gustavnavar/Grid.Blazor/tree/master/GridBlazorSpring)
+* [docs](./docs): Documentation
 
 The SQL Server database for all demos can be downloaded from [here](https://github.com/gustavnavar/Grid.Core/tree/master/sample_database)
 

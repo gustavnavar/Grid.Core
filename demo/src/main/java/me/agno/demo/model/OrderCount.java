@@ -1,14 +1,13 @@
 package me.agno.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.agno.gridcore.annotations.GridColumn;
-import me.agno.gridcore.annotations.GridTable;
-import me.agno.gridcore.pagination.PagingType;
-import me.agno.gridcore.sorting.GridSortDirection;
+import me.agno.gridjavacore.annotations.GridColumn;
+import me.agno.gridjavacore.annotations.GridTable;
+import me.agno.gridjavacore.pagination.PagingType;
+import me.agno.gridjavacore.sorting.GridSortDirection;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;

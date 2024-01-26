@@ -17,11 +17,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.agno.demo.model.*;
 import me.agno.demo.repositories.*;
-import me.agno.gridcore.IGridColumnCollection;
-import me.agno.gridcore.SelectItem;
-import me.agno.gridcore.server.GridServer;
-import me.agno.gridcore.server.IGridServer;
-import me.agno.gridcore.utils.ItemsDTO;
+import me.agno.gridjavacore.IGridColumnCollection;
+import me.agno.gridjavacore.SelectItem;
+import me.agno.gridjavacore.server.GridServer;
+import me.agno.gridjavacore.server.IGridServer;
+import me.agno.gridjavacore.utils.ItemsDTO;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
@@ -280,7 +280,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class).setPrimaryKey(true);
+			c.add("orderID", Integer.class);//.setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -315,7 +315,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class).setPrimaryKey(true);
+			c.add("orderID", Integer.class);//.setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -404,7 +404,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class).setPrimaryKey(true);
+			c.add("orderID", Integer.class);//.setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -442,7 +442,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
-			c.add("orderID", Integer.class).setPrimaryKey(true);
+			c.add("orderID", Integer.class);//.setPrimaryKey(true);
 			c.add("customerID", String.class);
 			c.add("employeeID", Integer.class);
 			c.add("shipVia", Integer.class, true);
@@ -507,7 +507,7 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Employee>> columns = c -> {
-			c.add("employeeID", Integer.class).setPrimaryKey(true);
+			c.add("employeeID", Integer.class);//.setPrimaryKey(true);
 			c.add("titleOfCourtesy", String.class);
 			c.add("firstName", String.class);
 			c.add("lastName", String.class);
@@ -664,8 +664,8 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<OrderDetail>> columns = c -> {
-			c.add("orderID", Integer.class, true).setPrimaryKey(true);
-			c.add("productID", Integer.class).setPrimaryKey(true);
+			c.add("orderID", Integer.class, true); //.setPrimaryKey(true);
+			c.add("productID", Integer.class); //.setPrimaryKey(true);
 			c.add("product.productName", String.class);
 			c.add("quantity", Short.class);
 			c.add("unitPrice", BigDecimal.class);
