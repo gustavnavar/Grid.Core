@@ -11,15 +11,34 @@ import org.hibernate.query.sqm.tree.select.SqmSubQuery;
 
 import java.util.function.Function;
 
+/**
+ * This class represents a CountProcessor, which is used to perform counting operations on a grid.
+ */
 public class CountProcessor<T> {
+
     private final IGrid<T> grid;
+
+    /**
+     * A setter method for the process function.
+     *
+     * @param process the function to be set as the process function
+     */
     @Setter
     private Function<Predicate, Long> process;
 
+    /**
+     * A class representing a CountProcessor used to perform counting operations on a grid.
+     */
     public CountProcessor(IGrid<T> grid) {
         this.grid = grid;
     }
 
+    /**
+     * Processes the predicate using the given function if it is set, otherwise performs counting operations on the grid.
+     *
+     * @param predicate the predicate to be processed
+     * @return the result of the processing operation
+     */
     public long process(Predicate predicate) {
 
         if (this.process != null) {

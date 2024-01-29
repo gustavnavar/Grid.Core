@@ -2,6 +2,9 @@ package me.agno.gridjavacore.filtering;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ * Enum representing the types of filters that can be applied to a grid.
+ */
 @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 public enum GridFilterType {
     NONE,
@@ -20,6 +23,11 @@ public enum GridFilterType {
     IS_DUPLICATED,
     IS_NOT_DUPLICATED;
 
+    /**
+     * Returns a string representation of the GridFilterType object.
+     *
+     * @return The string representation of the GridFilterType object.
+     */
     @Override public String toString() {
         return switch (this) {
             case NONE -> "0";
@@ -41,6 +49,12 @@ public enum GridFilterType {
         };
     }
 
+    /**
+     * Parses a string representation of a GridFilterType into the corresponding enum value.
+     *
+     * @param x The string representation of the GridFilterType.
+     * @return The GridFilterType enum value corresponding to the input string. If the input is not a valid integer, returns GridFilterType.NONE.
+     */
     public static GridFilterType fromString(String x) {
         try {
             return fromInteger(Integer.parseInt(x));
@@ -50,6 +64,12 @@ public enum GridFilterType {
         }
     }
 
+    /**
+     * Converts an integer value to a GridFilterType enum value.
+     *
+     * @param x The integer value to convert.
+     * @return The corresponding GridFilterType enum value.
+     */
     public static GridFilterType fromInteger(int x) {
         return GridFilterType.values()[x];
     }

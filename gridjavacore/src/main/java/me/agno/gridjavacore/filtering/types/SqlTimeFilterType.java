@@ -11,11 +11,23 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 import java.sql.Time;
 import java.time.LocalTime;
 
+/**
+ * SqlTimeFilterType is a class that represents a custom filter type for time values.
+ * It extends the FilterTypeBase class and provides implementations for the abstract methods.
+ */
 @Getter
 public class SqlTimeFilterType<T> extends FilterTypeBase<T, Time> {
 
     private final Class<Time> targetType = Time.class;
 
+    /**
+     * Returns a valid GridFilterType based on the input GridFilterType value.
+     * If the input GridFilterType value is a valid filter type, it will be returned.
+     * Otherwise, GridFilterType.EQUALS will be returned as the default filter type.
+     *
+     * @param type The input GridFilterType to validate.
+     * @return A valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -24,6 +36,12 @@ public class SqlTimeFilterType<T> extends FilterTypeBase<T, Time> {
         };
     }
 
+    /**
+     * Retrieves a typed value based on the provided string value.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value created from the string value.
+     */
     public Time getTypedValue(String value) {
         try {
             var time = LocalTime.parse(value);
@@ -34,6 +52,19 @@ public class SqlTimeFilterType<T> extends FilterTypeBase<T, Time> {
         }
     }
 
+    /**
+     * Retrieves the filter expression for a given criteria query.
+     *
+     * @param cb               The CriteriaBuilder object.
+     * @param cq               The CriteriaQuery object.
+     * @param root             The Root object.
+     * @param source           The SqmQuerySpec object.
+     * @param expression       The filter expression.
+     * @param value            The filter value.
+     * @param filterType       The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The filter expression as a Predicate.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

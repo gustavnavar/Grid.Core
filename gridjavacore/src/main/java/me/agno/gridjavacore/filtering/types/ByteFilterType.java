@@ -10,11 +10,21 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A class representing a filter type for byte values.
+ */
 @Getter
 public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
 
     private final Class<Byte> targetType = Byte.class;
 
+    /**
+     * Returns a valid GridFilterType based on the provided type. If the provided type is one of
+     * the valid filter types, it is returned as-is. Otherwise, the default filter type (EQUALS) is returned.
+     *
+     * @param type The GridFilterType to be validated.
+     * @return The valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -23,6 +33,14 @@ public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
         };
     }
 
+    /**
+     * Returns a {@code Byte} value representing the first byte of the provided {@code String} value.
+     * If the value cannot be converted to a byte, returns {@code null}.
+     *
+     * @param value The {@code String} value to convert.
+     * @return The {@code Byte} value representing the first byte of the value, or {@code null} if
+     *         the value cannot be converted to a byte.
+     */
     public Byte getTypedValue(String value) {
         try {
             return value.getBytes(StandardCharsets.UTF_8)[0];
@@ -32,6 +50,19 @@ public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
         }
     }
 
+    /**
+     * Returns a filter expression Predicate based on the provided parameters.
+     *
+     * @param cb              The CriteriaBuilder object.
+     * @param cq              The CriteriaQuery object.
+     * @param root            The Root object.
+     * @param source          The SqmQuerySpec object.
+     * @param expression      The expression for filtering.
+     * @param value           The value to compare against.
+     * @param filterType      The GridFilterType.
+     * @param removeDiacritics The flag indicating whether to remove diacritics or not.
+     * @return The filter expression Predicate.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {

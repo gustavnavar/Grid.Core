@@ -10,21 +10,50 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.util.Objects;
 
+/**
+ * A class representing a boolean filter type for grid filtering.
+ */
 @Getter
 public final class BooleanFilterType<T> extends FilterTypeBase<T, Boolean> {
 
     private final Class<Boolean> targetType = Boolean.class;
 
+    /**
+     * Returns a valid filter type for the given type.
+     *
+     * @param type The filter type to validate.
+     * @return The valid filter type.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         //in any case Boolean types must compare by Equals filter type
         //We can't compare: contains(true) and etc.
         return GridFilterType.EQUALS;
     }
 
+    /**
+     * Retrieves the typed value of a given string.
+     *
+     * @param value The string value to be converted.
+     * @return The typed value of the given string. If the string value is "true" (case-insensitive), returns true. Otherwise, returns false.
+     */
     public Boolean getTypedValue(String value) {
         return "true".equalsIgnoreCase(value);
     }
 
+    /**
+     * Retrieves the filter expression based on the provided parameters.
+     *
+     * @param cb The CriteriaBuilder object.
+     * @param cq The CriteriaQuery object.
+     * @param root The root object.
+     * @param source The SqmQuerySpec object.
+     * @param expression The expression to filter on.
+     * @param value The value to filter with.
+     * @param filterType The type of filter.
+     * @param removeDiacritics The flag indicating whether to remove diacritics from the value.
+     * @return The Predicate representing the filter expression.
+     * @throws IllegalArgumentException if the filterType is not supported.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value,
                                          GridFilterType filterType, String removeDiacritics) {

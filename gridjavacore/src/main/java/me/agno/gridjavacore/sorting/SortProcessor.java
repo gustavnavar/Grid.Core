@@ -10,13 +10,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * The SortProcessor class processes sorting operations on a grid.
+ *
+ * @param <T> the type of objects in the grid
+ */
 public class SortProcessor<T>
 {
     private final IGrid<T> grid;
     private IGridSortSettings settings;
+
+    /**
+     * The process variable represents a function that takes a list of Order objects as input and returns a modified list of Order objects.
+     * The process function can be set using the setter method.
+     */
     @Setter
     private Function<List<Order>, List<Order>> process;
 
+    /**
+     * Represents a SortProcessor that performs sorting on a grid using the provided settings.
+     */
     public SortProcessor(IGrid<T> grid, IGridSortSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");
@@ -25,12 +38,24 @@ public class SortProcessor<T>
         this.settings = settings;
     }
 
+    /**
+     * Updates the settings for sorting the grid.
+     *
+     * @param settings the grid sort settings to update
+     * @throws IllegalArgumentException if settings is null
+     */
     public void updateSettings(IGridSortSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");
         this.settings = settings;
     }
 
+    /**
+     * Processes the provided list of orders based on the settings and grid columns.
+     *
+     * @param orderList the list of orders to process
+     * @return the updated list of orders after applying sorting based on the settings and grid columns
+     */
     public List<Order> process(List<Order> orderList) {
 
         if (this.process != null)

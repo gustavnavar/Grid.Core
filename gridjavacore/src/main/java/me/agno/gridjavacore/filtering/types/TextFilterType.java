@@ -8,11 +8,21 @@ import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
+/**
+ * The TextFilterType class is a generic class that represents a custom filter type for filtering text-based data.
+ * It extends the FilterTypeBase class and provides implementation for common filter type functionality.
+ */
 @Getter
 public class TextFilterType<T> extends FilterTypeBase<T, String> {
 
     private final Class<String> targetType = String.class;
 
+    /**
+     * Returns a valid GridFilterType based on the input type.
+     *
+     * @param type The input GridFilterType.
+     * @return The valid GridFilterType. If the input type is valid, returns the input type. Otherwise, returns GridFilterType.EQUALS.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, CONTAINS, STARTS_WITH, ENDS_WIDTH, IS_NULL, IS_NOT_NULL,
@@ -21,8 +31,27 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
         };
     }
 
+    /**
+     * Retrieves the typed value of a given string value.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value. Returns an empty string if the input value is null.
+     */
     public String getTypedValue(String value) { return value == null ? "" : value; }
 
+    /**
+     * Retrieves the filter expression based on the given criteria builder, criteria query, root, and other parameters.
+     *
+     * @param cb              The CriteriaBuilder object.
+     * @param cq              The CriteriaQuery object.
+     * @param root            The Root object.
+     * @param source          The SqmQuerySpec object.
+     * @param expression      The filter expression.
+     * @param value           The filter value.
+     * @param filterType      The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The Predicate object representing the filter expression.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

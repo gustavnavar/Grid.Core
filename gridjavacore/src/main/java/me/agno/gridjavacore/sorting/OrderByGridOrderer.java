@@ -2,13 +2,31 @@ package me.agno.gridjavacore.sorting;
 
 import jakarta.persistence.criteria.*;
 
+/**
+ * The OrderByGridOrderer class is an implementation of the IColumnOrderer interface
+ * that applies an order to a criteria query based on the column, direction, and the root of the query.
+ */
 public class OrderByGridOrderer<T, TData> implements IColumnOrderer<T> {
+
     private final String expression;
 
+    /**
+     * The OrderByGridOrderer class is an implementation of the IColumnOrderer interface
+     * that applies an order to a criteria query based on the column, direction, and the root of the query.
+     */
     public OrderByGridOrderer(String expression) {
         this.expression = expression;
     }
 
+    /**
+     * Applies the specified order to a criteria query based on the column, direction,
+     * and the root of the query.
+     *
+     * @param cb the CriteriaBuilder object
+     * @param root the Root object representing the entity query root
+     * @param direction the sorting direction (ASCENDING or DESCENDING)
+     * @return the Order object representing the applied order
+     */
     public Order applyOrder(CriteriaBuilder cb, Root<T> root, GridSortDirection direction)
     {
         var path = getPath(root, this.expression);
@@ -20,6 +38,13 @@ public class OrderByGridOrderer<T, TData> implements IColumnOrderer<T> {
         };
     }
 
+    /**
+     * Returns the path for a given expression in a criteria query.
+     *
+     * @param root the Root object representing the entity query root
+     * @param expression the expression representing the path in dot notation
+     * @return the Path object representing the path for the given expression, or null if the expression is empty or null
+     */
     public Path<TData> getPath(Root<T> root, String expression) {
 
         if(expression  == null || expression.trim().isEmpty())

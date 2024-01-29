@@ -8,11 +8,20 @@ import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
+/**
+ * Represents a filter type for Double values in a grid.
+ */
 @Getter
 public final class DoubleFilterType<T> extends FilterTypeBase<T, Double> {
 
     private final Class<Double> targetType = Double.class;
 
+    /**
+     * Retrieves the valid filter type for a given grid filter type.
+     *
+     * @param type The grid filter type.
+     * @return The valid filter type.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -21,6 +30,12 @@ public final class DoubleFilterType<T> extends FilterTypeBase<T, Double> {
         };
     }
 
+    /**
+     * Retrieves a typed Double value from the given String value.
+     *
+     * @param value The String value to be converted to Double.
+     * @return The typed Double value. Returns null if the conversion fails.
+     */
     public Double getTypedValue(String value) {
         try {
             return Double.valueOf(value);
@@ -30,6 +45,19 @@ public final class DoubleFilterType<T> extends FilterTypeBase<T, Double> {
         }
     }
 
+    /**
+     * Retrieves the filter expression based on the given parameters.
+     *
+     * @param cb              The CriteriaBuilder object.
+     * @param cq              The CriteriaQuery object.
+     * @param root            The Root object.
+     * @param source          The SqmQuerySpec object.
+     * @param expression      The expression to filter on.
+     * @param value           The value to filter against.
+     * @param filterType      The type of filter to apply.
+     * @param removeDiacritics A string indicating if diacritics should be removed.
+     * @return The filter expression as a Predicate object. Returns null if the filter value is incorrect.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

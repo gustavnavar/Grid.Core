@@ -8,11 +8,21 @@ import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
+/**
+ * ShortFilterType is a class that represents a filter type for Short values in a grid.
+ * It extends the FilterTypeBase class, providing common functionality and methods for filter types.
+ */
 @Getter
 public final class ShortFilterType<T> extends FilterTypeBase<T, Short> {
 
     private final Class<Short> targetType = Short.class;
 
+    /**
+     * Retrieves the valid GridFilterType based on the input type.
+     *
+     * @param type The input GridFilterType.
+     * @return The valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -21,6 +31,12 @@ public final class ShortFilterType<T> extends FilterTypeBase<T, Short> {
         };
     }
 
+    /**
+     * Parses a string value into a typed value of type Short.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value parsed from the string value, or null if parsing fails.
+     */
     public Short getTypedValue(String value) {
         try {
             return Short.valueOf(value);
@@ -30,6 +46,20 @@ public final class ShortFilterType<T> extends FilterTypeBase<T, Short> {
         }
     }
 
+    /**
+     * Retrieves the filter expression `Predicate` based on the provided criteria.
+     *
+     * @param cb            The CriteriaBuilder object.
+     * @param cq            The CriteriaQuery object.
+     * @param root          The Root object.
+     * @param source        The SqmQuerySpec object.
+     * @param expression    The filter expression.
+     * @param value         The filter value.
+     * @param filterType    The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The filter expression as a `Predicate` object.
+     * @throws IllegalArgumentException If the filter type is invalid.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

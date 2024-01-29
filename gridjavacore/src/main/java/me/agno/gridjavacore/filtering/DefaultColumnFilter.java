@@ -10,22 +10,56 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.util.List;
 
+/**
+ * DefaultColumnFilter is a class that implements the IColumnFilter interface. It provides methods to apply filters on column values based on the given filter conditions.
+ */
 public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
     private final String expression;
     private final Class<TData> targetType;
     private final FilterTypeResolver typeResolver = new FilterTypeResolver();
 
+    /**
+     * Creates a DefaultColumnFilter object with the given expression and targetType.
+     *
+     * @param expression the expression used for filtering the column
+     * @param targetType the class representing the target type of the column
+     */
     public DefaultColumnFilter(String expression, Class<TData> targetType) {
         this.expression = expression;
         this.targetType = targetType;
     }
 
+    /**
+     * Applies a filter to the given criteria query based on the provided criteria builder,
+     * criteria query, root, query specification and column filter values.
+     *
+     * @param cb             the criteria builder
+     * @param cq             the criteria query
+     * @param root           the root entity
+     * @param source         the query specification
+     * @param values         the column filter values
+     * @return the predicate representing the applied filter
+     * @throws IllegalArgumentException if the column filter values are null or all values are null
+     */
     public Predicate applyFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                  SqmQuerySpec source, List<ColumnFilterValue> values) {
         return applyFilter(cb, cq, root, source, values,null);
     }
 
+    /**
+     * Applies a filter to the given criteria query based on the provided criteria builder, criteria query,
+     * root, query specification, column filter values, and optional diacritics removal.
+     *
+     * @param cb                  the criteria builder
+     * @param cq                  the criteria query
+     * @param root                the root entity
+     * @param source              the query specification
+     * @param values              the column filter values
+     * @param removeDiacritics    the optional diacritics removal parameter
+     * @return the predicate representing the applied filter
+     * @throws IllegalArgumentException if the column filter values are null or all values are null
+     */
     public Predicate applyFilter(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                  SqmQuerySpec source, List<ColumnFilterValue> values, String removeDiacritics) {
         if (values == null && values.stream().noneMatch(ColumnFilterValue::isNotNull))

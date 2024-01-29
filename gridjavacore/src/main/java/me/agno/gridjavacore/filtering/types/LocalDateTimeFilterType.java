@@ -10,11 +10,20 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.LocalDateTime;
 
+/**
+ * LocalDateTimeFilterType is a class that extends FilterTypeBase and represents a filter type for LocalDateTime values.
+ */
 @Getter
 public class LocalDateTimeFilterType<T> extends FilterTypeBase<T, LocalDateTime> {
 
     private final Class<LocalDateTime> targetType = LocalDateTime.class;
 
+    /**
+     * Retrieves a valid GridFilterType based on the input type.
+     *
+     * @param type The input GridFilterType.
+     * @return A valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -23,6 +32,12 @@ public class LocalDateTimeFilterType<T> extends FilterTypeBase<T, LocalDateTime>
         };
     }
 
+    /**
+     * Retrieves a typed value based on the provided string value.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value created from the string value, or null if parsing failed.
+     */
     public LocalDateTime getTypedValue(String value) {
         try {
             return LocalDateTime.parse(value);
@@ -32,6 +47,19 @@ public class LocalDateTimeFilterType<T> extends FilterTypeBase<T, LocalDateTime>
         }
     }
 
+    /**
+     * Retrieves the filter expression for a given criteria.
+     *
+     * @param cb The CriteriaBuilder object.
+     * @param cq The CriteriaQuery object.
+     * @param root The Root object.
+     * @param source The SqmQuerySpec object.
+     * @param expression The filter expression.
+     * @param value The filter value.
+     * @param filterType The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The filter expression as a Predicate object.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

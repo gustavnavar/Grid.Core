@@ -20,16 +20,37 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Consumer;
 
+/**
+ * A class for processing totals in a grid.
+ */
 public class TotalsProcessor<T> {
+
     private final IGrid<T> grid;
 
+    /**
+     * This private variable represents a consumer that takes a predicate as input and performs some processing.
+     * It is used in the TotalsProcessor class to process the grid's columns and calculate the totals and calculation values for each column.
+     *
+     * @see TotalsProcessor
+     * @see Predicate
+     */
     @Setter
     private Consumer<Predicate> process;
 
+    /**
+     * Creates a TotalsProcessor object.
+     *
+     * @param grid the grid object for which totals will be calculated
+     */
     public TotalsProcessor(IGrid<T> grid) {
         this.grid = grid;
     }
 
+    /**
+     * Processes the grid's columns and calculates the totals and calculation values for each column.
+     *
+     * @param predicate the predicate used to filter the data before calculating the totals
+     */
     public void process(Predicate predicate) {
 
         if (this.process != null) {

@@ -8,11 +8,20 @@ import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
+/**
+ * IntegerFilterType is a class that extends FilterTypeBase and represents a filter type for filtering integer values.
+ */
 @Getter
 public final class IntegerFilterType<T> extends FilterTypeBase<T, Integer> {
 
     private final Class<Integer> targetType = Integer.class;
 
+    /**
+     * Retrieves the valid GridFilterType based on the given input GridFilterType.
+     *
+     * @param type The input GridFilterType.
+     * @return The valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -21,6 +30,12 @@ public final class IntegerFilterType<T> extends FilterTypeBase<T, Integer> {
         };
     }
 
+    /**
+     * Retrieves a typed value based on the provided string value.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value created from the string value.
+     */
     public Integer getTypedValue(String value) {
         try {
             return Integer.valueOf(value);
@@ -30,6 +45,19 @@ public final class IntegerFilterType<T> extends FilterTypeBase<T, Integer> {
         }
     }
 
+    /**
+     * Retrieves the filter expression to be used in a query.
+     *
+     * @param cb               The CriteriaBuilder object.
+     * @param cq               The CriteriaQuery object.
+     * @param root             The Root object.
+     * @param source           The SqmQuerySpec object.
+     * @param expression       The filter expression.
+     * @param value            The filter value.
+     * @param filterType       The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The Predicate representing the filter expression.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

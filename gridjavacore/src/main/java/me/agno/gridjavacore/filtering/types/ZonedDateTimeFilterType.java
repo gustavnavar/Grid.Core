@@ -10,11 +10,21 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.ZonedDateTime;
 
+/**
+ * ZonedDateTimeFilterType is a class that extends the FilterTypeBase class to provide filtering functionality
+ * for the ZonedDateTime data type.
+ */
 @Getter
 public class ZonedDateTimeFilterType<T> extends FilterTypeBase<T, ZonedDateTime> {
 
     private final Class<ZonedDateTime> targetType = ZonedDateTime.class;
 
+    /**
+     * Retrieves the valid GridFilterType from the input GridFilterType.
+     *
+     * @param type The input GridFilterType.
+     * @return The valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -23,6 +33,12 @@ public class ZonedDateTimeFilterType<T> extends FilterTypeBase<T, ZonedDateTime>
         };
     }
 
+    /**
+     * Parses a string value into a typed value of ZonedDateTime.
+     *
+     * @param value The string value to parse into a typed value of ZonedDateTime.
+     * @return The parsed value as ZonedDateTime, or null if parsing fails.
+     */
     public ZonedDateTime getTypedValue(String value) {
         try {
             return ZonedDateTime.parse(value);
@@ -32,6 +48,19 @@ public class ZonedDateTimeFilterType<T> extends FilterTypeBase<T, ZonedDateTime>
         }
     }
 
+    /**
+     * Retrieves the filter expression for a given criteria.
+     *
+     * @param cb The CriteriaBuilder object.
+     * @param cq The CriteriaQuery object.
+     * @param root The Root object.
+     * @param source The SqmQuerySpec object.
+     * @param expression The filter expression.
+     * @param value The filter value.
+     * @param filterType The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The filter expression as a Predicate.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {

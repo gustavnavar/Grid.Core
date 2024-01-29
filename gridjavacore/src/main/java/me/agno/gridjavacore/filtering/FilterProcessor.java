@@ -12,12 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * The `FilterProcessor` class is responsible for processing filters based on the provided grid and filter settings.
+ */
 public class FilterProcessor<T> {
+
     private final IGrid<T> grid;
     private IGridFilterSettings settings;
+
     @Setter
     private Function<Predicate, Predicate> process;
 
+    /**
+     * The `FilterProcessor` class is responsible for processing filters based on the provided grid and filter settings.
+     */
     public FilterProcessor(IGrid<T> grid, IGridFilterSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");
@@ -25,6 +33,12 @@ public class FilterProcessor<T> {
         this.settings = settings;
     }
 
+    /**
+     * Updates the settings for the grid filter.
+     *
+     * @param settings the new filter settings to update
+     * @throws IllegalArgumentException if settings is null
+     */
     public void updateSettings(IGridFilterSettings settings) {
         if (settings == null)
             throw new IllegalArgumentException("settings");

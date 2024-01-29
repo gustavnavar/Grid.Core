@@ -3,10 +3,20 @@ package me.agno.gridjavacore.filtering.types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The FilterTypeResolver class is responsible for resolving the appropriate filter type
+ * based on the provided class type. It contains a collection of filter types and provides
+ * a method to retrieve the appropriate filter type for a given class.
+ */
 public class FilterTypeResolver {
 
     private final List<IFilterType> filterCollection = new ArrayList<>();
 
+    /**
+     * The FilterTypeResolver class is responsible for resolving the appropriate filter type
+     * based on the provided class type. It contains a collection of filter types and provides
+     * a method to retrieve the appropriate filter type for a given class.
+     */
     public FilterTypeResolver()
     {
         //add default filter types to collection:
@@ -35,6 +45,12 @@ public class FilterTypeResolver {
         filterCollection.add(new UuidFilterType());
     }
 
+    /**
+     * Retrieves the appropriate filter type for the given class type.
+     *
+     * @param type The class type for which to retrieve the filter type.
+     * @return The filter type for the given class type.
+     */
     public IFilterType GetFilterType(Class type)
     {
         if (type.isEnum())

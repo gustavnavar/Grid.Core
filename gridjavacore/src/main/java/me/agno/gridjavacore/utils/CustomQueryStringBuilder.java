@@ -6,14 +6,30 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * A class for building custom query strings.
+ */
 public class CustomQueryStringBuilder {
 
     private final LinkedHashMap<String, List<String>> query;
 
+    /**
+     * Constructs a CustomQueryStringBuilder object with the given query.
+     *
+     * @param query a LinkedHashMap containing the query parameters and their values
+     */
     public CustomQueryStringBuilder(LinkedHashMap<String, List<String>> query) {
         this.query = query;
     }
 
+    /**
+     * Returns the query string with the specified parameter added.
+     *
+     * @param parameterName the name of the parameter to add
+     * @param parameterValue the value of the parameter to add
+     * @return the query string with the specified parameter added
+     * @throws IllegalArgumentException if parameterName is null or empty
+     */
     public String getQueryStringWithParameter(String parameterName, String parameterValue) {
         if (parameterName == null || parameterName.isEmpty())
             throw new IllegalArgumentException("parameterName");
@@ -26,10 +42,23 @@ public class CustomQueryStringBuilder {
         return toString();
     }
 
+    /**
+     * Returns the query string representation of the CustomQueryStringBuilder object, excluding specified parameters.
+     *
+     * @return the query string representation of the CustomQueryStringBuilder object, excluding specified parameters
+     */
     public @Override String toString() {
         return getQueryStringExcept(List.of());
     }
 
+    /**
+     * Returns the query string representation of the CustomQueryStringBuilder object,
+     * excluding the specified parameters.
+     *
+     * @param parameterNames a list of parameter names to exclude from the query string
+     * @return the query string representation of the CustomQueryStringBuilder object,
+     * excluding the specified parameters
+     */
     public String getQueryStringExcept(List<String> parameterNames) {
         var result = new StringBuilder();
         for (String key : this.query.keySet()) {

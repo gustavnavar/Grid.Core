@@ -11,11 +11,21 @@ import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * SqlTimestampFilterType is a class that represents a filter type for SQL timestamp values.
+ * It extends the FilterTypeBase class and provides specific implementation for timestamp filtering.
+ */
 @Getter
 public class SqlTimestampFilterType<T> extends FilterTypeBase<T, Timestamp> {
 
     private final Class<Timestamp> targetType = Timestamp.class;
 
+    /**
+     * Returns the valid GridFilterType based on the input type.
+     *
+     * @param type The input GridFilterType.
+     * @return The valid GridFilterType.
+     */
     public GridFilterType getValidType(GridFilterType type) {
         return switch (type) {
             case EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS,
@@ -24,6 +34,12 @@ public class SqlTimestampFilterType<T> extends FilterTypeBase<T, Timestamp> {
         };
     }
 
+    /**
+     * Retrieves a typed value based on the provided string value.
+     *
+     * @param value The string value to parse into a typed value.
+     * @return The typed value created from the string value.
+     */
     public Timestamp getTypedValue(String value) {
         try {
             var data = LocalDateTime.parse(value);
@@ -34,6 +50,19 @@ public class SqlTimestampFilterType<T> extends FilterTypeBase<T, Timestamp> {
         }
     }
 
+    /**
+     * Retrieves the filter expression for a given criteria query.
+     *
+     * @param cb               The CriteriaBuilder object.
+     * @param cq               The CriteriaQuery object.
+     * @param root             The Root object.
+     * @param source           The SqmQuerySpec object.
+     * @param expression       The filter expression.
+     * @param value            The filter value.
+     * @param filterType       The GridFilterType.
+     * @param removeDiacritics Whether to remove diacritics from the filter value.
+     * @return The Predicate representing the filter expression.
+     */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                          SqmQuerySpec source, String expression, String value, 
                                          GridFilterType filterType, String removeDiacritics) {
