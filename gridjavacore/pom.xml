@@ -12,27 +12,6 @@
     <description>GridJavaCore is a back-end library for Java JPA / Hibernate projects that performs paging, sorting, filtering and others, to support client Blazor projects to show data in a grid. </description>
     <url>https://github.com/gustavnavar/Grid.Java.Core</url>
 
-    <licenses>
-        <license>
-            <name>LGPL-2.1 license</name>
-            <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html#SEC1</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>Gustavo Navarro</name>
-            <organization>Agno.me</organization>
-            <organizationUrl>https://github.com/gustavnavar</organizationUrl>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:git://github.com/gustavnavar/Grid.Java.Core.git</connection>
-        <developerConnection>scm:git:ssh://github.com/gustavnavar/Grid.Java.Core.git</developerConnection>
-        <url>https://github.com/gustavnavar/Grid.Java.Core/tree/master</url>
-    </scm>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -65,5 +44,34 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <licenses>
+        <license>
+            <name>LGPL-2.1 license</name>
+            <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html#SEC1</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Gustavo Navarro</name>
+            <organization>Agno.me</organization>
+            <organizationUrl>https://github.com/gustavnavar</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/gustavnavar/Grid.Java.Core.git</connection>
+        <developerConnection>scm:git:ssh://github.com/gustavnavar/Grid.Java.Core.git</developerConnection>
+        <url>https://github.com/gustavnavar/Grid.Java.Core/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
