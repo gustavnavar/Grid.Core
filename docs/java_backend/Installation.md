@@ -4,7 +4,7 @@ The **GridJavaCore** library installation is straightforward. Just follow these 
 
 1. Create a new Java server project using Maven
 
-2. Install the [**GridJavaCore**](http://nuget.org/packages/GridJavaCore/) Maven package on the server project.
+2. Install the [**GridJavaCore**](https://central.sonatype.com/artifact/me.agno/gridjavacore) Maven package on the server project.
 
  
 [Quick start ->](Quick_start.md)
