@@ -49,20 +49,24 @@ public class Total {
      */
     public Total(Number number) {
         this.type = GridTotalType.NUMBER;
-        if(number instanceof Byte)
-            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
-        if(number instanceof Integer)
-            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
-        if(number instanceof Long)
-            this.number = Optional.of(BigDecimal.valueOf(number.longValue()));
-        if(number instanceof Float)
-            this.number = Optional.of(BigDecimal.valueOf(number.doubleValue()));
-        if(number instanceof Double)
-            this.number = Optional.of(BigDecimal.valueOf((double)number));
-        if(number instanceof BigInteger)
-            this.number = Optional.of(new BigDecimal((BigInteger) number));
-        if(number instanceof BigDecimal)
-            this.number = Optional.of((BigDecimal)number);
+
+        Optional<Number> optionalNumber = Optional.ofNullable(number);
+        if (! optionalNumber.isPresent())
+            this.number = Optional.empty();
+        else if(number instanceof Byte)
+            this.number = Optional.ofNullable(BigDecimal.valueOf(number.longValue()));
+        else if(number instanceof Integer)
+            this.number = Optional.ofNullable(BigDecimal.valueOf(number.longValue()));
+        else if(number instanceof Long)
+            this.number = Optional.ofNullable(BigDecimal.valueOf(number.longValue()));
+        else if(number instanceof Float)
+            this.number = Optional.ofNullable(BigDecimal.valueOf(number.doubleValue()));
+        else if(number instanceof Double)
+            this.number = Optional.ofNullable(BigDecimal.valueOf((double)number));
+        else if(number instanceof BigInteger)
+            this.number = Optional.ofNullable(new BigDecimal((BigInteger) number));
+        else if(number instanceof BigDecimal)
+            this.number = Optional.ofNullable((BigDecimal)number);
     }
 
     /**
@@ -72,7 +76,12 @@ public class Total {
      */
     public Total(java.sql.Date dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(dateTime.toInstant());
+
+        Optional<java.sql.Date> optionalDateTime = Optional.ofNullable(dateTime);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(dateTime.toInstant());
     }
 
     /**
@@ -82,7 +91,12 @@ public class Total {
      */
     public Total(java.sql.Time time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.toInstant());
+
+        Optional<java.sql.Time> optionalDateTime = Optional.ofNullable(time);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(time.toInstant());
     }
 
     /**
@@ -92,7 +106,12 @@ public class Total {
      */
     public Total(java.sql.Timestamp timeStamp) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(timeStamp.toInstant());
+
+        Optional<java.sql.Timestamp> optionalDateTime = Optional.ofNullable(timeStamp);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(timeStamp.toInstant());
     }
 
     /**
@@ -102,7 +121,12 @@ public class Total {
      */
     public Total(java.util.Date date) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(date.toInstant());
+
+        Optional<java.util.Date> optionalDateTime = Optional.ofNullable(date);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(date.toInstant());
     }
 
     /**
@@ -112,7 +136,12 @@ public class Total {
      */
     public Total(java.util.Calendar calendar) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(calendar.toInstant());
+
+        Optional<java.util.Calendar> optionalDateTime = Optional.ofNullable(calendar);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(calendar.toInstant());
     }
 
     /**
@@ -123,7 +152,7 @@ public class Total {
      */
     public Total(java.time.Instant instant) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(instant);
+        this.dateTime = Optional.ofNullable(instant);
     }
 
     /**
@@ -133,7 +162,12 @@ public class Total {
      */
     public Total(LocalDate date) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(date.atStartOfDay().toInstant(ZoneOffset.UTC));
+
+        Optional<LocalDate> optionalDateTime = Optional.ofNullable(date);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(date.atStartOfDay().toInstant(ZoneOffset.UTC));
     }
 
     /**
@@ -143,7 +177,12 @@ public class Total {
      */
     public Total(LocalTime time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.atDate(LocalDate.now()).toInstant(ZoneOffset.UTC));
+
+        Optional<LocalTime> optionalDateTime = Optional.ofNullable(time);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(time.atDate(LocalDate.now()).toInstant(ZoneOffset.UTC));
     }
 
     /**
@@ -153,7 +192,12 @@ public class Total {
      */
     public Total(LocalDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(dateTime.toInstant(ZoneOffset.UTC));
+
+        Optional<LocalDateTime> optionalDateTime = Optional.ofNullable(dateTime);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(dateTime.toInstant(ZoneOffset.UTC));
     }
 
     /**
@@ -164,7 +208,12 @@ public class Total {
      */
     public Total(OffsetTime time) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(time.atDate(LocalDate.now()).toInstant());
+
+        Optional<OffsetTime> optionalDateTime = Optional.ofNullable(time);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(time.atDate(LocalDate.now()).toInstant());
     }
 
     /**
@@ -174,7 +223,12 @@ public class Total {
      */
     public Total(OffsetDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(dateTime.toInstant());
+
+        Optional<OffsetDateTime> optionalDateTime = Optional.ofNullable(dateTime);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(dateTime.toInstant());
     }
 
     /**
@@ -184,7 +238,12 @@ public class Total {
      */
     public Total(ZonedDateTime dateTime) {
         this.type = GridTotalType.DATE_TIME;
-        this.dateTime = Optional.of(dateTime.toInstant());
+
+        Optional<ZonedDateTime> optionalDateTime = Optional.ofNullable(dateTime);
+        if (! optionalDateTime.isPresent())
+            this.dateTime = Optional.empty();
+        else
+            this.dateTime = Optional.ofNullable(dateTime.toInstant());
     }
 
     /**

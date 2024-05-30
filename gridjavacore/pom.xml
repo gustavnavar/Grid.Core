@@ -6,7 +6,7 @@
 
     <groupId>me.agno</groupId>
     <artifactId>gridjavacore</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>GridJavaCore</name>
     <description>GridJavaCore is a back-end library for Java JPA / Hibernate projects that performs paging, sorting, filtering and others, to support client Blazor projects to show data in a grid. </description>
