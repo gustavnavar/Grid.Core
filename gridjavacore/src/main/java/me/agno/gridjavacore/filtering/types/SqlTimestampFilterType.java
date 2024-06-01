@@ -6,10 +6,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * SqlTimestampFilterType is a class that represents a filter type for SQL timestamp values.
@@ -41,13 +41,7 @@ public class SqlTimestampFilterType<T> extends FilterTypeBase<T, Timestamp> {
      * @return The typed value created from the string value.
      */
     public Timestamp getTypedValue(String value) {
-        try {
-            var data = LocalDateTime.parse(value);
-            return Timestamp.valueOf(data);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getSqlTimestamp(value);
     }
 
     /**

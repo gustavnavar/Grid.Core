@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.Instant;
@@ -39,12 +40,7 @@ public class InstantFilterType<T> extends FilterTypeBase<T, Instant> {
      * @return The typed value created from the string value. Returns null if the parsing fails.
      */
     public Instant getTypedValue(String value) {
-        try {
-            return Instant.parse(value);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getInstant(value);
     }
 
     /**

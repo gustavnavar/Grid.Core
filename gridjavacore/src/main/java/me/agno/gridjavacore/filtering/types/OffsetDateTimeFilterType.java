@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.OffsetDateTime;
@@ -40,12 +41,7 @@ public class OffsetDateTimeFilterType<T> extends FilterTypeBase<T, OffsetDateTim
      * @return The typed value created from the string value. Returns null if the value cannot be parsed.
      */
     public OffsetDateTime getTypedValue(String value) {
-        try {
-            return OffsetDateTime.parse(value);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getOffsetDateTime(value);
     }
 
     /**

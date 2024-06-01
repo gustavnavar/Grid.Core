@@ -6,10 +6,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.sql.Time;
-import java.time.LocalTime;
 
 /**
  * SqlTimeFilterType is a class that represents a custom filter type for time values.
@@ -43,13 +43,7 @@ public class SqlTimeFilterType<T> extends FilterTypeBase<T, Time> {
      * @return The typed value created from the string value.
      */
     public Time getTypedValue(String value) {
-        try {
-            var time = LocalTime.parse(value);
-            return Time.valueOf(time);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getSqlTime(value);
     }
 
     /**

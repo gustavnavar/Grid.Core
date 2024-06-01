@@ -44,7 +44,7 @@
         <dependency>
             <groupId>me.agno</groupId>
             <artifactId>gridjavacore</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

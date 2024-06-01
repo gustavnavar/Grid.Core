@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.LocalDate;
@@ -39,12 +40,7 @@ public class LocalDateFilterType<T> extends FilterTypeBase<T, LocalDate> {
      * @return The parsed LocalDate typed value. Returns null if parsing fails.
      */
     public LocalDate getTypedValue(String value) {
-        try {
-            return LocalDate.parse(value);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getLocalDate(value);
     }
 
     /**

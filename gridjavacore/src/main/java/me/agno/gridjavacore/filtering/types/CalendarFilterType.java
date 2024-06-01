@@ -6,9 +6,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
-import java.time.LocalDateTime;
 import java.util.Calendar;
 
 /**
@@ -40,15 +40,7 @@ public class CalendarFilterType<T> extends FilterTypeBase<T, Calendar> {
      * @return The Calendar object created from the value, or null if the parsing fails.
      */
     public Calendar getTypedValue(String value) {
-        try {
-            var date = LocalDateTime.parse(value);
-            Calendar cal = Calendar.getInstance();
-            cal.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(), date.getHour(), date.getMinute(), date.getSecond());
-            return cal;
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getCalendar(value);
     }
 
     /**

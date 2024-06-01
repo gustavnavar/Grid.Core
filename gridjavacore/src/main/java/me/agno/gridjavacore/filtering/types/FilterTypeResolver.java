@@ -51,7 +51,7 @@ public class FilterTypeResolver {
      * @param type The class type for which to retrieve the filter type.
      * @return The filter type for the given class type.
      */
-    public IFilterType GetFilterType(Class type)
+    public IFilterType getFilterType(Class type)
     {
         if (type.isEnum())
             return new EnumFilterType(type);

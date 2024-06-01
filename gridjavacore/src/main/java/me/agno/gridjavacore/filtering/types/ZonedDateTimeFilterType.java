@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.time.ZonedDateTime;
@@ -40,12 +41,7 @@ public class ZonedDateTimeFilterType<T> extends FilterTypeBase<T, ZonedDateTime>
      * @return The parsed value as ZonedDateTime, or null if parsing fails.
      */
     public ZonedDateTime getTypedValue(String value) {
-        try {
-            return ZonedDateTime.parse(value);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getZonedDateTime(value);
     }
 
     /**

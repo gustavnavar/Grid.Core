@@ -6,10 +6,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 /**
  * SqlDateFilterType is a class that represents a custom filter type for filtering dates in SQL queries.
@@ -40,13 +40,7 @@ public class SqlDateFilterType<T> extends FilterTypeBase<T, Date> {
      * @return The typed value retrieved from the string value, or null if parsing fails.
      */
     public Date getTypedValue(String value) {
-        try {
-            var date = LocalDate.parse(value);
-            return Date.valueOf(date);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getSqlDate(value);
     }
 
     /**

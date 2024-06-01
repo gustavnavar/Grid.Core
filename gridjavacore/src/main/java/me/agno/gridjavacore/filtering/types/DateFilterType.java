@@ -6,9 +6,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import me.agno.gridjavacore.filtering.GridFilterType;
+import me.agno.gridjavacore.utils.DateTimeUtils;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
-import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -40,14 +40,9 @@ public class DateFilterType<T> extends FilterTypeBase<T, Date> {
      * @return The typed value of the date, or null if the value is not a valid date.
      */
     public Date getTypedValue(String value) {
-        try {
-            var instant = Instant.parse(value);
-            return Date.from(instant);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return DateTimeUtils.getDate(value);
     }
+
 
     /**
      * Retrieves the filter expression based on the provided parameters.

@@ -78,10 +78,10 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
         var filterValues = values.stream().filter(r -> r.isNotNull() && r.getFilterType() != GridFilterType.CONDITION).toList();
 
-        return GetFilterExpression(cb, cq, root, source, filterValues, condition, removeDiacritics);
+        return getFilterExpression(cb, cq, root, source, filterValues, condition, removeDiacritics);
     }
 
-    private Predicate GetFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+    private Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                           SqmQuerySpec source, List<ColumnFilterValue> values, GridFilterCondition condition,
                                           String removeDiacritics) {
 
@@ -92,7 +92,7 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
             if (value.isNull())
                 continue;
 
-            Predicate predicate  = GetExpression(cb, cq, root, source, value, removeDiacritics);
+            Predicate predicate  = getExpression(cb, cq, root, source, value, removeDiacritics);
             if (predicate != null) {
                 if (mainPredicate == null)
                     mainPredicate = predicate;
@@ -109,10 +109,10 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
         return mainPredicate;
     }
 
-    private Predicate GetExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+    private Predicate getExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                     SqmQuerySpec source, ColumnFilterValue value, String removeDiacritics)
     {
-        IFilterType<T, TData> filterType = this.typeResolver.GetFilterType(this.targetType);
+        IFilterType<T, TData> filterType = this.typeResolver.getFilterType(this.targetType);
         return filterType.getFilterExpression(cb, cq, root, source, this.expression, value.getFilterValue(),
                 value.getFilterType(), removeDiacritics);
     }
