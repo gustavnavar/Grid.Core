@@ -1,11 +1,10 @@
 package me.agno.gridjavacore.totals;
 
 import jakarta.persistence.Tuple;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.Setter;
 import me.agno.gridjavacore.IGrid;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.columns.IGridColumn;
 import me.agno.gridjavacore.pagination.PagingType;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
@@ -17,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.*;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -230,6 +230,22 @@ public class TotalsProcessor<T> {
                 if (gridColumn.isMinEnabled())
                     gridColumn.setMinValue(new Total(getLeast(expression, this.grid, String.class)));
             }
+            else if (type == Collection.class) {
+                var countQuery = getCollectionCount(this.grid.getCriteriaBuilder(), this.grid.getCriteriaQuery(),
+                        this.grid.getRoot(),(GridCoreColumn<T, ?>) gridColumn);
+
+                if (gridColumn.isSumEnabled())
+                    gridColumn.setSumValue(new Total(getSum(countQuery, this.grid)));
+
+                if (gridColumn.isAverageEnabled())
+                    gridColumn.setAverageValue(new Total(getAverage(countQuery, this.grid)));
+
+                if (gridColumn.isMaxEnabled())
+                    gridColumn.setMaxValue(new Total(getMax(countQuery, this.grid)));
+
+                if (gridColumn.isMinEnabled())
+                    gridColumn.setMinValue(new Total(getMin(countQuery, this.grid)));
+            }
             else {
                 gridColumn.setSumEnabled(false);
                 gridColumn.setAverageEnabled(false);
@@ -400,6 +416,118 @@ public class TotalsProcessor<T> {
         totalQuery.from(subQuery);
         Root<TData> totalRoot = (Root<TData>)totalQuery.getRootList().get(0);
         totalQuery.select(totalBuilder.least(getPath("totalColumn", totalRoot, type)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
+    }
+
+
+    /**
+     * Returns a Path object representing the path to a specific column in a grid.
+     *
+     * @param cb The CriteriaBuilder object to build the search expression.
+     * @param cq The criteria query
+     * @param root The Root object representing the root entity of the query.
+     * @return A Subquery object representing the path to the Collection column.
+     */
+    public Subquery<Long> getCollectionCount(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
+                                             GridCoreColumn<T, ?> column) {
+
+        String[] names = column.getExpression().split("\\.");
+        if(names.length >= 2 && names[names.length -1].equalsIgnoreCase("count")) {
+
+            Subquery<Long> subquery = cq.subquery(Long.class);
+            Root<?> subRoot = subquery.from(column.getSubgridTargetType());
+
+            Predicate[] predicates = new Predicate[column.getSubgridKeys().length];
+            for (int i = 0; i < column.getSubgridKeys().length; i++) {
+                predicates[i] = cb.equal(root.get(column.getSubgridKeys()[i].getKey()),
+                        subRoot.get(column.getSubgridKeys()[i].getValue()));
+            }
+
+            return subquery.select(cb.count(cb.literal(1)))
+                    .where(predicates);
+        }
+        else {
+            return null; //incorrent column name;
+        }
+    }
+
+    private Number getSum(Subquery<Long> countQuery, IGrid<T> grid) {
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        subQuery.multiselect(countQuery.alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.sum(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
+    }
+
+    private Number getAverage(Subquery<Long> countQuery, IGrid<T> grid) {
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        subQuery.multiselect(countQuery.alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.avg(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
+    }
+
+    private Number getMax(Subquery<Long> countQuery, IGrid<T> grid) {
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        subQuery.multiselect(countQuery.alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.max(getPath("totalColumn", totalRoot, Number.class)));
+
+        return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
+    }
+
+    private Number getMin(Subquery<Long> countQuery, IGrid<T> grid) {
+
+        var gridQuery = (SqmSelectStatement) grid.getCriteriaQuery();
+        var gridQuerySpec = gridQuery.getQuerySpec();
+        var gridSubQuerySpec = gridQuerySpec.copy(SqmCopyContext.simpleContext());
+
+        var totalBuilder = (HibernateCriteriaBuilder) grid.getCriteriaBuilder();
+        var totalQuery = totalBuilder.createQuery(Number.class);
+
+        var subQuery = (SqmSubQuery<Tuple>) totalQuery.subquery(Tuple.class);
+        subQuery.setQueryPart(gridSubQuerySpec);
+        subQuery.multiselect(countQuery.alias("totalColumn"));
+
+        totalQuery.from(subQuery);
+        Root<?> totalRoot = totalQuery.getRootList().get(0);
+        totalQuery.select(totalBuilder.min(getPath("totalColumn", totalRoot, Number.class)));
 
         return grid.getEntityManager().createQuery(totalQuery).getSingleResult();
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -53,14 +54,14 @@ public class UuidFilterType<T> extends FilterTypeBase<T, UUID>{
      * @param cq                The CriteriaQuery object.
      * @param root              The Root object.
      * @param source            The SqmQuerySpec object.
-     * @param expression        The filter expression.
+     * @param column            The column.
      * @param value             The filter value.
-     * @param filterType        The GridFilterType.
+     * @param filterType The GridFilterType.
      * @param removeDiacritics  Whether to remove diacritics from the filter value.
      * @return The filter expression predicate.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value, 
+                                         SqmQuerySpec source, GridCoreColumn<T, UUID> column, String value,
                                          GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
@@ -71,7 +72,7 @@ public class UuidFilterType<T> extends FilterTypeBase<T, UUID>{
                 filterType != GridFilterType.IS_DUPLICATED && filterType != GridFilterType.IS_NOT_DUPLICATED)
             return null; //incorrent filter value;
 
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         return switch (filterType) {
             case EQUALS -> cb.equal(path, typedValue);
@@ -82,9 +83,9 @@ public class UuidFilterType<T> extends FilterTypeBase<T, UUID>{
                     typedValue.toString().toUpperCase() + '%');
             case ENDS_WIDTH -> cb.like(cb.upper(path.as(String.class)),
                     '%' + typedValue.toString().toUpperCase());
-            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType, expression);
+            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType, column.getExpression());
             case IS_NOT_DUPLICATED -> isNotDuplicated(cb, cq, root, source, this.targetType,
-                    expression);
+                    column.getExpression());
             default -> throw new IllegalArgumentException();
         };
     }

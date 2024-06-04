@@ -92,6 +92,19 @@ public interface IGridColumnCollection<T>
     <TData> IGridColumn<T> add(String expression, Class<TData> targetType, boolean hidden);
 
     /**
+     * Creates a column to the grid column collection with the specified expression, target type, and hidden state.
+     *
+     * @param expression the expression used to generate the column for the grid
+     * @param targetType the class representing the target type of the column's data
+     * @param hidden true if the column should be hidden, false otherwise
+     * @param columnName the name of the column to be added
+     * @param <TData> the type of the column's data
+     * @return the added grid column
+     * @param <TData>
+     */
+    <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden, String columnName);
+
+    /**
      * Retrieves a grid column with the specified name.
      *
      * @param name the name of the grid column to retrieve

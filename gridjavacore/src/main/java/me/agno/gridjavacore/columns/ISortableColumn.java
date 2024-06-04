@@ -115,16 +115,16 @@ public interface ISortableColumn<T> extends IColumn<T> {
     /**
      * Sets the sorting expression for the grid column and returns the instance of the grid column.
      *
-     * @param expression the sorting expression for the grid column
+     * @param column the following column for ordering
      * @return the instance of the grid column
      */
-    IGridColumn<T> thenSortBy(String expression);
+    <S> IGridColumn<T> thenSortBy(GridCoreColumn<T, S> column);
 
     /**
      * Sorts the grid column in descending order based on the given sorting expression.
      *
-     * @param expression the sorting expression for the grid column
+     * @param column the following column for ordering
      * @return the instance of the grid column after sorting in descending order
      */
-    IGridColumn<T> thenSortByDescending(String expression);
+    <S> IGridColumn<T> thenSortByDescending(GridCoreColumn<T, S> column);
 }

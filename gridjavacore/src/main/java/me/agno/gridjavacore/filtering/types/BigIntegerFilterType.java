@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -55,16 +56,16 @@ public class BigIntegerFilterType<T> extends FilterTypeBase<T, BigInteger> {
      * @param cq The CriteriaQuery object used for building filter expressions.
      * @param root The root entity in the CriteriaQuery.
      * @param source The SqmQuerySpec object representing the query specification.
-     * @param expression The expression used for filtering.
+     * @param column The column.
      * @param value The value to be filtered.
-     * @param filterType The type of filter to be applied.
+     * @param filterType The GridFilterType.
      * @param removeDiacritics The flag indicating whether diacritics should be removed.
      * @return The Predicate representing the filter expression. Returns null if the filter value is incorrect.
      * @throws IllegalArgumentException if the filter type is not recognized.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value,
-                                         GridFilterType filterType, String removeDiacritics) {
+                                         SqmQuerySpec source, GridCoreColumn<T, BigInteger> column,
+                                         String value, GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
         filterType = getValidType(filterType);
@@ -74,7 +75,7 @@ public class BigIntegerFilterType<T> extends FilterTypeBase<T, BigInteger> {
                 filterType != GridFilterType.IS_DUPLICATED && filterType != GridFilterType.IS_NOT_DUPLICATED)
             return null; //incorrent filter value;
 
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         return switch (filterType) {
             case EQUALS -> cb.equal(path, typedValue);
@@ -83,9 +84,9 @@ public class BigIntegerFilterType<T> extends FilterTypeBase<T, BigInteger> {
             case LESS_THAN_OR_EQUALS -> cb.le(path, typedValue);
             case GREATER_THAN -> cb.gt(path, typedValue);
             case GREATER_THAN_OR_EQUALS -> cb.ge(path, typedValue);
-            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source,this.targetType, expression);
+            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source,this.targetType, column.getExpression());
             case IS_NOT_DUPLICATED -> isNotDuplicated(cb, cq, root, source,this.targetType,
-                    expression);
+                    column.getExpression());
             default -> throw new IllegalArgumentException();
         };
     }

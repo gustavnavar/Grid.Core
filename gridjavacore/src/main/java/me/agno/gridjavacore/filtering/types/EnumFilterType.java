@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -58,20 +59,20 @@ public class EnumFilterType<T> extends FilterTypeBase<T, Enum> implements IFilte
      * @param cq The criteria query.
      * @param root The criteria root.
      * @param source The SqmQuerySpec source.
-     * @param expression The filter expression.
+     * @param column The column.
      * @param value The filter value.
-     * @param filterType The filter type.
+     * @param filterType The GridFilterType.
      * @param removeDiacritics The remove diacritics flag.
      * @return The filter expression predicate.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value, 
+                                         SqmQuerySpec source, GridCoreColumn<T, Enum> column, String value,
                                          GridFilterType filterType, String removeDiacritics) {
         Enum typedValue = this.getTypedValue(value);
         if (typedValue == null)
             return null; //incorrent filter value;
 
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         return cb.equal(path, typedValue);
     }

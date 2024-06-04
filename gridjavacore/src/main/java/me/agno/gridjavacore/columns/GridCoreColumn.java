@@ -19,6 +19,7 @@ import me.agno.gridjavacore.sorting.ThenByColumnOrderer;
 import me.agno.gridjavacore.totals.DefaultColumnTotals;
 import me.agno.gridjavacore.totals.IColumnTotals;
 import me.agno.gridjavacore.totals.Total;
+import me.agno.gridjavacore.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -320,6 +321,20 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
     private Total minValue;
 
     /**
+     * Represents an array of pair values indicating the foreign keys for a subgrid column.
+     */
+    @Getter
+    private Pair<String, String>[] subgridKeys;
+
+    /**
+     * Represents the target type used in the subgrid column class.
+     *
+     * @param <?> the type of data displayed in the subgrid column
+     */
+    @Getter
+    private Class<?> subgridTargetType;
+
+    /**
      * Represents a column in a grid.
      *
      * @param expression the expression used for sorting, filtering, and searching the column
@@ -336,9 +351,9 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
 
         if (expression != null) {
             this.expression = expression;
-            this.orderers.add(0, new OrderByGridOrderer<T, TData>(expression));
-            this.filter = new DefaultColumnFilter<T, TData>(expression, targetType);
-            this.search = new DefaultColumnSearch<T, TData>(expression, targetType);
+            this.orderers.add(0, new OrderByGridOrderer<T, TData>(this));
+            this.filter = new DefaultColumnFilter<T, TData>(this);
+            this.search = new DefaultColumnSearch<T, TData>(this);
             this.totals = new DefaultColumnTotals(expression);
 
             //Generate unique column name:
@@ -435,22 +450,22 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
     /**
      * Creates a column orderer for secondary sorting based on the given expression and with an initial sort direction of ascending.
      *
-     * @param expression the expression used for secondary sorting
+     * @param column the following column for ordering
      * @return the updated instance of IGridColumn
      */
-    public IGridColumn<T> thenSortBy(String expression) {
-        this.orderers.add(new ThenByColumnOrderer<T, TData>(expression, GridSortDirection.ASCENDING));
+    public <S> IGridColumn<T> thenSortBy(GridCoreColumn<T, S> column) {
+        this.orderers.add(new ThenByColumnOrderer<T, S>(column, GridSortDirection.ASCENDING));
         return this;
     }
 
     /**
      * Sorts the grid column in descending order based on the given expression.
      *
-     * @param expression the expression used for sorting the column
+     * @param column the following column for ordering
      * @return the updated instance of IGridColumn
      */
-    public  IGridColumn<T> thenSortByDescending(String expression) {
-        this.orderers.add(new ThenByColumnOrderer<T, TData>(expression, GridSortDirection.DESCENDING));
+    public <S>  IGridColumn<T> thenSortByDescending(GridCoreColumn<T, S> column) {
+        this.orderers.add(new ThenByColumnOrderer<T, S>(column, GridSortDirection.DESCENDING));
         return this;
     }
 
@@ -536,6 +551,19 @@ public class GridCoreColumn<T, TData> implements IGridColumn<T> {
     public IGridColumn<T> calculate(String name, Function<IGridColumnCollection<T>, Object> calculation) {
         this.calculationEnabled = true;
         this.calculations.put(name, calculation);
+        return this;
+    }
+
+    /**
+     * Sets foreign keys for a one-to-many column.
+     *
+     * @param subgridKeys an array of pair values indicating the foreign keys for a subgrid column
+     * @param subgridTargetType the target type defines the data type of the subgrid
+     * @return the instance of the column for method chaining
+     */
+    public <S> IGridColumn<T> subgrid(Class<S> subgridTargetType, Pair<String, String>[] subgridKeys) {
+        this.subgridTargetType = subgridTargetType;
+        this.subgridKeys = subgridKeys;
         return this;
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -57,15 +58,15 @@ public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
      * @param cq              The CriteriaQuery object.
      * @param root            The Root object.
      * @param source          The SqmQuerySpec object.
-     * @param expression      The expression for filtering.
+     * @param column          The column.
      * @param value           The value to compare against.
      * @param filterType      The GridFilterType.
      * @param removeDiacritics The flag indicating whether to remove diacritics or not.
-     * @return The filter expression Predicate.
+     * @return                The filter expression Predicate.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value,
-                                         GridFilterType filterType, String removeDiacritics) {
+                                         SqmQuerySpec source, GridCoreColumn<T, Byte> column,
+                                         String value, GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
         filterType = this.getValidType(filterType);
@@ -75,7 +76,7 @@ public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
                 filterType != GridFilterType.IS_DUPLICATED && filterType != GridFilterType.IS_NOT_DUPLICATED)
             return null; //incorrent filter value;
 
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         return switch (filterType) {
             case EQUALS -> cb.equal(path, typedValue);
@@ -84,9 +85,9 @@ public final class ByteFilterType<T> extends FilterTypeBase<T, Byte> {
             case LESS_THAN_OR_EQUALS -> cb.le(path, typedValue);
             case GREATER_THAN -> cb.gt(path, typedValue);
             case GREATER_THAN_OR_EQUALS -> cb.ge(path, typedValue);
-            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType, expression);
+            case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType, column.getExpression());
             case IS_NOT_DUPLICATED -> isNotDuplicated(cb, cq, root, source,this.targetType,
-                    expression);
+                    column.getExpression());
             default -> throw new IllegalArgumentException();
         };
     }

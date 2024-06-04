@@ -43,6 +43,7 @@ public class FilterTypeResolver {
         filterCollection.add(new LongFilterType());
         filterCollection.add(new FloatFilterType());
         filterCollection.add(new UuidFilterType());
+        filterCollection.add(new CollectionFilterType());
     }
 
     /**

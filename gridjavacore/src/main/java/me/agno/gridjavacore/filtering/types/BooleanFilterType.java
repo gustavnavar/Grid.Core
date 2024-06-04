@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -47,23 +48,23 @@ public final class BooleanFilterType<T> extends FilterTypeBase<T, Boolean> {
      * @param cq The CriteriaQuery object.
      * @param root The root object.
      * @param source The SqmQuerySpec object.
-     * @param expression The expression to filter on.
+     * @param column The column.
      * @param value The value to filter with.
-     * @param filterType The type of filter.
+     * @param filterType The GridFilterType.
      * @param removeDiacritics The flag indicating whether to remove diacritics from the value.
      * @return The Predicate representing the filter expression.
      * @throws IllegalArgumentException if the filterType is not supported.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value,
-                                         GridFilterType filterType, String removeDiacritics) {
+                                         SqmQuerySpec source, GridCoreColumn<T, Boolean> column,
+                                         String value, GridFilterType filterType, String removeDiacritics) {
 
         //base implementation of building filter expressions
         filterType = getValidType(filterType);
 
         Boolean typedValue = this.getTypedValue(value);
 
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         if (Objects.requireNonNull(filterType) == GridFilterType.EQUALS) {
             return cb.equal(path, typedValue);

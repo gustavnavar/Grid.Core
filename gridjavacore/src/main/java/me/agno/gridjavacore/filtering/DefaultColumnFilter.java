@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.types.FilterTypeResolver;
 import me.agno.gridjavacore.filtering.types.IFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
@@ -15,19 +16,16 @@ import java.util.List;
  */
 public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
 
-    private final String expression;
-    private final Class<TData> targetType;
+    private final GridCoreColumn<T, TData> column;
     private final FilterTypeResolver typeResolver = new FilterTypeResolver();
 
     /**
      * Creates a DefaultColumnFilter object with the given expression and targetType.
      *
-     * @param expression the expression used for filtering the column
-     * @param targetType the class representing the target type of the column
+     * @param column the column
      */
-    public DefaultColumnFilter(String expression, Class<TData> targetType) {
-        this.expression = expression;
-        this.targetType = targetType;
+    public DefaultColumnFilter(GridCoreColumn<T, TData> column) {
+        this.column = column;
     }
 
     /**
@@ -112,8 +110,8 @@ public class DefaultColumnFilter<T, TData> implements IColumnFilter<T> {
     private Predicate getExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
                                     SqmQuerySpec source, ColumnFilterValue value, String removeDiacritics)
     {
-        IFilterType<T, TData> filterType = this.typeResolver.getFilterType(this.targetType);
-        return filterType.getFilterExpression(cb, cq, root, source, this.expression, value.getFilterValue(),
+        IFilterType<T, TData> filterType = this.typeResolver.getFilterType(this.column.getTargetType());
+        return filterType.getFilterExpression(cb, cq, root, source, this.column, value.getFilterValue(),
                 value.getFilterType(), removeDiacritics);
     }
 }

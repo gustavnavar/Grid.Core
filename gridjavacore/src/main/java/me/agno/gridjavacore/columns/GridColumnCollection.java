@@ -150,7 +150,19 @@ public class GridColumnCollection<T> extends LinkedHashMap<String, IGridColumn<T
         return super.get(name);
     }
 
-    private <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden, String columnName) {
+    /**
+     * Creates a column to the grid column collection with the specified expression, target type, and hidden state.
+     *
+     * @param expression the expression used to generate the column for the grid
+     * @param targetType the class representing the target type of the column's data
+     * @param hidden true if the column should be hidden, false otherwise
+     * @param columnName the name of the column to be added
+     * @param <TData> the type of the column's data
+     * @return the added grid column
+     * @param <TData>
+     */
+    public <TData> IGridColumn<T> createColumn(String expression, Class<TData> targetType, boolean hidden,
+                                               String columnName) {
         IGridColumn<T> newColumn = this.columnBuilder.createColumn(expression, targetType, hidden);
         if (columnName != null && !columnName.trim().isEmpty())
             ((GridCoreColumn<T, TData>)newColumn).setName(columnName);

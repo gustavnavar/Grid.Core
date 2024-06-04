@@ -1,6 +1,7 @@
 package me.agno.gridjavacore.filtering.types;
 
 import jakarta.persistence.criteria.*;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 import org.hibernate.query.sqm.tree.select.SqmSubQuery;
@@ -37,14 +38,15 @@ public abstract class FilterTypeBase<T, TData> implements IFilterType<T, TData> 
      * @param cq           The CriteriaQuery object.
      * @param root         The Root object.
      * @param source       The SqmQuerySpec object.
-     * @param expression   The filter expression.
+     * @param column       The column.
      * @param value        The filter value.
-     * @param filterType   The GridFilterType.
+     * @param filterType The GridFilterType.
      * @return The Predicate representing the filter expression.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value, GridFilterType filterType) {
-        return getFilterExpression(cb, cq, root, source, expression, value, filterType, null);
+                                         SqmQuerySpec source, GridCoreColumn<T, TData> column, String value,
+                                         GridFilterType filterType) {
+        return getFilterExpression(cb, cq, root, source, column, value, filterType, null);
     }
 
     /**

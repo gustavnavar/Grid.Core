@@ -83,15 +83,15 @@ public class SortProcessor<T>
                     continue;
 
                 var order = column.get().getOrderers().get(0).applyOrder(this.grid.getCriteriaBuilder(),
-                        this.grid.getRoot(), sortedColumn.getDirection());
+                        this.grid.getCriteriaQuery(), this.grid.getRoot(), sortedColumn.getDirection());
                 if (order != null && orderList.stream()
                         .noneMatch(r -> r.getExpression().equals(order.getExpression()))) {
                     orderList.add(order);
                 }
 
                 for (var orderer : column.get().getOrderers()) {
-                   var order2 = orderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
-                            GridSortDirection.ASCENDING);
+                   var order2 = orderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getCriteriaQuery(),
+                           this.grid.getRoot(), GridSortDirection.ASCENDING);
                     if (order2 != null && orderList.stream()
                             .noneMatch(r -> r.getExpression().equals(order2.getExpression()))) {
                         orderList.add(order2);
@@ -111,8 +111,8 @@ public class SortProcessor<T>
             return orderList;
 
         for (var colOrderer : column.get().getOrderers()) {
-            var order = colOrderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
-                    this.settings.getDirection());
+            var order = colOrderer.applyOrder(this.grid.getCriteriaBuilder(), this.grid.getCriteriaQuery(),
+                    this.grid.getRoot(), this.settings.getDirection());
             if (order != null && orderList.stream()
                     .noneMatch(r -> r.getExpression().equals(order.getExpression()))) {
                 orderList.add(order);

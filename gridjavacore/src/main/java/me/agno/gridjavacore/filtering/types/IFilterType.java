@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -44,13 +45,13 @@ public interface IFilterType<T, TData> {
      * @param cq The criteria query being constructed.
      * @param root The root entity being queried.
      * @param source The query specification for the current query.
-     * @param expression The expression to filter on.
+     * @param column The column.
      * @param value The value to filter against.
      * @param filterType The filter type to apply.
      * @return A predicate representing the filter expression.
      */
     Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root, SqmQuerySpec source,
-                                  String expression, String value, GridFilterType filterType);
+                                  GridCoreColumn<T, TData> column, String value, GridFilterType filterType);
 
     /**
      * Retrieves the filter expression predicate based on the provided parameters.
@@ -59,12 +60,13 @@ public interface IFilterType<T, TData> {
      * @param cq The CriteriaQuery object.
      * @param root The Root object.
      * @param source The SqmQuerySpec object.
-     * @param expression The filter expression.
+     * @param column The column.
      * @param value The filter value.
      * @param filterType The GridFilterType.
      * @param removeDiacritics Whether to remove diacritics from the filter value.
      * @return The Predicate representing the filter expression.
      */
     Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root, SqmQuerySpec source,
-                                  String expression, String value, GridFilterType filterType, String removeDiacritics);
+                                  GridCoreColumn<T, TData> column, String value, GridFilterType filterType,
+                                  String removeDiacritics);
 }

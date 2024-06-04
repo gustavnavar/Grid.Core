@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.filtering.GridFilterType;
 import org.hibernate.query.sqm.tree.select.SqmQuerySpec;
 
@@ -46,14 +47,14 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
      * @param cq              The CriteriaQuery object.
      * @param root            The Root object.
      * @param source          The SqmQuerySpec object.
-     * @param expression      The filter expression.
+     * @param column          The column.
      * @param value           The filter value.
-     * @param filterType      The GridFilterType.
+     * @param filterType The GridFilterType.
      * @param removeDiacritics Whether to remove diacritics from the filter value.
      * @return The Predicate object representing the filter expression.
      */
     public Predicate getFilterExpression(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root,
-                                         SqmQuerySpec source, String expression, String value, 
+                                         SqmQuerySpec source, GridCoreColumn<T, String> column, String value,
                                          GridFilterType filterType, String removeDiacritics) {
         
         //Custom implementation of string filter type. Case insensitive compartion.
@@ -65,7 +66,7 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
                 filterType != GridFilterType.IS_NULL && filterType!= GridFilterType.IS_NOT_NULL)
             return null; //incorrent filter value;
         
-        var path = getPath(root, expression);
+        var path = getPath(root, column.getExpression());
 
         if(removeDiacritics == null || removeDiacritics.isBlank()) {
             return switch (filterType) {
@@ -80,9 +81,9 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
                 case ENDS_WIDTH -> cb.like(cb.upper(path),
                         '%' + typedValue.toUpperCase());
                 case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType,
-                        expression);
+                        column.getExpression());
                 case IS_NOT_DUPLICATED -> isNotDuplicated(cb, cq, root, source, this.targetType,
-                        expression);
+                        column.getExpression());
                 default -> throw new IllegalArgumentException();
             };
         }
@@ -101,9 +102,9 @@ public class TextFilterType<T> extends FilterTypeBase<T, String> {
                 case ENDS_WIDTH -> cb.like(cb.function(removeDiacritics, String.class, cb.upper(path)),
                         cb.function(removeDiacritics, String.class, cb.literal('%' + typedValue.toUpperCase())));
                 case IS_DUPLICATED -> isDuplicated(cb, cq, root, source, this.targetType,
-                        expression);
+                        column.getExpression());
                 case IS_NOT_DUPLICATED -> isNotDuplicated(cb, cq, root, source, this.targetType,
-                        expression);
+                        column.getExpression());
                 default -> throw new IllegalArgumentException();
             };
         }

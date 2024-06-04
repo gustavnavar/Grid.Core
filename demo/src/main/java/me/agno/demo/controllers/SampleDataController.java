@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -19,9 +20,11 @@ import me.agno.demo.model.*;
 import me.agno.demo.repositories.*;
 import me.agno.gridjavacore.IGridColumnCollection;
 import me.agno.gridjavacore.SelectItem;
+import me.agno.gridjavacore.columns.GridCoreColumn;
 import me.agno.gridjavacore.server.GridServer;
 import me.agno.gridjavacore.server.IGridServer;
 import me.agno.gridjavacore.utils.ItemsDTO;
+import me.agno.gridjavacore.utils.Pair;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
@@ -152,13 +155,17 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
+			var shipVia = c.createColumn("shipVia", String.class, false, null);
+			var freight = c.createColumn("freight", BigDecimal.class, false, null);
+
 			c.add("orderID", Integer.class);
 			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class)
-					.thenSortBy("shipVia").thenSortByDescending("freight");
+					.thenSortBy((GridCoreColumn<Order, String>)shipVia)
+					.thenSortByDescending((GridCoreColumn<Order, BigDecimal>)freight);
 			c.add("customer.contactName", String.class);
-			c.add("shipVia", String.class);
-			c.add("freight", BigDecimal.class);
+			c.add(shipVia);
+			c.add(freight);
 			c.add("customer.isVip",Boolean.class);
 		};
 
@@ -178,13 +185,17 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
+			var shipVia = c.createColumn("shipVia", String.class, false, null);
+			var freight = c.createColumn("freight", BigDecimal.class, false, null);
+
 			c.add("orderID", Integer.class);
 			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class)
-					.thenSortBy("shipVia").thenSortByDescending("freight");
+					.thenSortBy((GridCoreColumn<Order, String>)shipVia)
+					.thenSortByDescending((GridCoreColumn<Order, BigDecimal>)freight);
 			c.add("customer.contactName", String.class);
-			c.add("shipVia", String.class);
-			c.add("freight", BigDecimal.class);
+			c.add(shipVia);
+			c.add(freight);
 			c.add("customer.isVip",Boolean.class);
 		};
 
@@ -204,13 +215,17 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<Order>> columns = c -> {
+			var shipVia = c.createColumn("shipVia", String.class, false, null);
+			var freight = c.createColumn("freight", BigDecimal.class, false, null);
+
 			c.add("orderID", Integer.class);
 			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
 			c.add("customer.companyName", String.class)
-					.thenSortBy("shipVia").thenSortByDescending("freight");
+					.thenSortBy((GridCoreColumn<Order, String>)shipVia)
+					.thenSortByDescending((GridCoreColumn<Order, BigDecimal>)freight);
 			c.add("customer.contactName", String.class);
-			c.add("shipVia", String.class);
-			c.add("freight", BigDecimal.class);
+			c.add(shipVia);
+			c.add(freight);
 			c.add("customer.isVip",Boolean.class);
 		};
 
@@ -350,19 +365,26 @@ public class SampleDataController {
 		EntityManager em = entityManagerFactory.createEntityManager();
 
 		Consumer<IGridColumnCollection<OrderCount>> columns = c -> {
+			var count = c.createColumn("orderDetails.count", Collection.class, false, null);
+			var freight = c.createColumn("freight", BigDecimal.class, false, null);
+
 			c.add("orderID", Integer.class);
 			c.add("orderDate", LocalDateTime.class, "orderCustomDate");
-			c.add("customer.companyName", String.class);
+			c.add("customer.companyName", String.class)
+					.thenSortBy((GridCoreColumn<OrderCount, String>)count)
+					.thenSortByDescending((GridCoreColumn<OrderCount, BigDecimal>)freight);
 			c.add("customer.contactName", String.class);
-			c.add("customer.country", String.class, true);
-			c.add("freight", BigDecimal.class);
+			c.add(freight);
 			c.add("customer.isVip",Boolean.class);
+			c.add(count).subgrid(OrderDetailCount.class, new Pair[]{new Pair("orderID", "orderID")})
+					.sum(true).average(true).max(true).min(true);
 		};
 
 		IGridServer<OrderCount> server = new GridServer<>(em, OrderCount.class, request.getParameterMap(), columns)
 				.withPaging(10)
 				.sortable()
 				.filterable()
+				.searchable(true, false)
 				.setRemoveDiacritics("dbo.RemoveDiacritics");
 
 		var items = server.getItemsToDisplay();

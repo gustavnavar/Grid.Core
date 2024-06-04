@@ -94,13 +94,14 @@ public class SearchProcessor<T> {
             if (!this.grid.getSearchOptions().isHiddenColumns() && gridColumn.isHidden()) continue;
 
             if (predicate == null) {
-                predicate = gridColumn.getSearch().getExpression(this.grid.getCriteriaBuilder(), this.grid.getRoot(),
-                        searchValue, this.grid.getSearchOptions().isOnlyTextColumns(), this.grid.getRemoveDiacritics());
+                predicate = gridColumn.getSearch().getExpression(this.grid.getCriteriaBuilder(),
+                        this.grid.getCriteriaQuery(), this.grid.getRoot(), searchValue,
+                        this.grid.getSearchOptions().isOnlyTextColumns(), this.grid.getRemoveDiacritics());
             }
             else {
                 Predicate newPredicate = gridColumn.getSearch().getExpression(this.grid.getCriteriaBuilder(),
-                        this.grid.getRoot(), searchValue, this.grid.getSearchOptions().isOnlyTextColumns(),
-                        this.grid.getRemoveDiacritics());
+                        this.grid.getCriteriaQuery(), this.grid.getRoot(), searchValue,
+                        this.grid.getSearchOptions().isOnlyTextColumns(), this.grid.getRemoveDiacritics());
                 if (newPredicate != null) {
                     predicate = this.grid.getCriteriaBuilder().or(predicate, newPredicate);
                 }
